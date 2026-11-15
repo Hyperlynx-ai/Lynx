@@ -1,0 +1,13 @@
+# Replace @OWNER_GITHUB_USERNAME with the real GitHub username (or team).
+# Pair this with branch protection ("Require review from Code Owners") so the
+# owner must approve changes to the paths below.
+# Adjust the paths once the real folder structure inside apps/ is known.
+
+/AGENTS.md                      @OWNER_GITHUB_USERNAME
+/docs/policies/                 @OWNER_GITHUB_USERNAME
+/.github/                       @OWNER_GITHUB_USERNAME
+/infra/                         @OWNER_GITHUB_USERNAME
+/packages/config/               @OWNER_GITHUB_USERNAME
+/apps/api/**/auth/              @OWNER_GITHUB_USERNAME
+/apps/api/**/billing/           @OWNER_GITHUB_USERNAME
+/apps/api/**/migrations/        @OWNER_GITHUB_USERNAME

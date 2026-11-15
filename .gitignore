@@ -1,0 +1,26 @@
+# OS / editor
+.DS_Store
+.idea/
+
+# Dependencies and build output
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+dist/
+build/
+.next/
+.turbo/
+coverage/
+*.log
+
+# Environment and secrets (never commit real secrets)
+.env
+.env.*
+!.env.example
+
+# Third-party repos cloned for reference: contents are never committed
+references/*
+!references/.gitkeep
+!references/README.md

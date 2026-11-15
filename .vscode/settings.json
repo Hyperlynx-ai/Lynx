@@ -1,0 +1,12 @@
+{
+  "search.exclude": {
+    "**/references": true,
+    "**/node_modules": true,
+    "**/.venv": true,
+    "**/__pycache__": true
+  },
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.DS_Store": true
+  }
+}
