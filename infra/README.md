@@ -67,6 +67,15 @@ login by default. In each project's Settings → Deployment Protection:
   Vercel run `pnpm install`, which would skip the Python install. So
   `services/ai/vercel.json` sets `installCommand` to
   `uv sync --frozen --no-dev`.
+- **Build cache:** `turbo.json` lists `API_URL`, `AI_SERVICE_URL`,
+  `VERCEL_ENV`, `VERCEL_RELATED_PROJECTS` and `NEXT_PUBLIC_*` as build
+  inputs. The API address is baked into the web build, so without this,
+  Turborepo's cache reused an old build pointing at the wrong API.
+  Add any new build-time variable there.
+- **Cold starts:** the API waits up to 10 s for the AI service's health
+  check, because a cold Python function can take several seconds.
+- **Plan:** Vercel Hobby cannot connect a private repository owned by a
+  GitHub organization; Git deployments need Vercel Pro.
 - **Related projects** (web → api → ai URLs) only work for Git deployments.
   A manual `vercel deploy` of the API reports `"ai": "unreachable"`; that is
   expected.
