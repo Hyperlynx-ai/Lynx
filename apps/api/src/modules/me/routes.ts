@@ -3,6 +3,8 @@ import type { preHandlerHookHandler } from "fastify"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import { z } from "zod"
 
+import { claimRecruiterRole } from "./recruiter-claim.js"
+
 export const Role = z.enum(["candidate", "recruiter", "admin"])
 
 export const MeResponse = z.object({
@@ -72,6 +74,34 @@ export const meRoutes: FastifyPluginAsyncZod<MeRoutesOptions> = async (
       if (error) throw error
       request.log.info({ userId: request.user!.id }, "account deleted")
       return reply.code(204).send(null)
+    }
+  )
+
+  app.post(
+    "/me/recruiter-claim",
+    {
+      preHandler: requireUser,
+      schema: {
+        summary: "Turn a just-created Google account into a recruiter account (work email only)",
+        tags: ["account"],
+        security: [{ bearer: [] }],
+        response: {
+          200: z.object({ role: z.literal("recruiter") }),
+          404: ErrorResponse,
+          409: ErrorResponse,
+          422: ErrorResponse.extend({ newAccount: z.boolean() }),
+          503: ErrorResponse,
+        },
+      },
+    },
+    async (request, reply) => {
+      if (!supabaseAdmin) return reply.code(503).send({ error: "database_not_configured" })
+      const result = await claimRecruiterRole(supabaseAdmin, request.user!)
+      if (result.ok) return { role: "recruiter" as const }
+      if (result.status === 422) {
+        return reply.code(422).send({ error: result.error, newAccount: result.newAccount })
+      }
+      return reply.code(result.status).send({ error: result.error })
     }
   )
 }
