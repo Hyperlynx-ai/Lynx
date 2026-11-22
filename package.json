@@ -21,6 +21,7 @@
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
     "db:pull": "pnpm --filter @lynx/db pull",
+    "admin:set-role": "node scripts/set-role.mjs",
     "agents:sync": "node scripts/agents-sync.mjs",
     "setup:check": "node scripts/doctor.mjs",
     "prepare": "node scripts/install-hooks.mjs"
