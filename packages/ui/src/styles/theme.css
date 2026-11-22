@@ -1,0 +1,118 @@
+/*
+  Void terminal glass design tokens, mapped into Tailwind CSS v4.
+
+  Source of truth: .agents/skills/void-terminal-glass/assets/tokens.css
+  Values here MUST match that file. Never hardcode a value that exists here;
+  never add a colour, radius, shadow or font that the skill does not define.
+
+  Tailwind's default colours, font sizes, radii and shadows are removed on
+  purpose (`--*: initial`) so off-system values cannot be used by accident.
+*/
+@theme {
+  /* ---------- Colours (skill tokens) ---------- */
+  --color-*: initial;
+  --color-background: #000000;
+  --color-surface: #111315;
+  --color-surface-deep: #181818;
+  --color-surface-alt: #e4f1eb; /* pale-mint inversion band: ONE band at a time */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #94979e;
+  --color-border: #303236;
+  --color-border-subtle: #18191b;
+  --color-ink-on-mint: #131415;
+  --color-accent: #34d59a; /* RATIONED: CTA pill, icon glyphs, code tokens, chart strokes, status dot */
+  --color-accent-hover: #47d18c;
+  --color-accent-soft: #cae6d9;
+  --color-mint-fill-hover: #f6fdfa;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  /* Red and amber chart colours: not defined by the skill yet (owner decision). */
+
+  /* ---------- shadcn/ui semantic names, pointing at the tokens ---------- */
+  /* Note: in this project `accent` means MINT (the skill's name). shadcn
+     components that use `bg-accent` for hover must use `bg-surface` instead. */
+  --color-foreground: var(--color-text-primary);
+  --color-card: var(--color-background);
+  --color-card-foreground: var(--color-text-primary);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-text-primary);
+  --color-primary: var(--color-text-primary);
+  --color-primary-foreground: var(--color-background);
+  --color-secondary: var(--color-surface);
+  --color-secondary-foreground: var(--color-text-primary);
+  --color-muted: var(--color-surface);
+  --color-muted-foreground: var(--color-text-secondary);
+  --color-input: var(--color-border);
+  --color-ring: var(--color-accent);
+
+  /* ---------- Typography ---------- */
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-mono:
+    var(--font-geist-mono), "GeistMono", "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-serif: "Times New Roman", serif; /* rare, small, inline only */
+
+  --text-*: initial;
+  /* Display 68px and headline 48px, scaled down fluidly on small screens.
+     Tracking is in em so it keeps the -2.7px / -1.9px ratio at every size. */
+  --text-display: clamp(2.5rem, 3.5vw + 1.25rem, 4.25rem);
+  --text-display--line-height: 1.13;
+  --text-display--letter-spacing: -0.0397em;
+  --text-headline: clamp(2rem, 2vw + 1.25rem, 3rem);
+  --text-headline--line-height: 1.13;
+  --text-headline--letter-spacing: -0.0396em;
+  --text-body: 1rem;
+  --text-body--line-height: 1.5;
+  --text-label: 1rem;
+  --text-label--line-height: 1.5;
+  --text-label--letter-spacing: -0.025em; /* -0.4px at 16px */
+  --text-label--font-weight: 500;
+  --text-mono: 0.8125rem; /* 13px */
+  --text-mono--line-height: 1.5;
+  /* Aliases so third-party components land on system sizes */
+  --text-base: 1rem;
+  --text-sm: 0.8125rem;
+  --text-xs: 0.8125rem;
+
+  /* ---------- Radius: cards, panels, grids, navbar are ALWAYS 0 ---------- */
+  --radius-*: initial;
+  --radius-none: 0px;
+  --radius-control: 4px; /* nav-utility dropdown triggers only */
+  --radius-pill: 9999px; /* buttons and status dots only */
+
+  /* ---------- Elevation: only two shadows exist ---------- */
+  --shadow-*: initial;
+  --shadow-ring: 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-popover: 0 8px 20px 0 rgba(0, 0, 0, 0.4);
+
+  /* ---------- Spacing and layout ---------- */
+  --spacing-gap-sm: 12px;
+  --spacing-gap-md: 24px;
+  --spacing-gap-lg: 80px;
+  --spacing-panel: 128px; /* paired-panel column gap */
+  --spacing-section: 240px; /* vertical section padding (desktop) */
+  --container-content: 1600px;
+
+  /* ---------- Motion ---------- */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-infinity-scroll: infinityScroll 40s linear infinite;
+  --animate-slide-up-fade: slideUpAndFade 0.2s var(--ease-standard);
+
+  @keyframes infinityScroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes slideUpAndFade {
+    from {
+      opacity: 0;
+      transform: translateY(2px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
