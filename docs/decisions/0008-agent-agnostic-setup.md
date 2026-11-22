@@ -14,8 +14,9 @@ must work for anyone who clones the repo, on Windows and macOS.
 ## Decision
 
 - **Instructions:** `AGENTS.md` files are the single source of truth.
-  `CLAUDE.md` and `GEMINI.md` only import `AGENTS.md`, for tools that read
-  their own filename.
+  `GEMINI.md` imports `AGENTS.md` (Gemini CLI reads only its own filename by
+  default). `CLAUDE.md` only points to `AGENTS.md`, because recent Claude Code
+  versions already load `AGENTS.md` and importing it would load it twice.
 - **Skills:** the canonical copy lives in `.agents/skills/` (read by Codex,
   opencode, Gemini CLI, Kilo Code and others). `scripts/agents-sync.mjs`
   mirrors it into `.claude/skills/` for Claude Code.

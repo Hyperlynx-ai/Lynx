@@ -1,0 +1,15 @@
+{
+  "$comment": "Shell commands agents must never run (see docs/policies/01-git-workflow.md and 07-database-and-migrations.md). Edit here, then run: node scripts/agents-sync.mjs",
+  "deniedCommands": [
+    "git push --force",
+    "git push -f",
+    "git push origin main",
+    "git push origin HEAD:main",
+    "git push --no-verify",
+    "git commit --no-verify",
+    "git commit -n",
+    "supabase db reset --linked",
+    "pnpm supabase db reset --linked",
+    "npx supabase db reset --linked"
+  ]
+}

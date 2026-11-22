@@ -1,0 +1,21 @@
+{
+  "servers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/mcp-run.mjs",
+        "@playwright/mcp@latest"
+      ]
+    },
+    "shadcn": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/mcp-run.mjs",
+        "shadcn@latest",
+        "mcp"
+      ]
+    }
+  }
+}

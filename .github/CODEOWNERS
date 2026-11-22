@@ -1,13 +1,33 @@
-# Replace @OWNER_GITHUB_USERNAME with the real GitHub username (or team).
-# Pair this with branch protection ("Require review from Code Owners") so the
-# owner must approve changes to the paths below.
-# Adjust the paths once the real folder structure inside apps/ is known.
+# Protected areas (docs/policies/02-protected-areas.md). The owner reviews and
+# merges every PR that touches these paths. Keep in sync with .github/labeler.yml.
+# Note: GitHub enforces this only with branch protection, which needs a paid
+# plan for private repos; until then the protected-area label and the
+# policies are the safeguard.
 
-/AGENTS.md                      @OWNER_GITHUB_USERNAME
-/docs/policies/                 @OWNER_GITHUB_USERNAME
-/.github/                       @OWNER_GITHUB_USERNAME
-/infra/                         @OWNER_GITHUB_USERNAME
-/packages/config/               @OWNER_GITHUB_USERNAME
-/apps/api/**/auth/              @OWNER_GITHUB_USERNAME
-/apps/api/**/billing/           @OWNER_GITHUB_USERNAME
-/apps/api/**/migrations/        @OWNER_GITHUB_USERNAME
+/AGENTS.md                              @Sujaanb
+/CLAUDE.md                              @Sujaanb
+/GEMINI.md                              @Sujaanb
+/docs/policies/                         @Sujaanb
+/.agents/                               @Sujaanb
+/.claude/                               @Sujaanb
+/.codex/                                @Sujaanb
+/.gemini/                               @Sujaanb
+/.cursor/                               @Sujaanb
+/.vscode/mcp.json                       @Sujaanb
+/opencode.json                          @Sujaanb
+/scripts/agents-sync.mjs                @Sujaanb
+/.github/                               @Sujaanb
+/infra/                                 @Sujaanb
+/lefthook.yml                           @Sujaanb
+**/vercel.json                          @Sujaanb
+**/livekit.toml                         @Sujaanb
+/supabase/                              @Sujaanb
+/apps/api/src/modules/auth/             @Sujaanb
+/apps/api/src/modules/payments/         @Sujaanb
+/apps/web/src/lib/auth/                 @Sujaanb
+/apps/web/src/middleware.ts             @Sujaanb
+/services/ai/config/models.yaml         @Sujaanb
+/packages/config/                       @Sujaanb
+/package.json                           @Sujaanb
+/pnpm-workspace.yaml                    @Sujaanb
+/turbo.json                             @Sujaanb
