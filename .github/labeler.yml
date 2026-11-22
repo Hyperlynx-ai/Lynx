@@ -25,7 +25,8 @@ protected-area:
           - apps/api/src/modules/auth/**
           - apps/api/src/modules/payments/**
           - apps/web/src/lib/auth/**
-          - apps/web/src/middleware.ts
+          - apps/web/src/lib/supabase/**
+          - apps/api/src/lib/supabase-admin.ts
           - apps/web/src/proxy.ts
           - services/ai/config/models.yaml
           - packages/config/**

@@ -25,7 +25,9 @@
 /apps/api/src/modules/auth/             @Sujaanb
 /apps/api/src/modules/payments/         @Sujaanb
 /apps/web/src/lib/auth/                 @Sujaanb
-/apps/web/src/middleware.ts             @Sujaanb
+/apps/web/src/proxy.ts                  @Sujaanb
+/apps/web/src/lib/supabase/             @Sujaanb
+/apps/api/src/lib/supabase-admin.ts     @Sujaanb
 /services/ai/config/models.yaml         @Sujaanb
 /packages/config/                       @Sujaanb
 /package.json                           @Sujaanb
