@@ -22,6 +22,7 @@ The Next.js app: public site, candidate app, recruiter app and admin console
 | Run everything (web 3000, api 4000, ai 8000) | `pnpm dev` |
 | Only the web app | `pnpm --filter web dev` |
 | Lint / types / build | `pnpm --filter web lint` · `typecheck` · `build` |
+| Browser tests (needs `pnpm db:start` + `pnpm db:env`) | `pnpm e2e` |
 
 ## Conventions
 
@@ -34,6 +35,13 @@ The Next.js app: public site, candidate app, recruiter app and admin console
 - Server-only secrets never use the `NEXT_PUBLIC_` prefix (policy SEC-04).
 - Copy: plain, specific language. Hyperlynx is the company; Lynx is the AI
   agent.
+
+## Tests
+
+- End-to-end tests live in `e2e/` (Playwright). Use synthetic `@example.test`
+  emails (`testEmail()` in `e2e/helpers.ts`), and match notices by text with
+  `expectAlert()` (Next.js adds its own hidden role="alert" element).
+- CI runs them against a local Supabase stack (`.github/workflows/e2e.yml`).
 
 ## Authentication (protected area: owner merges changes)
 
