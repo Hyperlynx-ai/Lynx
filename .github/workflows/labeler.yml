@@ -1,0 +1,21 @@
+# Labels pull requests by area, and marks protected-area PRs that only the
+# owner may merge (docs/policies/02-protected-areas.md).
+# PROTECTED AREA.
+name: Label PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/labeler@v7
+        with:
+          sync-labels: true
