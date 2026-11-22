@@ -16,6 +16,11 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "api:types": "pnpm --filter api openapi:export && pnpm --filter @lynx/types generate",
+    "db:start": "supabase start -x vector,logflare,edge-runtime,imgproxy",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:test": "supabase test db",
+    "db:pull": "pnpm --filter @lynx/db pull",
     "agents:sync": "node scripts/agents-sync.mjs",
     "setup:check": "node scripts/doctor.mjs",
     "prepare": "lefthook install"
@@ -27,6 +32,7 @@
     "prettier": "^3.10.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "secretlint": "^14.0.1",
+    "supabase": "^3.2.0",
     "turbo": "^2.11.13",
     "typescript": "^5"
   }

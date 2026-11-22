@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     ai_service_token: str | None = None
     #: Set by Vercel: development, preview or production.
     vercel_env: str | None = None
+    #: Postgres connection string (Supabase transaction pooler when deployed).
+    database_url: str | None = None
     #: Which model runs each task (policy AI-01).
     models_file: Path = SERVICE_DIR / "config" / "models.yaml"
     prompts_dir: Path = SERVICE_DIR / "prompts"

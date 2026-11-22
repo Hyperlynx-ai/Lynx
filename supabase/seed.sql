@@ -1,0 +1,2 @@
+-- Local development seed data. Applied by `pnpm supabase db reset` (local only).
+-- Synthetic data only: never real people (policy PRIV-01).
