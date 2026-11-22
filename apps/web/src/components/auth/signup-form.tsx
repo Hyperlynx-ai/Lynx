@@ -9,10 +9,12 @@ import { Field } from "@lynx/ui/components/field"
 import { Input } from "@lynx/ui/components/input"
 import { Notice } from "@lynx/ui/components/notice"
 
+import { isFreeEmailDomain } from "@lynx/shared/free-email-domains"
+
 import { createClient } from "@/lib/supabase/client"
 
 import { GoogleButton, OrDivider } from "./google-button"
-import { authErrorMessage, PASSWORD_HINT } from "./messages"
+import { authErrorMessage, PASSWORD_HINT, WORK_EMAIL_MESSAGE } from "./messages"
 
 type SignupFormProps = {
   role: "candidate" | "recruiter"
@@ -34,6 +36,10 @@ export function SignupForm({ role, loginHref }: SignupFormProps) {
     const password = String(form.get("password") ?? "")
     setError(null)
 
+    if (role === "recruiter" && isFreeEmailDomain(email)) {
+      setError(WORK_EMAIL_MESSAGE)
+      return
+    }
     if (password.length < 8 || !/[a-z]/i.test(password) || !/\d/.test(password)) {
       setError(`Choose a stronger password. ${PASSWORD_HINT}`)
       return
@@ -82,7 +88,15 @@ export function SignupForm({ role, loginHref }: SignupFormProps) {
         <Field htmlFor="fullName" label="Full name">
           <Input id="fullName" name="fullName" autoComplete="name" required maxLength={200} />
         </Field>
-        <Field htmlFor="email" label={role === "recruiter" ? "Work email" : "Email"}>
+        <Field
+          htmlFor="email"
+          label={role === "recruiter" ? "Work email" : "Email"}
+          hint={
+            role === "recruiter"
+              ? "Your company address, not Gmail, Outlook or similar."
+              : undefined
+          }
+        >
           <Input id="email" name="email" type="email" autoComplete="email" required />
         </Field>
         <Field htmlFor="password" label="Password" hint={PASSWORD_HINT}>

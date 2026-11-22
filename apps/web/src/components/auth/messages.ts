@@ -39,9 +39,14 @@ export function loginNotice(error: string | undefined, account: string | undefin
       return "Please log in to continue."
     case "expired":
       return "That link has expired. Request a new one."
+    case "work-email":
+      return `${WORK_EMAIL_MESSAGE} No account was created.`
     default:
       return null
   }
 }
 
 export const PASSWORD_HINT = "At least 8 characters, with letters and numbers."
+
+export const WORK_EMAIL_MESSAGE =
+  "Recruiter accounts need a work email (your company address or Google Workspace), not a personal one like Gmail or Outlook."

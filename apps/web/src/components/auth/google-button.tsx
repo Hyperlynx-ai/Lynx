@@ -27,6 +27,8 @@ export function GoogleButton({
     setPending(true)
     const callback = new URL("/auth/callback", window.location.origin)
     callback.searchParams.set("expect", expect)
+    // A new Google account starts as a candidate; recruiters claim the role after sign-in.
+    if (expect === "recruiter") callback.searchParams.set("claim", "1")
     if (next) callback.searchParams.set("next", next)
     const { error } = await createClient().auth.signInWithOAuth({
       provider: "google",
