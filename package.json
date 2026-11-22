@@ -23,7 +23,7 @@
     "db:pull": "pnpm --filter @lynx/db pull",
     "agents:sync": "node scripts/agents-sync.mjs",
     "setup:check": "node scripts/doctor.mjs",
-    "prepare": "lefthook install"
+    "prepare": "node scripts/install-hooks.mjs"
   },
   "devDependencies": {
     "@lynx/config": "workspace:*",

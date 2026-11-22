@@ -208,6 +208,9 @@ importers:
       '@fastify/swagger':
         specifier: ^9.9.5
         version: 9.9.5(supports-color@10.2.2)
+      '@vercel/related-projects':
+        specifier: ^1.1.1
+        version: 1.1.1
       fastify:
         specifier: ^5.12.8
         version: 5.12.8
@@ -245,6 +248,9 @@ importers:
       '@lynx/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@vercel/related-projects':
+        specifier: ^1.1.1
+        version: 1.1.1
       next:
         specifier: 16.4.6
         version: 16.4.6(@babel/core@8.1.3)(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -2525,6 +2531,9 @@ packages:
 
   '@types/react@19.3.0':
     resolution: {integrity: sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==}
+
+  '@vercel/related-projects@1.1.1':
+    resolution: {integrity: sha512-Lr56tbvVXPMsBuHwAa2NEPCCLWwk+/IDMeZjrZSG1kDEztJg+bI7YPzguyPvaJrDSCEi6SEZe4U8EnxM5XdIZw==}
 
   '@vitest/mocker@5.1.1':
     resolution: {integrity: sha512-b2OgTB4+3ImWIVafXKazJXwLKwQxUNnix6b3xUvUTMh7RyXlrtzoxfZr8aEz9zkHOMAS4K5lu3TvFWoiVeVTQg==}
@@ -5810,6 +5819,10 @@ snapshots:
   '@types/react@19.3.0':
     dependencies:
       csstype: 3.2.4
+
+  '@vercel/related-projects@1.1.1':
+    optionalDependencies:
+      ajv: 6.15.0
 
   '@vitest/mocker@5.1.1(vite@8.3.8(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))':
     dependencies:

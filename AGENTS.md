@@ -56,7 +56,8 @@ site (paid programmes).
    weaken a check to get a green result. (TEST-01, TEST-02)
 5. **No secrets in git.** Real values go in `.env.local` (git-ignored) and in
    Vercel, Supabase or GitHub settings. Every app keeps an `.env.example`
-   with names only. (SEC-01)
+   with names only. **The repository is public:** never put anything
+   confidential in commits, PRs, issues or comments. (SEC-01, SEC-10)
 6. **Permissions are enforced on the server:** in `apps/api` and in database
    row-level security, never only in the UI. Validate all input (zod in
    TypeScript, Pydantic in Python). (SEC-02, SEC-03)

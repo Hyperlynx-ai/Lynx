@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { buildApp } from "../../app.js"
+import { buildApp } from "../../create-app.js"
 import { readEnv } from "../../env.js"
 import { checkAiService } from "./routes.js"
 

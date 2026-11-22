@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["bom1"],
+  "installCommand": "uv sync --frozen --no-dev",
+  "buildCommand": "echo 'Python service: no build step'",
+  "functions": {
+    "main.py": {
+      "excludeFiles": "{tests/**,.venv/**,.pytest_cache/**,.ruff_cache/**,node_modules/**}"
+    }
+  }
+}
