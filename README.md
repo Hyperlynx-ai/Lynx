@@ -55,6 +55,8 @@ Copy each `.env.example` to `.env.local` (in `apps/web`, `apps/api` and
 | `services/interview-agent` | Voice and video interview agent (Phase 5) |
 | `packages/ui` | Design system: tokens and components (void-terminal-glass) |
 | `packages/types` | Typed API contracts generated from OpenAPI |
+| `packages/shared` | Small helpers shared by web and API (e.g. free email domains) |
+| `packages/db` | Database schema mirror for TypeScript (Drizzle) |
 | `packages/config` | Shared TypeScript and ESLint config |
 | `supabase/` | Database migrations and config (Phase 0.5) |
 | `evals/` | AI evaluation datasets and scripts |
