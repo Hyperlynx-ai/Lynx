@@ -13,7 +13,8 @@ Decisions: `docs/decisions/0005-hosting.md`.
 
 The same Vercel account also hosts `hyperlynx-frontend`, which serves
 `www.hyperlynx.ai`. Leave it alone; the domain moves to `lynx-web` only when
-the owner decides.
+the owner decides. The domain's DNS is at a third-party provider (not Vercel
+DNS), so new DNS records (e.g. for email sending) are added there.
 
 ## Vercel
 
@@ -52,6 +53,23 @@ login by default. In each project's Settings → Deployment Protection:
 - `lynx-api`, `lynx-ai`: Vercel Authentication → disabled. They are called
   server-to-server (web → api → ai) and protect themselves (login tokens,
   service token).
+
+### Vercel quirks (keep these or deployments break)
+
+- **`apps/api` entry:** Vercel looks for `src/app.ts`, `src/index.ts` or
+  `src/server.ts` (in that order) and needs that file to import `fastify`.
+  Our entry is `src/server.ts`; never add a `src/app.ts` or `src/index.ts`.
+  On Vercel it exports a request handler; `listen()` runs only locally.
+- **Type resolution:** Vercel's TypeScript compile for `apps/api` does not
+  follow pnpm symlinks, so `pnpm-workspace.yaml` hoists every package to the
+  root `node_modules` (`publicHoistPattern: "*"`).
+- **`services/ai` install:** its small `package.json` (for Turborepo) makes
+  Vercel run `pnpm install`, which would skip the Python install. So
+  `services/ai/vercel.json` sets `installCommand` to
+  `uv sync --frozen --no-dev`.
+- **Related projects** (web → api → ai URLs) only work for Git deployments.
+  A manual `vercel deploy` of the API reports `"ai": "unreachable"`; that is
+  expected.
 
 ### Verify a deployment
 
