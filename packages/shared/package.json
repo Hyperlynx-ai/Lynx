@@ -1,0 +1,20 @@
+{
+  "name": "@lynx/shared",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Small pure TypeScript helpers shared by apps/web and apps/api.",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "devDependencies": {
+    "@lynx/config": "workspace:*",
+    "@types/node": "^22",
+    "typescript": "^5",
+    "vitest": "^5.1.1"
+  }
+}
