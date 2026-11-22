@@ -35,6 +35,24 @@ The Next.js app: public site, candidate app, recruiter app and admin console
 - Copy: plain, specific language. Hyperlynx is the company; Lynx is the AI
   agent.
 
+## Authentication (protected area: owner merges changes)
+
+- Supabase Auth via `@supabase/ssr`: `src/lib/supabase/client.ts` (client
+  components), `server.ts` (server components, route handlers), `proxy.ts`
+  (session refresh). `src/proxy.ts` is Next.js 16's middleware.
+- Areas and roles: `/app` candidate, `/recruiter` recruiter, `/admin` admin
+  (`src/lib/auth/roles.ts`). `/recruiters` (plural) is the public recruiter
+  landing page.
+- Every signed-in area's `layout.tsx` calls `requireRole(role, path)`; never
+  rely on the proxy alone for permissions.
+- Every login ends at `/auth/continue?expect=<role>&next=<path>`, which sends
+  people to their area and handles "wrong login page".
+- To call `apps/api` as the user: get the access token with
+  `supabase.auth.getSession()` (client) and send
+  `Authorization: Bearer <token>` to `/api/...`.
+- Show users plain messages from `src/components/auth/messages.ts`, never raw
+  Supabase errors.
+
 ## Environment
 
 Copy `.env.example` to `.env.local`. Deployed values live in Vercel

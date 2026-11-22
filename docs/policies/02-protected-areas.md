@@ -12,7 +12,7 @@ these PRs but MUST NOT merge them.
 | Agent configuration | `.agents/`, `.claude/`, `.codex/`, `.gemini/`, `.cursor/`, `.vscode/mcp.json`, `opencode.json`, `scripts/agents-sync.mjs` | Controls what every agent is told and allowed to do. |
 | CI, repo and deployment | `.github/`, `infra/`, `vercel.json` files, `livekit.toml`, `lefthook.yml` | A mistake here can deploy broken code or leak secrets. |
 | Database | `supabase/` (migrations, config, seed) | Schema mistakes can lose data. |
-| Authentication | `apps/api/src/modules/auth/`, `apps/web/src/lib/auth/`, `apps/web/src/middleware.ts` | Security-critical. |
+| Authentication | `apps/api/src/modules/auth/`, `apps/web/src/lib/auth/`, `apps/web/src/lib/supabase/`, `apps/web/src/proxy.ts` (Next.js 16's middleware), `apps/api/src/lib/supabase-admin.ts` | Security-critical. |
 | Payments | `apps/api/src/modules/payments/` | Money. |
 | AI models and providers | `services/ai/config/models.yaml` | Decides cost and where candidate data goes. |
 | Shared config | `packages/config/`, root `package.json`, `pnpm-workspace.yaml`, `turbo.json` | Affects every app at once. |

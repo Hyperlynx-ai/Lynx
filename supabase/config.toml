@@ -149,8 +149,9 @@ max_catalogs = 2
 # [storage.analytics.buckets.my-warehouse]
 
 # Store vector embeddings in S3 for large and durable datasets
+# Off: we store embeddings with pgvector in Postgres, not in Storage vector buckets.
 [storage.vector]
-enabled = true
+enabled = false
 max_buckets = 10
 max_indexes = 5
 
@@ -447,5 +448,17 @@ enabled = true
 [remotes.staging]
 project_id = "kwzwcoawnapdyddaiajk"
 
+# Used by every Vercel preview of lynx-web (any branch) and local development.
+[remotes.staging.auth]
+site_url = "https://lynx-web-git-main-sujaan-bhattacharyyas-projects.vercel.app"
+additional_redirect_urls = [
+  "https://lynx-*-sujaan-bhattacharyyas-projects.vercel.app/**",
+  "http://localhost:3000/**",
+]
+
 [remotes.production]
 project_id = "xwtgskwnoasqxcrqrkdt"
+
+[remotes.production.auth]
+site_url = "https://lynx-web-pi.vercel.app"
+additional_redirect_urls = ["https://lynx-web-pi.vercel.app/**"]
