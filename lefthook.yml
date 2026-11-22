@@ -1,0 +1,23 @@
+# Git hooks for everyone (installed by `pnpm install`). Works on Windows and macOS.
+# Never bypass them with --no-verify (docs/policies/06-testing-and-definition-of-done.md).
+
+pre-commit:
+  commands:
+    block-main:
+      run: node scripts/git-guard.mjs commit
+    secrets:
+      run: pnpm exec secretlint --maskSecrets {staged_files}
+    format-js:
+      glob: "*.{ts,tsx,js,mjs,cjs,json,css}"
+      run: pnpm exec prettier --write --ignore-unknown {staged_files}
+      stage_fixed: true
+    format-py:
+      glob: "services/**/*.py"
+      run: uv run --project services/ai ruff format {staged_files}
+      stage_fixed: true
+
+pre-push:
+  commands:
+    block-main:
+      run: node scripts/git-guard.mjs push
+      use_stdin: true

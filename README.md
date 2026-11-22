@@ -1,23 +1,63 @@
-# Lynx
+# Hyperlynx
 
-A job marketplace: job seekers find jobs, recruiters find candidates, with
-AI-powered features (matching, resume parsing, ranking, and more).
+A job platform: candidates find jobs, internships and scholarships; recruiters
+find verified candidates. **Lynx** is the platform's AI agent: it ranks
+opportunities, edits CVs, interviews candidates over voice and video, and
+remembers what it learns about each candidate.
 
 ## Start here
 
-- Everyone (humans and AI agents): read AGENTS.md first.
-- What we're building, in what order, and current status: docs/roadmap.md
-- Policies and rules: docs/policies/
-- Step-by-step guides for teammates: docs/playbooks/
-- Why things were decided: docs/decisions/
+- Everyone (humans and AI agents): read [AGENTS.md](AGENTS.md) first.
+- What we're building, in what order, and current status: [docs/roadmap.md](docs/roadmap.md)
+- Rules: [docs/policies/](docs/policies/) · Guides for teammates: [docs/playbooks/](docs/playbooks/)
+- Why things were decided: [docs/decisions/](docs/decisions/)
+
+## Set up your computer (Windows or macOS)
+
+You need Node.js 22+, pnpm, uv (Python), Git, and Docker Desktop (for the
+local database, from Phase 0.5). Then, in the project folder:
+
+```
+npm install -g pnpm@12.21.0
+pnpm install
+pnpm setup:check
+```
+
+`pnpm setup:check` checks everything and prints the exact fix for anything missing.
+Copy each `.env.example` to `.env.local` (in `apps/web`, `apps/api` and
+`services/ai`) and ask the owner for the values.
+
+## Everyday commands
+
+| What | Command |
+|---|---|
+| Run everything (web, API, AI service) | `pnpm dev` |
+| Check everything before a PR | `pnpm check` |
+| Format code | `pnpm format` |
+| Regenerate API types after changing routes | `pnpm api:types` |
+| Sync agent skills and MCP configs | `pnpm agents:sync` |
+
+`pnpm dev` starts:
+
+| Service | URL |
+|---|---|
+| Web app (`apps/web`) | http://localhost:3000 |
+| API (`apps/api`) | http://127.0.0.1:4000/health |
+| AI service (`services/ai`) | http://127.0.0.1:8000/health |
 
 ## Layout
 
-- apps/web: frontend for job seekers and recruiters
-- apps/api: backend API
-- apps/admin: internal admin tool (later)
-- services/ai: AI service (matching, parsing, ranking, LLM features)
-- packages/: shared UI, types, and config
-- evals/: AI evaluation datasets and scripts
-- infra/: infrastructure and deployment config
-- references/: git-ignored area for cloned third-party repos
+| Folder | What |
+|---|---|
+| `apps/web` | Next.js: public site, candidate and recruiter apps, admin console |
+| `apps/api` | Fastify API: business rules and permissions |
+| `services/ai` | Python AI service (FastAPI, Pydantic AI) |
+| `services/interview-agent` | Voice and video interview agent (Phase 5) |
+| `packages/ui` | Design system: tokens and components (void-terminal-glass) |
+| `packages/types` | Typed API contracts generated from OpenAPI |
+| `packages/config` | Shared TypeScript and ESLint config |
+| `supabase/` | Database migrations and config (Phase 0.5) |
+| `evals/` | AI evaluation datasets and scripts |
+| `docs/` | Roadmap, policies, playbooks, decisions |
+| `.agents/` | Shared skills and MCP servers for every agent tool |
+| `references/` | Git-ignored clones of other repos and the old prototype |

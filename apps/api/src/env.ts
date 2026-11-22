@@ -1,0 +1,22 @@
+import { z } from "zod"
+
+/** Every environment variable the API reads, validated once at startup. */
+const EnvSchema = z.object({
+  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  /** Local port. Not called PORT: tools and hosts often set PORT for the web app. */
+  API_PORT: z.coerce.number().int().positive().default(4000),
+  LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
+  /** Base URL of services/ai. */
+  AI_SERVICE_URL: z.url().default("http://127.0.0.1:8000"),
+  /** Shared secret sent to services/ai (policy SEC-05). */
+  AI_SERVICE_TOKEN: z.string().min(1).optional(),
+  /** Set automatically by Vercel. */
+  VERCEL_GIT_COMMIT_SHA: z.string().optional(),
+  VERCEL_ENV: z.enum(["development", "preview", "production"]).optional(),
+})
+
+export type Env = z.infer<typeof EnvSchema>
+
+export function readEnv(source: NodeJS.ProcessEnv = process.env): Env {
+  return EnvSchema.parse(source)
+}

@@ -1,0 +1,20 @@
+# Which model runs each AI task. PROTECTED AREA (policies AI-01, AI-02, PROT-01):
+# changing a model or provider decides cost and where candidate data goes.
+#
+# Model strings are "<provider>:<model>", for example:
+#   google:gemini-3.8-flash        openai:<model>          anthropic:<model>
+#   deepseek:deepseek-chat         mistral:<model>         groq:<model>
+#   openrouter:<vendor>/<model>    ollama:<model>          zai:<model>
+# Other providers (Qwen, Kimi, MiniMax, any OpenAI-compatible endpoint, or
+# LiteLLM's 100+ providers) are added as described in services/ai/AGENTS.md.
+#
+# Each provider reads its own API key variable (GOOGLE_API_KEY, OPENAI_API_KEY, ...).
+# Override a task per environment, without editing this file:
+#   LYNX_MODEL_<TASK>="primary-model,fallback-1,fallback-2"
+
+tasks:
+  # Smoke test of the AI chain (POST /v1/ping).
+  ping:
+    model: google:gemini-3.8-flash
+    fallbacks:
+      - google:gemini-3.6-flash
