@@ -10,7 +10,7 @@ name: Database migrations
 on:
   push:
     branches: [main]
-    paths: ["supabase/**"]
+    paths: ["supabase/**", ".github/workflows/db-migrate.yml"]
   workflow_dispatch:
 
 concurrency:
@@ -59,7 +59,8 @@ jobs:
         run: pnpm supabase link --project-ref "$PROJECT_REF" --yes
 
       - name: Apply new migrations
-        run: pnpm supabase db push --yes
+        # --remote: Supabase CLI 3 targets the local database unless told otherwise.
+        run: pnpm supabase db push --remote --yes
 
       - name: Apply auth and API config
         run: pnpm supabase config push --yes
