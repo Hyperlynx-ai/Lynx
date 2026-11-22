@@ -13,6 +13,6 @@
   "devDependencies": {
     "@lynx/config": "workspace:*",
     "openapi-typescript": "^7.13.0",
-    "typescript": "^5"
+    "typescript": "^7"
   }
 }

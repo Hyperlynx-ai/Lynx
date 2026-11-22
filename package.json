@@ -37,6 +37,6 @@
     "secretlint": "^14.0.1",
     "supabase": "^3.2.0",
     "turbo": "^2.11.13",
-    "typescript": "^5"
+    "typescript": "^7"
   }
 }

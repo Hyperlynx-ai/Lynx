@@ -19,6 +19,6 @@
     "@lynx/config": "workspace:*",
     "@types/node": "^22",
     "drizzle-kit": "^0.31.11",
-    "typescript": "^5"
+    "typescript": "^7"
   }
 }
