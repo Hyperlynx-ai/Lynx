@@ -11,8 +11,11 @@ export const HealthResponse = z.object({
   ai: AiStatus,
 })
 
-/** Checks that services/ai answers. Never throws. */
-export async function checkAiService(baseUrl: string | undefined, timeoutMs = 2500) {
+/**
+ * Checks that services/ai answers. Never throws. The timeout allows for a
+ * serverless cold start of the Python service (a few seconds on Vercel).
+ */
+export async function checkAiService(baseUrl: string | undefined, timeoutMs = 10_000) {
   if (!baseUrl) return "not-configured" as const
   try {
     const res = await fetch(`${baseUrl.replace(/\/+$/, "")}/health`, {

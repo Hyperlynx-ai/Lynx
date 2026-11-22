@@ -30,3 +30,5 @@ CVs and interview recordings. Both TypeScript and Python must read the data.
   possible.
 - Free projects pause when idle and have 1 GB storage: production moves to
   the Pro plan before the demo.
+- The Python driver `psycopg` is LGPL-3.0. The owner approved using it
+  unmodified as a library on 2026-11-22 (policy DEP-01).
