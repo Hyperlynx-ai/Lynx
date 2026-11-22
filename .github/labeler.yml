@@ -1,0 +1,62 @@
+# Keep "protected-area" in sync with docs/policies/02-protected-areas.md and
+# .github/CODEOWNERS. PROTECTED AREA (policy PROT-03).
+
+protected-area:
+  - changed-files:
+      - any-glob-to-any-file:
+          - AGENTS.md
+          - CLAUDE.md
+          - GEMINI.md
+          - docs/policies/**
+          - .agents/**
+          - .claude/**
+          - .codex/**
+          - .gemini/**
+          - .cursor/**
+          - .vscode/mcp.json
+          - opencode.json
+          - scripts/agents-sync.mjs
+          - .github/**
+          - infra/**
+          - lefthook.yml
+          - "**/vercel.json"
+          - "**/livekit.toml"
+          - supabase/**
+          - apps/api/src/modules/auth/**
+          - apps/api/src/modules/payments/**
+          - apps/web/src/lib/auth/**
+          - apps/web/src/middleware.ts
+          - apps/web/src/proxy.ts
+          - services/ai/config/models.yaml
+          - packages/config/**
+          - package.json
+          - pnpm-workspace.yaml
+          - turbo.json
+
+"area: web":
+  - changed-files:
+      - any-glob-to-any-file: apps/web/**
+
+"area: api":
+  - changed-files:
+      - any-glob-to-any-file: apps/api/**
+
+"area: ai":
+  - changed-files:
+      - any-glob-to-any-file:
+          - services/**
+          - evals/**
+
+"area: ui":
+  - changed-files:
+      - any-glob-to-any-file: packages/ui/**
+
+"area: database":
+  - changed-files:
+      - any-glob-to-any-file: supabase/**
+
+"area: docs":
+  - changed-files:
+      - any-glob-to-any-file:
+          - docs/**
+          - "**/*.md"
