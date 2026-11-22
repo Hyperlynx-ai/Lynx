@@ -262,7 +262,7 @@ a fresh clone runs `pnpm setup:check` and `pnpm dev` on both Windows and macOS.
 | 1.1 | `feat/p1-auth-candidate` | `/signup` and `/login`: email + password and Google. Forgot and reset password. Email verification (switched on once the domain and email sending are ready). Sessions via `@supabase/ssr`; token verification in `apps/api`; role saved at sign-up. Candidate area shell with role guard; account settings (change password, delete account). | Done (Google sign-in to verify on the preview) |
 | 1.2 | `feat/p1-auth-recruiter` | `/recruiters` landing, `/recruiters/signup`, `/recruiters/login`. Free email domains (gmail.com and similar) rejected for recruiters; Google Workspace accounts allowed. One role per account, enforced in the database, with a clear message when someone uses the wrong login page. | Done (Google sign-up to verify on the preview) |
 | 1.3 | `feat/p1-app-shells` | Design-system components in `packages/ui` (input, field, notice, panel, empty and loading states; navbar, footer). Layouts: public (header with login/sign-up, footer with link columns), signed-in app shell, auth page layout, 404 and error pages. Account settings moved to 1.1 (they need login). | Done (built first: the auth pages need its components) |
-| 1.4 | `feat/p1-admin-basics` | Admin role granted by a script; `/admin` user list. | Not started |
+| 1.4 | `feat/p1-admin-basics` | Admin role granted by a script (`pnpm admin:set-role`, owner's Supabase login for hosted databases); admin-only `GET /admin/users`; `/admin` user list. | Done |
 | 1.5 | `test/p1-e2e-auth` | Playwright tests: sign up, log in, log out for both roles. | Not started |
 
 **Done when:** both roles can sign up with Google on production, and email
