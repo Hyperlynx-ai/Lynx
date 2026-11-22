@@ -1,0 +1,14 @@
+{
+  "$comment": "MCP servers for every agent tool. Edit here, then run: node scripts/agents-sync.mjs",
+  "servers": {
+    "playwright": {
+      "description": "Drive a real browser to check pages and user flows.",
+      "package": "@playwright/mcp@latest"
+    },
+    "shadcn": {
+      "description": "Browse and add shadcn/ui components.",
+      "package": "shadcn@latest",
+      "args": ["mcp"]
+    }
+  }
+}

@@ -24,3 +24,24 @@ coverage/
 references/*
 !references/.gitkeep
 !references/README.md
+
+# Local agent settings (personal, never shared)
+.claude/settings.local.json
+.claude/*.local.*
+
+# Tooling caches and local state
+.vercel/
+.env*.local
+*.tsbuildinfo
+.pnpm-store/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+playwright-report/
+test-results/
+supabase/.temp/
+supabase/.branches/
+
+# Credential files downloaded from providers (never commit)
+client_secret*.json
+*credentials*.json

@@ -1,0 +1,174 @@
+/*
+  Void terminal glass - design tokens
+  Source of truth for the website's visual design language.
+  Copy into the web app's global stylesheet (or map into the Tailwind/theme config).
+  Do not hardcode values that exist here.
+*/
+
+:root {
+  /* Colors */
+  --color-background: #000000;
+  --color-surface: #111315;
+  --color-surface-deep: #181818;
+  --color-surface-alt: #e4f1eb;       /* pale-mint inversion band - ONE band at a time */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #94979e;
+  --color-border: #303236;
+  --color-border-subtle: #18191b;
+  --color-ink-on-mint: #131415;       /* text on the pale-mint surface */
+  --color-accent: #34d59a;            /* RATIONED: CTA pill, icon glyphs, code tokens, chart strokes, status dot */
+  --color-accent-hover: #47d18c;
+  --color-accent-soft: #cae6d9;       /* mint token sibling */
+  --color-mint-fill-hover: #f6fdfa;
+
+  /* TODO (owner): the spec names red/amber as semantic chart states but gives no hex.
+     Define once here and reuse; never pick ad hoc shades per chart.
+  --color-chart-error: ;
+  --color-chart-warning: ;
+  */
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "GeistMono", "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-serif-accent: "Times New Roman", serif; /* rare, small, inline only */
+
+  --text-display-size: 68px;
+  --text-display-weight: 400;
+  --text-display-line: 1.13;
+  --text-display-tracking: -2.7px;
+
+  --text-headline-size: 48px;
+  --text-headline-weight: 400;
+  --text-headline-line: 1.13;
+  --text-headline-tracking: -1.9px;
+
+  --text-body-size: 16px;
+  --text-body-weight: 400;
+  --text-body-line: 1.5;
+
+  --text-label-size: 16px;
+  --text-label-weight: 500;
+  --text-label-line: 1.5;
+  --text-label-tracking: -0.4px;
+
+  --text-mono-size: 13px;
+  --text-mono-weight: 400;
+  --text-mono-line: 1.5;
+
+  /* Spacing */
+  --space-base: 8px;
+  --space-gap-sm: 12px;
+  --space-gap-md: 24px;
+  --space-gap-lg: 80px;
+  --space-panel-gap: 128px;           /* paired-panel column gap */
+  --space-section: 240px;             /* vertical section padding (desktop) */
+  --layout-max-width: 1600px;
+
+  /* Radius - cards/panels/grid cells/navbar are ALWAYS 0 */
+  --radius-none: 0px;
+  --radius-control: 4px;              /* nav-utility dropdown triggers only */
+  --radius-pill: 9999px;              /* buttons and status dots only */
+
+  /* Control heights */
+  --height-button: 44px;
+  --height-navbar-cta: 36px;
+  --height-nav-utility: 23px;
+  --height-navbar: 64px;
+
+  /* Elevation - nearly flat, only two shadows exist */
+  --shadow-ring: 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-popover: 0 8px 20px 0 rgba(0, 0, 0, 0.4);
+
+  /* Graphics */
+  --gradient-scrim: linear-gradient(rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 100%);
+
+  /* Motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-color: 0.2s;
+  --duration-fade: 0.15s;             /* opacity fades run 0.15s-0.2s */
+  --duration-compound: 0.3s;
+  --transition-color: var(--duration-color) var(--ease);
+  --transition-compound: var(--duration-compound) var(--ease);
+}
+
+/* Base */
+html {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+}
+
+/* Fused headline: lead clause in white, muted clause inline in gray */
+.headline {
+  font-family: var(--font-sans);
+  font-size: var(--text-headline-size);
+  font-weight: var(--text-headline-weight);
+  line-height: var(--text-headline-line);
+  letter-spacing: var(--text-headline-tracking);
+}
+.headline--hero {
+  font-size: var(--text-display-size);
+  line-height: var(--text-display-line);
+  letter-spacing: var(--text-display-tracking);
+}
+.headline__lead  { color: var(--color-text-primary); }
+.headline__muted { color: var(--color-text-secondary); }
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  line-height: var(--text-mono-line);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--height-button);
+  font-family: var(--font-sans);
+  font-size: var(--text-label-size);
+  font-weight: var(--text-label-weight);
+  letter-spacing: var(--text-label-tracking);
+  cursor: pointer;
+  transition: background var(--transition-compound), border-color var(--transition-compound), color var(--transition-color);
+}
+.btn--hero-primary   { background: #ffffff; color: #000000; border-radius: var(--radius-pill); padding: 0 24px; }
+.btn--hero-secondary { background: transparent; color: #ffffff; border: 1px solid var(--color-border); border-radius: var(--radius-pill); padding: 0 24px; }
+.btn--navbar-cta     { height: var(--height-navbar-cta); background: #ffffff; color: #000000; border-radius: var(--radius-pill); padding: 0 16px; }
+.btn--nav-utility    { height: var(--height-nav-utility); background: transparent; color: #ffffff; border-radius: var(--radius-control); padding: 0 14px; }
+.btn--mint-fill      { background: var(--color-surface-alt); color: var(--color-ink-on-mint); border-radius: var(--radius-none); padding: 0 16px; }
+.btn--mint-fill:hover{ background: var(--color-mint-fill-hover); }
+.btn--outline-square { background: #ffffff; color: var(--color-border-subtle); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-none); padding: 12px 16px; }
+.btn--terminal       { background: var(--color-accent); color: #000000; font-family: var(--font-mono); font-size: var(--text-mono-size); border-radius: var(--radius-pill); padding: 0 28px; }
+.btn--terminal:hover { background: var(--color-accent-hover); }
+
+/* Cards / panels: transparent, square, ruled */
+.card {
+  background: transparent;
+  border-radius: var(--radius-none);
+  padding: 0;
+}
+.card--bordered { border: 1px solid var(--color-border); }
+
+/* Layout helpers */
+.container { max-width: var(--layout-max-width); margin-inline: auto; }
+.section   { padding-block: var(--space-section); }
+.panel-pair{ display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-panel-gap); }
+
+/* Keyframes (reference implementations) */
+@keyframes infinityScroll   { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+@keyframes move             { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+@keyframes slideUpAndFade   { from { opacity: 0; transform: translateY(2px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes slideRightAndFade{ from { opacity: 0; transform: translateX(-2px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideDownAndFade { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideLeftAndFade { from { opacity: 0; transform: translateX(2px); }  to { opacity: 1; transform: translateX(0); } }
+
+/* Extensions (not in source spec) - see SKILL.md "When the system is silent" */
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
+}

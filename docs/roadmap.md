@@ -1,8 +1,8 @@
 # Lynx roadmap
 
-> **Status: PROPOSED, waiting for owner approval.**
-> Agents and teammates: do not start a phase until the status table below
-> marks it `Approved` or `In progress`.
+> **Status: APPROVED by the owner on 2026-11-22.**
+> Agents and teammates: only start a phase that the status table below marks
+> `Approved` or `In progress`, and only chunks whose dependencies are done.
 
 This file is the single source of truth for what we are building and in what
 order. Any agent (Claude Code, Codex, opencode, Gemini CLI, Cursor, and so on)
@@ -212,17 +212,17 @@ Every table has row-level security. Main tables:
 
 | Phase | Name | Depends on | Status |
 |---|---|---|---|
-| 0 | Foundations and production pipeline | none | Proposed |
-| 1 | Accounts, roles and app shells | 0 | Proposed |
-| 2 | Candidate onboarding, profile, CV and Lynx memory | 1 | Proposed |
-| 3 | Jobs engine and opportunities feed | 1 | Proposed |
-| 4 | Recruiter onboarding, jobs and applications | 1, 3 | Proposed |
-| 5 | AI interviews (voice, video, proctoring) | 2, 4 | Proposed |
-| 6 | Recruiter candidate search | 4, 5 | Proposed |
-| 7 | Lynx assistant | 2, 3 | Proposed |
-| 8 | Emails: job alerts and newsletter | 3 | Proposed |
-| 9 | Hyperlynx Academy migration | 1 | Proposed |
-| 10 | Demo readiness and hardening | all | Proposed |
+| 0 | Foundations and production pipeline | none | In progress |
+| 1 | Accounts, roles and app shells | 0 | Approved |
+| 2 | Candidate onboarding, profile, CV and Lynx memory | 1 | Approved |
+| 3 | Jobs engine and opportunities feed | 1 | Approved |
+| 4 | Recruiter onboarding, jobs and applications | 1, 3 | Approved |
+| 5 | AI interviews (voice, video, proctoring) | 2, 4 | Approved |
+| 6 | Recruiter candidate search | 4, 5 | Approved |
+| 7 | Lynx assistant | 2, 3 | Approved |
+| 8 | Emails: job alerts and newsletter | 3 | Approved |
+| 9 | Hyperlynx Academy migration | 1 | Approved |
+| 10 | Demo readiness and hardening | all | Approved |
 
 After Phase 1, teammates can work in parallel on phases whose dependencies
 are done (for example 2, 3 and 9 at the same time), as long as two people
@@ -240,15 +240,15 @@ Phase 10.
 it up, and run it; skeleton versions of all services are live in production
 on `*.vercel.app`; every PR is checked automatically.
 
-| Chunk | Branch | What |
-|---|---|---|
-| 0.1 | `docs/roadmap` | This roadmap (the PR for approval). |
-| 0.2 | `chore/p0-agent-rules` | Fill in root `AGENTS.md` (non-negotiable rules), per-app `AGENTS.md`, policies 01 to 08, teammate playbooks, ADRs for the decisions above. `CODEOWNERS` set to `@Sujaanb`. Pointer files for tools that don't read `AGENTS.md` (`CLAUDE.md`, Gemini CLI settings). Design skill copied to `.agents/skills/void-terminal-glass/`, mirrored into each tool's skill folder by a `pnpm skills:sync` script with a CI check that the copies match. One shared MCP server list, generated into each tool's config format. |
-| 0.3 | `chore/p0-monorepo` | pnpm + Turborepo. `apps/web` (Next.js + Tailwind + shadcn/ui on the design tokens, placeholder home page in the design language with the old logo). `apps/api` (Fastify, zod, OpenAPI, `/health`). `services/ai` (FastAPI, uv, Pydantic AI, model registry, `/health`, one test AI endpoint). `packages/ui`, `types`, `config`. Remove `apps/admin`. `.editorconfig`, `.gitattributes` (LF line endings), lefthook hooks, `pnpm doctor` environment check, `pnpm dev` starts everything. |
-| 0.4 | `ci/p0-github-actions` | Path-filtered workflows: web and api (lint, type check, test, build), ai (ruff, pyright, pytest), secret scan, skills-sync check, check that applied migrations are never edited. Cached, to stay inside the free 2,000 Actions minutes per month. |
-| 0.5 | `chore/p0-supabase` | Supabase CLI, local stack in Docker, `staging` and `production` projects in the Mumbai region. First migration (`profiles` with roles, RLS). Storage buckets (`cvs`, `interview-recordings`, `proctoring-snapshots`: private; `company-logos`, `avatars`: public). Auth settings in `supabase/config.toml` (Google provider read from environment variables), pushed with `supabase config push`. Drizzle schema pull into `packages/db`; Python database module. |
-| 0.6 | `chore/p0-vercel` | Three Vercel projects (`lynx-web`, `lynx-api`, `lynx-ai`) created and linked with the CLI, each with its root directory. Environment variables set with `vercel env`. Web-to-API rewrite, API-to-AI service token. Previews use staging Supabase; production uses production Supabase. Unchanged apps skip builds. Production deploys from `main`. Smoke-test script. |
-| 0.7 | `chore/p0-tracking` | A GitHub milestone per phase and an issue per chunk, with labels for phase, area and protected areas, so teammates can claim work. |
+| Chunk | Branch | What | Status |
+|---|---|---|---|
+| 0.1 | `docs/roadmap` | This roadmap (the PR for approval). | Done (#1) |
+| 0.2 | `chore/p0-agent-rules` | Fill in root `AGENTS.md` (non-negotiable rules), policies 01 to 08, teammate playbooks, ADRs for the decisions above. `CODEOWNERS` set to `@Sujaanb`. Pointer files for tools that don't read `AGENTS.md` (`CLAUDE.md`, `GEMINI.md`). Design skill copied to `.agents/skills/void-terminal-glass/`, mirrored into each tool's skill folder by `node scripts/agents-sync.mjs` (CI checks the copies match in 0.4). One shared MCP server list and guardrails, generated into each tool's config format. LF line endings. | Done |
+| 0.3 | `chore/p0-monorepo` | pnpm + Turborepo. `apps/web` (Next.js + Tailwind + shadcn/ui on the design tokens, placeholder home page in the design language with the old logo). `apps/api` (Fastify, zod, OpenAPI, `/health`). `services/ai` (FastAPI, uv, Pydantic AI, model registry, `/health`, one test AI endpoint). `packages/ui`, `types`, `config`. Per-app `AGENTS.md` with real commands. Remove `apps/admin`. lefthook hooks, `pnpm doctor` environment check, `pnpm dev` starts everything. | Not started |
+| 0.4 | `ci/p0-github-actions` | Path-filtered workflows: web and api (lint, type check, test, build), ai (ruff, pyright, pytest), secret scan, skills-sync check, check that applied migrations are never edited. Cached, to stay inside the free 2,000 Actions minutes per month. | Not started |
+| 0.5 | `chore/p0-supabase` | Supabase CLI, local stack in Docker, `staging` and `production` projects in the Mumbai region. First migration (`profiles` with roles, RLS). Storage buckets (`cvs`, `interview-recordings`, `proctoring-snapshots`: private; `company-logos`, `avatars`: public). Auth settings in `supabase/config.toml` (Google provider read from environment variables), pushed with `supabase config push`. Drizzle schema pull into `packages/db`; Python database module. | Not started |
+| 0.6 | `chore/p0-vercel` | Three Vercel projects (`lynx-web`, `lynx-api`, `lynx-ai`) created and linked with the CLI, each with its root directory. Environment variables set with `vercel env`. Web-to-API rewrite, API-to-AI service token. Previews use staging Supabase; production uses production Supabase. Unchanged apps skip builds. Production deploys from `main`. Smoke-test script. | Not started |
+| 0.7 | `chore/p0-tracking` | A GitHub milestone per phase and an issue per chunk, with labels for phase, area and protected areas, so teammates can claim work. | Not started |
 
 **Done when:** the three production URLs respond, CI is green on `main`, and
 a fresh clone runs `pnpm doctor` and `pnpm dev` on both Windows and macOS.

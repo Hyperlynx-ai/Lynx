@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "node",
+      "args": [
+        "scripts/mcp-run.mjs",
+        "@playwright/mcp@latest"
+      ]
+    },
+    "shadcn": {
+      "command": "node",
+      "args": [
+        "scripts/mcp-run.mjs",
+        "shadcn@latest",
+        "mcp"
+      ]
+    }
+  }
+}
