@@ -27,3 +27,4 @@ opencode.json
 packages/types/openapi/
 packages/types/src/generated/
 supabase/
+packages/db/src/generated/
