@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@lynx/config": "workspace:*",
-    "@types/node": "^22",
+    "@types/node": "^26",
     "typescript": "^5",
     "vitest": "^5.1.1"
   }

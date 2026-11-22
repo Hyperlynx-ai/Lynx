@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@lynx/config": "workspace:*",
-    "@types/node": "^22",
+    "@types/node": "^26",
     "eslint": "^10",
     "tsx": "^4.23.15",
     "typescript": "^5",
