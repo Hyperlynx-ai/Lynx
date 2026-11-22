@@ -32,7 +32,7 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.4.0 # this action publishes no floating major tag
         with:
           enable-cache: true
 
