@@ -1,0 +1,10 @@
+{
+  "$comment": "Vercel compiles apps/api with strict mode off. This second type check (part of `pnpm typecheck`) catches code that only fails there.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "strict": false,
+    "noEmit": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
+}

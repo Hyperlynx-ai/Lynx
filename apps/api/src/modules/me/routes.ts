@@ -96,12 +96,12 @@ export const meRoutes: FastifyPluginAsyncZod<MeRoutesOptions> = async (
     },
     async (request, reply) => {
       if (!supabaseAdmin) return reply.code(503).send({ error: "database_not_configured" })
-      const result = await claimRecruiterRole(supabaseAdmin, request.user!)
-      if (result.ok) return { role: "recruiter" as const }
-      if (result.status === 422) {
-        return reply.code(422).send({ error: result.error, newAccount: result.newAccount })
+      const failure = await claimRecruiterRole(supabaseAdmin, request.user!)
+      if (!failure) return { role: "recruiter" as const }
+      if (failure.status === 422) {
+        return reply.code(422).send({ error: failure.error, newAccount: true })
       }
-      return reply.code(result.status).send({ error: result.error })
+      return reply.code(failure.status).send({ error: failure.error })
     }
   )
 }

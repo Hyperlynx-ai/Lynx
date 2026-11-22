@@ -24,14 +24,13 @@ const minutesAgo = (m: number) => new Date(NOW - m * 60_000).toISOString()
 describe("claimRecruiterRole", () => {
   it("upgrades a brand-new account with a work email", async () => {
     const { client, update } = fake({ role: "candidate", created_at: minutesAgo(1) })
-    expect(await claimRecruiterRole(client, USER, NOW)).toEqual({ ok: true })
+    expect(await claimRecruiterRole(client, USER, NOW)).toBeNull()
     expect(update).toHaveBeenCalledWith({ role: "recruiter" })
   })
 
   it("refuses personal email addresses and says the account is new", async () => {
     const { client, update } = fake({ role: "candidate", created_at: minutesAgo(1) }, true)
     expect(await claimRecruiterRole(client, { ...USER, email: "me@gmail.com" }, NOW)).toEqual({
-      ok: false,
       status: 422,
       error: "work_email_required",
       newAccount: true,
@@ -43,7 +42,6 @@ describe("claimRecruiterRole", () => {
     const old = minutesAgo(CLAIM_WINDOW_MS / 60_000 + 1)
     const { client, update } = fake({ role: "candidate", created_at: old })
     expect(await claimRecruiterRole(client, USER, NOW)).toMatchObject({
-      ok: false,
       status: 409,
       error: "existing_account",
     })
@@ -57,9 +55,9 @@ describe("claimRecruiterRole", () => {
         USER,
         NOW
       )
-    ).toEqual({ ok: true })
+    ).toBeNull()
     expect(
       await claimRecruiterRole(fake({ role: "admin", created_at: minutesAgo(1) }).client, USER, NOW)
-    ).toMatchObject({ ok: false, error: "not_allowed" })
+    ).toMatchObject({ error: "not_allowed" })
   })
 })
