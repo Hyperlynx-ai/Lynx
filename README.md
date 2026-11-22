@@ -25,7 +25,8 @@ pnpm setup:check
 
 `pnpm setup:check` checks everything and prints the exact fix for anything missing.
 Copy each `.env.example` to `.env.local` (in `apps/web`, `apps/api` and
-`services/ai`) and ask the owner for the values.
+`services/ai`). For the local database run `pnpm db:start`, then `pnpm db:env`
+to fill in the Supabase values automatically. Ask the owner for anything else.
 
 ## Everyday commands
 
@@ -33,6 +34,7 @@ Copy each `.env.example` to `.env.local` (in `apps/web`, `apps/api` and
 |---|---|
 | Run everything (web, API, AI service) | `pnpm dev` |
 | Check everything before a PR | `pnpm check` |
+| Browser tests (local database running) | `pnpm e2e` |
 | Format code | `pnpm format` |
 | Regenerate API types after changing routes | `pnpm api:types` |
 | Sync agent skills and MCP configs | `pnpm agents:sync` |
