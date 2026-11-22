@@ -11,7 +11,7 @@ non-technical teammates need an easy way to check a change.
 
 ## Decision
 
-- **Vercel** (team "Lynx"): three projects from this repo, each with its own
+- **Vercel** (owner's personal account; see `infra/README.md`): three projects from this repo, each with its own
   root directory: `lynx-web` (`apps/web`), `lynx-api` (`apps/api`, Fastify),
   `lynx-ai` (`services/ai`, FastAPI). Every PR gets preview deployments;
   `main` deploys to production. Until the domain is ready, the production

@@ -4,7 +4,7 @@
  */
 import { mkdirSync, writeFileSync } from "node:fs"
 
-import { buildApp } from "../src/app.js"
+import { buildApp } from "../src/create-app.js"
 import { readEnv } from "../src/env.js"
 
 const app = await buildApp(readEnv({ NODE_ENV: "test" }))

@@ -17,7 +17,8 @@ decides who may do what (policy SEC-02). The root `AGENTS.md` still applies.
 ```
 src/
   server.ts          entry point (Vercel runs this file; keep the name)
-  app.ts             buildApp(): registers plugins and every module
+  create-app.ts      buildApp(): registers plugins and every module.
+                     (Not named app.ts: Vercel would treat that as the entry.)
   env.ts             all environment variables, validated with zod
   modules/<name>/    one folder per feature
     routes.ts        Fastify routes with zod schemas (request + response)

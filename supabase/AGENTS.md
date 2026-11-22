@@ -9,8 +9,8 @@ is a protected area**: the owner merges every PR that changes it. Read
 | Environment | Where | How it gets migrations |
 |---|---|---|
 | Local | Docker on your machine (`pnpm db:start`) | `pnpm db:reset` |
-| Staging | Supabase project `lynx-staging` (ref `ilwyezmqbnwwujeeonsv`, Mumbai) | CI after merge to `main` |
-| Production | Supabase project `lynx-prod` (ref `sgpcgcetujzvtlcolfyw`, Mumbai) | CI after staging succeeds |
+| Staging | Supabase project `lynx-staging` (ref `kwzwcoawnapdyddaiajk`, Mumbai) | CI after merge to `main` |
+| Production | Supabase project `lynx-prod` (ref `xwtgskwnoasqxcrqrkdt`, Mumbai) | CI after staging succeeds |
 
 Nobody runs `supabase db push` or `config push` against staging or production
 by hand (policy DB-06); `.github/workflows/db-migrate.yml` does it.
