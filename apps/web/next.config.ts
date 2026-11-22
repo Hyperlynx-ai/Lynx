@@ -17,7 +17,7 @@ const apiUrl = withRelatedProject({
 }).replace(/\/+$/, "")
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@lynx/ui"],
+  transpilePackages: ["@lynx/ui", "@lynx/shared"],
   async rewrites() {
     return [{ source: "/api/:path*", destination: `${apiUrl}/:path*` }]
   },
