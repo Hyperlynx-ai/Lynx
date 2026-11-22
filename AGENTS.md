@@ -15,6 +15,8 @@ features. Single monorepo. See README.md for the layout.
 
 ## Where to find things
 
+- docs/roadmap.md: the plan, phase by phase, and the status of each chunk.
+  Check it before starting any work.
 - docs/policies/: detailed rules (workflow, protected areas, security, privacy
   and AI, dependencies, testing, database, escalation)
 - docs/playbooks/: guides for non-technical teammates

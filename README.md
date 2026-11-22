@@ -6,6 +6,7 @@ AI-powered features (matching, resume parsing, ranking, and more).
 ## Start here
 
 - Everyone (humans and AI agents): read AGENTS.md first.
+- What we're building, in what order, and current status: docs/roadmap.md
 - Policies and rules: docs/policies/
 - Step-by-step guides for teammates: docs/playbooks/
 - Why things were decided: docs/decisions/
