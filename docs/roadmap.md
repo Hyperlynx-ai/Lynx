@@ -429,7 +429,7 @@ pay in Razorpay test mode.
 | **Scraping LinkedIn, Indeed and similar sites** breaks their terms of service. It can lead to blocked IPs, legal letters, and in LinkedIn's case, lawsuits. | Scrapers are isolated adapters, each with an off switch. Jobs link back to the source. No logged-in scraping. A takedown process. Review with a lawyer before public launch. |
 | **The prototype's Gemini key** was visible in the old site's page source, and may be a free-tier key, which lets Google use the data sent to it. | Use it only with synthetic or test data. Set quotas on it. Replace it with a paid key before real users (Phase 10.4 at the latest). |
 | **No domain yet.** Supabase's built-in email and Resend's test sender only deliver to the team's own addresses. | Google sign-in works meanwhile. Email confirmation is off until the domain is verified. Emails are tested against the owner's address. |
-| **GitHub's free plan has no branch protection** for private repositories. | Local git hooks and agent rules block direct pushes to `main` meanwhile. Real protection needs GitHub Team (see below). |
+| **The repository is public** (ADR 0009), so code, prompts, plans, issues and commit emails are visible to anyone. | Secret scanning in hooks and CI; policy SEC-10 (nothing confidential in commits, PRs or issues). Move to a private repository with Vercel Pro before teammates join or confidential material is needed. |
 | **Vercel's free Hobby plan is for non-commercial use only**, and its scheduled jobs run at most once a day. | Develop on Hobby; move to Pro before outside people use the site. Inngest handles schedules. |
 | **Video recordings and proctoring are sensitive data.** | Explicit consent per interview, a retention limit, private storage, access logs, data kept in the Mumbai region. |
 | **Full contact details visible to recruiters.** | Consent during onboarding, a hide-my-profile switch, recruiter approval, daily view quotas, view audit log. |
@@ -479,18 +479,8 @@ pay in Razorpay test mode.
 
 ## GitHub branch protection
 
-The `Hyperlynx-ai` organization is on GitHub's free plan, and GitHub only
-offers branch protection on private repositories with a paid plan. The
-options:
-
-- **Upgrade the organization to GitHub Team** (recommended). Then `main` gets:
-  pull request required, CI checks required, code-owner review for protected
-  areas, no force pushes, no deletion.
-- **Make the repository public.** Not recommended: it exposes the code,
-  prompts and business logic.
-- **Stay on free.** Only local guards (git hooks, agent rules), which anyone
-  can bypass.
-
-Note for later: GitHub never lets someone approve their own PR. Since agents
-open PRs under the owner's account, protected-area PRs are merged by the
-owner as admin after reviewing them, not through a formal approval.
+The repository is public (ADR 0009), so GitHub offers branch protection on
+the free plan. Suggested rules for `main`: pull request required, the CI
+checks required, no force pushes, no deletion. No required approvals while
+the owner is the only contributor (GitHub never lets someone approve their
+own PR); the owner merges protected-area PRs after reviewing them.

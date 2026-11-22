@@ -40,3 +40,7 @@ Real values live in `.env.local` (git-ignored) for local work, and in Vercel, Su
 **SEC-09: If a secret leaks, MUST tell the owner immediately and rotate it** at the provider. Deleting the commit is not enough.
 *Why:* the secret is already copied wherever the repo was cloned.
 *Enforced by:* honor system
+
+**SEC-10: The repository is public (ADR 0009). MUST NOT put anything confidential in commits, pull requests, issues or comments:** no secrets, no personal data, no customer or partner details, no internal URLs that grant access. Error logs pasted into issues must be scrubbed first.
+*Why:* anyone on the internet can read all of it, including the full history.
+*Enforced by:* secret scanning (pre-commit and CI) + honor system

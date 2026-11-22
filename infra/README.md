@@ -75,7 +75,8 @@ login by default. In each project's Settings → Deployment Protection:
 - **Cold starts:** the API waits up to 10 s for the AI service's health
   check, because a cold Python function can take several seconds.
 - **Plan:** Vercel Hobby cannot connect a private repository owned by a
-  GitHub organization; Git deployments need Vercel Pro.
+  GitHub organization. The repository is public for that reason (ADR 0009);
+  making it private again requires Vercel Pro first.
 - **Related projects** (web → api → ai URLs) only work for Git deployments.
   A manual `vercel deploy` of the API reports `"ai": "unreachable"`; that is
   expected.
