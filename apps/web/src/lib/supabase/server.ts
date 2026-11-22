@@ -9,8 +9,11 @@ import { supabaseEnv } from "./env"
  * (they can't set cookies); proxy.ts refreshes the session instead.
  */
 export async function createClient() {
-  const { url, publishableKey } = supabaseEnv()
+  // Read cookies first: it marks the page as per-request (dynamic), so
+  // `next build` never tries to pre-render signed-in pages, even when the
+  // Supabase settings aren't available at build time (e.g. in CI).
   const cookieStore = await cookies()
+  const { url, publishableKey } = supabaseEnv()
   return createServerClient(url, publishableKey, {
     cookies: {
       getAll() {
