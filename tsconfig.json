@@ -1,0 +1,3 @@
+{
+  "extends": "@lynx/config/tsconfig/base.json"
+}

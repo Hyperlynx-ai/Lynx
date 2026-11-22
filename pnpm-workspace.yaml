@@ -1,0 +1,12 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "services/*"
+
+# Packages allowed to run install scripts (pnpm blocks the rest by default).
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  lefthook: true
+  msw: false
