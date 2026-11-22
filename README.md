@@ -36,6 +36,7 @@ Copy each `.env.example` to `.env.local` (in `apps/web`, `apps/api` and
 | Format code | `pnpm format` |
 | Regenerate API types after changing routes | `pnpm api:types` |
 | Sync agent skills and MCP configs | `pnpm agents:sync` |
+| Make someone an admin (owner only) | `pnpm admin:set-role <email> admin --env production --yes` |
 
 `pnpm dev` starts:
 

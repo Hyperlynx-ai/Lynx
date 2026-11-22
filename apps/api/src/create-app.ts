@@ -10,7 +10,9 @@ import {
 
 import { readEnv, type Env } from "./env.js"
 import { createSupabaseAdmin } from "./lib/supabase-admin.js"
+import { adminRoutes } from "./modules/admin/routes.js"
 import { makeRequireUser } from "./modules/auth/plugin.js"
+import { makeRequireRole } from "./modules/auth/require-role.js"
 import { createTokenVerifier, type VerifyToken } from "./modules/auth/verify-token.js"
 import { healthRoutes } from "./modules/health/routes.js"
 import { meRoutes } from "./modules/me/routes.js"
@@ -70,9 +72,11 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
 
   app.decorate("env", env)
   const requireUser = makeRequireUser(verifyToken)
+  const requireAdmin = makeRequireRole(supabaseAdmin)("admin")
 
   await app.register(healthRoutes)
   await app.register(meRoutes, { requireUser, supabaseAdmin })
+  await app.register(adminRoutes, { requireUser, requireAdmin, supabaseAdmin })
 
   app.get("/openapi.json", { schema: { hide: true } }, async () => app.swagger())
 

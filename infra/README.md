@@ -94,6 +94,21 @@ See `supabase/AGENTS.md`. Projects: `lynx-staging` (`kwzwcoawnapdyddaiajk`)
 and `lynx-prod` (`xwtgskwnoasqxcrqrkdt`), both in Mumbai. Migrations reach
 them only through `.github/workflows/db-migrate.yml`.
 
+## Roles and admins
+
+Roles are `candidate`, `recruiter` and `admin`. Nobody can give themselves a
+role from the website; the owner changes roles with:
+
+```
+pnpm admin:set-role <email> <candidate|recruiter|admin>                          # local
+pnpm admin:set-role <email> <candidate|recruiter|admin> --env staging --yes
+pnpm admin:set-role <email> <candidate|recruiter|admin> --env production --yes
+```
+
+Hosted environments use the owner's Supabase CLI login (`pnpm supabase
+login`) to fetch the secret key; it is never printed or saved. The account
+must exist first (sign up on the site).
+
 ## Coming later
 
 - LiveKit Cloud (interviews), Phase 5: `services/interview-agent`.

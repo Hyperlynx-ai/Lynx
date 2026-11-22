@@ -254,6 +254,9 @@ importers:
       '@lynx/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@lynx/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@lynx/ui':
         specifier: workspace:*
         version: link:../../packages/ui
