@@ -213,7 +213,7 @@ Every table has row-level security. Main tables:
 | Phase | Name | Depends on | Status |
 |---|---|---|---|
 | 0 | Foundations and production pipeline | none | Done |
-| 1 | Accounts, roles and app shells | 0 | In progress |
+| 1 | Accounts, roles and app shells | 0 | Done (merge #60 to #64) |
 | 2 | Candidate onboarding, profile, CV and Lynx memory | 1 | Approved |
 | 3 | Jobs engine and opportunities feed | 1 | Approved |
 | 4 | Recruiter onboarding, jobs and applications | 1, 3 | Approved |
@@ -263,7 +263,7 @@ a fresh clone runs `pnpm setup:check` and `pnpm dev` on both Windows and macOS.
 | 1.2 | `feat/p1-auth-recruiter` | `/recruiters` landing, `/recruiters/signup`, `/recruiters/login`. Free email domains (gmail.com and similar) rejected for recruiters; Google Workspace accounts allowed. One role per account, enforced in the database, with a clear message when someone uses the wrong login page. | Done (Google sign-up to verify on the preview) |
 | 1.3 | `feat/p1-app-shells` | Design-system components in `packages/ui` (input, field, notice, panel, empty and loading states; navbar, footer). Layouts: public (header with login/sign-up, footer with link columns), signed-in app shell, auth page layout, 404 and error pages. Account settings moved to 1.1 (they need login). | Done (built first: the auth pages need its components) |
 | 1.4 | `feat/p1-admin-basics` | Admin role granted by a script (`pnpm admin:set-role`, owner's Supabase login for hosted databases); admin-only `GET /admin/users`; `/admin` user list. | Done |
-| 1.5 | `test/p1-e2e-auth` | Playwright tests: sign up, log in, log out for both roles. | Not started |
+| 1.5 | `test/p1-e2e-auth` | Playwright tests: sign up, log in, log out, weak password, signed-out redirect, delete account, work-email rule, one role per account. CI job against a local Supabase stack; `pnpm db:env` writes local env files. | Done |
 
 **Done when:** both roles can sign up with Google on production, and email
 sign-up works (without the confirmation email until the domain is ready).
