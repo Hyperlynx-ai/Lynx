@@ -52,6 +52,10 @@ jobs:
       - name: Lint, type check, test and build (changed packages only)
         if: github.event_name == 'pull_request'
         run: pnpm turbo run lint typecheck test build --affected
+        env:
+          # Compare against the PR's base branch (Turborepo looks for a local
+          # `main` branch otherwise, which the checkout doesn't create).
+          TURBO_SCM_BASE: origin/${{ github.base_ref }}
 
       - name: Lint, type check, test and build (everything)
         if: github.event_name == 'push'
