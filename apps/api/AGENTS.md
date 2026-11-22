@@ -36,3 +36,14 @@ src/
 - Calls to `services/ai` send `Authorization: Bearer ${AI_SERVICE_TOKEN}`.
 - New environment variables go in `src/env.ts` and `.env.example`.
 - Tests never call real external services (policy TEST-03): stub `fetch`.
+
+## Authentication (protected area)
+
+- Callers send `Authorization: Bearer <Supabase access token>`. Add
+  `preHandler: requireUser` to a route; it verifies the token locally
+  (ES256 public keys from the project's JWKS) and sets `request.user`.
+- `supabaseAdmin` (secret key) bypasses row-level security: check the
+  caller's role and ownership before every use.
+- External services are injected through `AppDeps` in `create-app.ts`, so
+  tests can pass fakes (see `modules/me/me.test.ts`, which signs its own test
+  tokens).

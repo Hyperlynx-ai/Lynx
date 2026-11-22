@@ -11,6 +11,10 @@ const EnvSchema = z.object({
   AI_SERVICE_URL: z.url(),
   /** Shared secret sent to services/ai (policy SEC-05). */
   AI_SERVICE_TOKEN: z.string().min(1).optional(),
+  /** Supabase project URL (login token verification, admin operations). */
+  SUPABASE_URL: z.url().optional(),
+  /** Supabase secret key: server-only, bypasses row-level security (SEC-04). */
+  SUPABASE_SECRET_KEY: z.string().min(1).optional(),
   /** Set automatically by Vercel. */
   VERCEL_GIT_COMMIT_SHA: z.string().optional(),
   VERCEL_ENV: z.enum(["development", "preview", "production"]).optional(),
