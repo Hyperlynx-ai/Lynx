@@ -3,6 +3,14 @@ packages:
   - "packages/*"
   - "services/*"
 
+# Also link every package into the root node_modules. Vercel's TypeScript
+# compile for apps/api does not follow pnpm's symlinks, so transitive type
+# packages (e.g. undici-types for fetch, pino for Fastify) must be findable
+# from the root. Trade-off: an undeclared import can work by accident, so
+# always add what you import to that package's package.json.
+publicHoistPattern:
+  - "*"
+
 # Packages allowed to run install scripts (pnpm blocks the rest by default).
 allowBuilds:
   esbuild: true
