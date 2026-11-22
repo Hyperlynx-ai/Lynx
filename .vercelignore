@@ -1,0 +1,12 @@
+# Never upload these with `vercel deploy` from a local machine.
+# (Git-connected deployments only see committed files anyway.)
+references/
+**/node_modules/
+**/.venv/
+**/.next/
+**/.turbo/
+**/dist/
+**/.env
+**/.env.*
+!**/.env.example
+supabase/.temp/

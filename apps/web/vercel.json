@@ -1,0 +1,5 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["bom1"],
+  "relatedProjects": ["prj_XKFdHTNvs4iR4B49PvcUCY4xSbv6"]
+}
