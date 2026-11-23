@@ -15,6 +15,8 @@ const EnvSchema = z.object({
   SUPABASE_URL: z.url().optional(),
   /** Supabase secret key: server-only, bypasses row-level security (SEC-04). */
   SUPABASE_SECRET_KEY: z.string().min(1).optional(),
+  /** Supabase publishable key: for queries made as the signed-in user (row-level security applies). */
+  SUPABASE_PUBLISHABLE_KEY: z.string().min(1).optional(),
   /** Set automatically by Vercel. */
   VERCEL_GIT_COMMIT_SHA: z.string().optional(),
   VERCEL_ENV: z.enum(["development", "preview", "production"]).optional(),

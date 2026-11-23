@@ -16,6 +16,24 @@ export const MeResponse = z.object({
 
 const ErrorResponse = z.object({ error: z.string() })
 
+/** Buckets with a folder per user (cvs/<user id>/...). */
+const USER_FOLDER_BUCKETS = ["cvs"]
+
+/** Removes every file the user owns in Storage (used when deleting the account). */
+export async function removeUserFiles(supabaseAdmin: SupabaseClient, userId: string) {
+  for (const bucket of USER_FOLDER_BUCKETS) {
+    const storage = supabaseAdmin.storage.from(bucket)
+    for (;;) {
+      const { data, error } = await storage.list(userId, { limit: 100 })
+      if (error) throw error
+      if (!data?.length) break
+      const { error: removeError } = await storage.remove(data.map((f) => `${userId}/${f.name}`))
+      if (removeError) throw removeError
+      if (data.length < 100) break
+    }
+  }
+}
+
 type MeRoutesOptions = {
   requireUser: preHandlerHookHandler
   supabaseAdmin: SupabaseClient | undefined
@@ -69,6 +87,8 @@ export const meRoutes: FastifyPluginAsyncZod<MeRoutesOptions> = async (
     },
     async (request, reply) => {
       if (!supabaseAdmin) return reply.code(503).send({ error: "database_not_configured" })
+      // Files in Storage aren't linked to the user by a foreign key: remove them first.
+      await removeUserFiles(supabaseAdmin, request.user!.id)
       // Deleting the auth user cascades to profiles and everything owned by it.
       const { error } = await supabaseAdmin.auth.admin.deleteUser(request.user!.id)
       if (error) throw error

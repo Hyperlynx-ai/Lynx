@@ -83,7 +83,7 @@ async def main() -> int:
         "failed_cases": failures,
         "cases": results,
     }
-    out.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+    out.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"\nAverage overall: {average} (pass mark {PASS_MARK}). Wrote {out.name}.")
     return 0 if average >= PASS_MARK and not failures else 1
 

@@ -6,6 +6,8 @@ declare module "fastify" {
   interface FastifyRequest {
     /** Set by `requireUser` for authenticated routes. */
     user?: TokenUser
+    /** The verified access token, for Supabase calls made as the user. */
+    accessToken?: string
   }
 }
 
@@ -24,6 +26,7 @@ export function makeRequireUser(verifyToken: VerifyToken | undefined) {
     if (!token) return reply.code(401).send({ error: "unauthorized" })
     try {
       request.user = await verifyToken(token)
+      request.accessToken = token
     } catch {
       return reply.code(401).send({ error: "unauthorized" })
     }

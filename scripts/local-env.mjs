@@ -44,4 +44,5 @@ upsert("apps/web/.env.local", {
 upsert("apps/api/.env.local", {
   SUPABASE_URL: status.API_URL,
   SUPABASE_SECRET_KEY: status.SECRET_KEY,
+  SUPABASE_PUBLISHABLE_KEY: status.PUBLISHABLE_KEY,
 })
