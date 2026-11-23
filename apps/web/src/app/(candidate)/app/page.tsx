@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
+import { Button } from "@lynx/ui/components/button"
 import { Eyebrow } from "@lynx/ui/components/eyebrow"
 import { Headline } from "@lynx/ui/components/headline"
 import { EmptyState } from "@lynx/ui/components/states"
@@ -24,8 +26,13 @@ export default async function CandidateHome() {
         />
       </div>
       <EmptyState
-        title="Your profile is next."
-        description="CV upload and onboarding arrive in the next release; Lynx will build your profile from your CV."
+        title="Start with your CV."
+        description="Upload it and Lynx reads it in about 20 seconds; your profile and matching opportunities build on it."
+        action={
+          <Button asChild variant="heroPrimary">
+            <Link href="/app/cv">Upload your CV</Link>
+          </Button>
+        }
       />
     </div>
   )
