@@ -13,9 +13,8 @@ type NoticeProps = {
 const marker = { info: "i", error: "!", success: "✓" } as const
 
 /**
- * A ruled message box for form results and page notices. Tone is shown by a
- * mono marker (and the mint status color only for success), never by red or
- * amber fills, which the design language reserves for charts.
+ * A ruled message box for form results and page notices. Tone is shown by the
+ * edge and a mono marker: red for errors, mint for success (never fills).
  */
 function Notice({ tone = "info", title, children, className }: NoticeProps) {
   return (
@@ -23,7 +22,7 @@ function Notice({ tone = "info", title, children, className }: NoticeProps) {
       role={tone === "error" ? "alert" : "status"}
       className={cn(
         "flex gap-gap-sm border border-border p-4",
-        tone === "error" && "border-text-primary",
+        tone === "error" && "border-error",
         className
       )}
     >
@@ -31,7 +30,7 @@ function Notice({ tone = "info", title, children, className }: NoticeProps) {
         aria-hidden="true"
         className={cn(
           "font-mono text-mono",
-          tone === "success" ? "text-accent" : "text-text-primary"
+          tone === "success" ? "text-accent" : tone === "error" ? "text-error" : "text-text-primary"
         )}
       >
         {marker[tone]}

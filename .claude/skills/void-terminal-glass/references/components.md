@@ -12,6 +12,7 @@ Read this when building or changing a specific component. All values come from t
 - Terminal-accent CTA band
 - Footer
 - Card families
+- Form controls and errors
 - Quick radius reference
 
 ---
@@ -89,6 +90,20 @@ Rules:
 - **Media-top-bleed:** transparent, 0 radius, 0 padding. Media bleeds to the card's top edge with body text below. Used in the five-up strip.
 - **Feature-grid card:** transparent, 0 radius, `1px solid #303236` dividers (see Feature grid).
 - Optional card-level elevation is only the hairline ring `0 0 0 1px rgba(255,255,255,0.05)`.
+
+## Form controls and errors
+
+| Element | Spec |
+|---|---|
+| Text input | transparent, `1px solid #303236`, 0 radius, 44px tall, white text, `#94979E` placeholder |
+| Focus | border `#34D59A` (plus the global 2px mint focus ring) |
+| Invalid input | border `#FF5F57` (`aria-invalid="true"`) |
+| Field message | help text `#94979E`; error text `#FF5F57`, mono `!` prefix |
+| Error notice | square box, `1px solid #FF5F57`, mono `!` marker in `#FF5F57`, title white, body `#94979E` |
+| Success notice | square box, hairline `#303236`, mono `✓` marker in mint |
+
+Red never fills a button or background: destructive buttons stay the
+outline-square or white-pill variants, with the consequence spelled out in text.
 
 ## Quick radius reference
 
