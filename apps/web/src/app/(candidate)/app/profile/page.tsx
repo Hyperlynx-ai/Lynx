@@ -1,18 +1,20 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
+import { Button } from "@lynx/ui/components/button"
 import { Eyebrow } from "@lynx/ui/components/eyebrow"
 import { Headline } from "@lynx/ui/components/headline"
 import { Notice } from "@lynx/ui/components/notice"
 import { Panel } from "@lynx/ui/components/panel"
 
+import { FactList, TellLynx } from "@/components/candidate/lynx-memory"
 import { EditProfile } from "@/components/candidate/onboarding-forms"
-import { getCandidate } from "@/lib/candidate/api"
+import { getCandidate, getFacts } from "@/lib/candidate/api"
 
 export const metadata: Metadata = { title: "Your profile" }
 
 export default async function ProfilePage() {
-  const data = await getCandidate()
+  const [data, facts] = await Promise.all([getCandidate(), getFacts()])
   if (data && !data.candidate) redirect("/app/onboarding")
   const candidate = data?.candidate
 
@@ -23,19 +25,32 @@ export default async function ProfilePage() {
         <Headline
           as="h1"
           size="headline"
-          lead="Your profile."
-          muted="What you're looking for. Lynx uses it to rank opportunities for you."
+          lead="What Lynx knows about you."
+          muted="Every fact and where it came from. Correct or delete anything; Lynx only uses what's here."
         />
       </div>
-      {!candidate ? (
-        <Notice tone="error" title="Couldn't load your profile">
-          The server didn&apos;t answer. Refresh the page in a moment.
-        </Notice>
-      ) : (
+
+      <section aria-label="What Lynx knows about you" className="flex flex-col gap-gap-md">
+        <TellLynx />
+        {facts ? (
+          <FactList facts={facts} />
+        ) : (
+          <Notice tone="error" title="Couldn't load what Lynx knows">
+            The server didn&apos;t answer. Refresh the page in a moment.
+          </Notice>
+        )}
+      </section>
+
+      {candidate ? (
         <Panel aria-labelledby="answers-heading" className="flex flex-col gap-gap-md">
-          <h2 id="answers-heading" className="text-label text-text-primary">
-            Your answers
-          </h2>
+          <div>
+            <h2 id="answers-heading" className="text-label text-text-primary">
+              What you&apos;re looking for
+            </h2>
+            <p className="mt-1 text-body text-text-secondary">
+              Your answers from onboarding. Lynx ranks opportunities with them.
+            </p>
+          </div>
           <EditProfile
             initial={{
               targetRoles: candidate.targetRoles,
@@ -50,7 +65,26 @@ export default async function ProfilePage() {
             }}
           />
         </Panel>
+      ) : (
+        <Notice tone="error" title="Couldn't load your answers">
+          The server didn&apos;t answer. Refresh the page in a moment.
+        </Notice>
       )}
+
+      <Panel className="flex flex-col gap-gap-md">
+        <div>
+          <h2 className="text-label text-text-primary">Download my data</h2>
+          <p className="mt-1 text-body text-text-secondary">
+            Everything Hyperlynx stores about you (profile, choices, CVs as Lynx read them, and
+            these facts) in one JSON file.
+          </p>
+        </div>
+        <Button asChild variant="heroSecondary" className="self-start">
+          <a href="/app/profile/export" download>
+            Download my data
+          </a>
+        </Button>
+      </Panel>
     </div>
   )
 }

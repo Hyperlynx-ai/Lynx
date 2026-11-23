@@ -28,6 +28,12 @@ tasks:
     fallbacks:
       - google:gemini-3.5-flash
 
+  # Free text from "Tell Lynx more" -> facts (POST /v1/facts/extract).
+  facts_extract:
+    model: google:gemini-3.6-flash
+    fallbacks:
+      - google:gemini-3.5-flash
+
 # OpenAI-compatible endpoints, used as "compat:<name>/<model>".
 # Example (uncomment and set the key to use it):
 #   qwen:
