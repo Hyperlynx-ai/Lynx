@@ -3,6 +3,8 @@ import type { preHandlerHookHandler } from "fastify"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import { z } from "zod"
 
+import { AiError, AiUsage, type AiClient } from "../ai/client.js"
+
 const Role = z.enum(["candidate", "recruiter", "admin"])
 
 export const AdminUser = z.object({
@@ -28,12 +30,13 @@ type AdminRoutesOptions = {
   requireUser: preHandlerHookHandler
   requireAdmin: preHandlerHookHandler
   supabaseAdmin: SupabaseClient | undefined
+  aiClient: AiClient | undefined
 }
 
 /** Admin console endpoints. Every route needs a signed-in admin. */
 export const adminRoutes: FastifyPluginAsyncZod<AdminRoutesOptions> = async (
   app,
-  { requireUser, requireAdmin, supabaseAdmin }
+  { requireUser, requireAdmin, supabaseAdmin, aiClient }
 ) => {
   app.get(
     "/admin/users",
@@ -81,6 +84,114 @@ export const adminRoutes: FastifyPluginAsyncZod<AdminRoutesOptions> = async (
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 
       return { users, page, perPage, hasMore: list.users.length === perPage }
+    }
+  )
+
+  app.post(
+    "/admin/ai/ping",
+    {
+      preHandler: [requireUser, requireAdmin],
+      schema: {
+        summary: "Run the AI smoke test through the whole chain (admin only)",
+        tags: ["admin"],
+        security: [{ bearer: [] }],
+        body: z.object({ message: z.string().max(500).optional() }).optional(),
+        response: {
+          200: z.object({ output: z.string(), usage: AiUsage }),
+          429: ErrorResponse,
+          502: ErrorResponse,
+          503: ErrorResponse,
+        },
+      },
+    },
+    async (request, reply) => {
+      if (!aiClient) return reply.code(503).send({ error: "ai_not_configured" })
+      try {
+        return await aiClient.call(
+          "ping",
+          "/v1/ping",
+          request.body?.message ? { message: request.body.message } : {},
+          request.user!.id,
+          z.object({ output: z.string(), usage: AiUsage })
+        )
+      } catch (error) {
+        if (error instanceof AiError) {
+          const status = error.code === "capped" ? 429 : error.code === "not_configured" ? 503 : 502
+          return reply.code(status).send({ error: error.code })
+        }
+        throw error
+      }
+    }
+  )
+
+  app.get(
+    "/admin/ai/usage",
+    {
+      preHandler: [requireUser, requireAdmin],
+      schema: {
+        summary: "AI calls in the last 24 hours, by task (admin only)",
+        tags: ["admin"],
+        security: [{ bearer: [] }],
+        response: {
+          200: z.object({
+            since: z.string(),
+            tasks: z.array(
+              z.object({
+                task: z.string(),
+                calls: z.number(),
+                errors: z.number(),
+                capped: z.number(),
+                inputTokens: z.number(),
+                outputTokens: z.number(),
+                costUsd: z.number(),
+              })
+            ),
+          }),
+          503: ErrorResponse,
+        },
+      },
+    },
+    async (_request, reply) => {
+      if (!supabaseAdmin) return reply.code(503).send({ error: "database_not_configured" })
+      const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+      const { data, error } = await supabaseAdmin
+        .from("ai_calls")
+        .select("task, status, input_tokens, output_tokens, cost_usd")
+        .gte("created_at", since)
+        .limit(10_000)
+      if (error) throw error
+      const byTask = new Map<
+        string,
+        {
+          task: string
+          calls: number
+          errors: number
+          capped: number
+          inputTokens: number
+          outputTokens: number
+          costUsd: number
+        }
+      >()
+      for (const row of data ?? []) {
+        const task = String(row.task)
+        const entry = byTask.get(task) ?? {
+          task,
+          calls: 0,
+          errors: 0,
+          capped: 0,
+          inputTokens: 0,
+          outputTokens: 0,
+          costUsd: 0,
+        }
+        if (row.status === "ok") entry.calls += 1
+        if (row.status === "error") entry.errors += 1
+        if (row.status === "capped") entry.capped += 1
+        entry.inputTokens += Number(row.input_tokens ?? 0)
+        entry.outputTokens += Number(row.output_tokens ?? 0)
+        entry.costUsd += Number(row.cost_usd ?? 0)
+        byTask.set(task, entry)
+      }
+      return { since, tasks: [...byTask.values()].sort((a, b) => a.task.localeCompare(b.task)) }
     }
   )
 }

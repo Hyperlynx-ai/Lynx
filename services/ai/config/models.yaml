@@ -1,12 +1,13 @@
 # Which model runs each AI task. PROTECTED AREA (policies AI-01, AI-02, PROT-01):
 # changing a model or provider decides cost and where candidate data goes.
 #
-# Model strings are "<provider>:<model>", for example:
+# Model strings are "<provider>:<model>" or "compat:<provider name>/<model>"
+# (an OpenAI-compatible endpoint declared under `providers:` below). Examples:
 #   google:gemini-3.8-flash        openai:<model>          anthropic:<model>
 #   deepseek:deepseek-chat         mistral:<model>         groq:<model>
 #   openrouter:<vendor>/<model>    ollama:<model>          zai:<model>
-# Other providers (Qwen, Kimi, MiniMax, any OpenAI-compatible endpoint, or
-# LiteLLM's 100+ providers) are added as described in services/ai/AGENTS.md.
+# Any OpenAI-compatible provider (Qwen, Kimi, GLM, MiniMax, Together, a
+# self-hosted model, a LiteLLM proxy, ...) is declared under `providers:`.
 #
 # Each provider reads its own API key variable (GOOGLE_API_KEY, OPENAI_API_KEY, ...).
 # Override a task per environment, without editing this file:
@@ -14,7 +15,19 @@
 
 tasks:
   # Smoke test of the AI chain (POST /v1/ping).
+  # gemini-3.8-flash is often overloaded (503) on our key; see KL-17.
   ping:
-    model: google:gemini-3.8-flash
+    model: google:gemini-3.6-flash
     fallbacks:
-      - google:gemini-3.6-flash
+      - google:gemini-3.5-flash
+
+# OpenAI-compatible endpoints, used as "compat:<name>/<model>".
+# Example (uncomment and set the key to use it):
+#   qwen:
+#     base_url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1
+#     api_key_env: QWEN_API_KEY
+providers: {}
+
+# US dollars per million tokens, for cost estimates in ai_calls. Check the
+# provider's current price list when adding a model.
+prices: {}

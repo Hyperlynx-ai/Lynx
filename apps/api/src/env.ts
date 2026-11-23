@@ -30,6 +30,6 @@ export function readEnv(source: NodeJS.ProcessEnv = process.env): Env {
     // An explicit AI_SERVICE_URL always wins; locally the default is used.
     AI_SERVICE_URL:
       source.AI_SERVICE_URL ??
-      withRelatedProject({ projectName: "lynx-ai", defaultHost: "http://127.0.0.1:8000" }),
+      withRelatedProject({ projectName: "lynx-ai", defaultHost: "http://127.0.0.1:4500" }),
   })
 }
