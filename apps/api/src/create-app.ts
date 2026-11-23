@@ -10,6 +10,7 @@ import {
 
 import { readEnv, type Env } from "./env.js"
 import { createSupabaseAdmin } from "./lib/supabase-admin.js"
+import { createAiClient, type AiClient } from "./modules/ai/client.js"
 import { adminRoutes } from "./modules/admin/routes.js"
 import { makeRequireUser } from "./modules/auth/plugin.js"
 import { makeRequireRole } from "./modules/auth/require-role.js"
@@ -37,15 +38,22 @@ export function serverOptions(env: Env): FastifyServerOptions {
 export type AppDeps = {
   verifyToken?: VerifyToken
   supabaseAdmin?: SupabaseClient
+  aiClient?: AiClient
 }
 
 function defaultDeps(env: Env): AppDeps {
+  const supabaseAdmin =
+    env.SUPABASE_URL && env.SUPABASE_SECRET_KEY
+      ? createSupabaseAdmin(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY)
+      : undefined
   return {
     verifyToken: env.SUPABASE_URL ? createTokenVerifier(env.SUPABASE_URL) : undefined,
-    supabaseAdmin:
-      env.SUPABASE_URL && env.SUPABASE_SECRET_KEY
-        ? createSupabaseAdmin(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY)
-        : undefined,
+    supabaseAdmin,
+    aiClient: createAiClient({
+      baseUrl: env.AI_SERVICE_URL,
+      token: env.AI_SERVICE_TOKEN,
+      supabaseAdmin,
+    }),
   }
 }
 
@@ -55,7 +63,7 @@ function defaultDeps(env: Env): AppDeps {
  */
 export async function configureApp(instance: FastifyInstance, env: Env, deps?: AppDeps) {
   const app = instance.withTypeProvider<ZodTypeProvider>()
-  const { verifyToken, supabaseAdmin } = deps ?? defaultDeps(env)
+  const { verifyToken, supabaseAdmin, aiClient } = deps ?? defaultDeps(env)
 
   app.setValidatorCompiler(validatorCompiler)
   app.setSerializerCompiler(serializerCompiler)
@@ -76,7 +84,7 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
 
   await app.register(healthRoutes)
   await app.register(meRoutes, { requireUser, supabaseAdmin })
-  await app.register(adminRoutes, { requireUser, requireAdmin, supabaseAdmin })
+  await app.register(adminRoutes, { requireUser, requireAdmin, supabaseAdmin, aiClient })
 
   app.get("/openapi.json", { schema: { hide: true } }, async () => app.swagger())
 
