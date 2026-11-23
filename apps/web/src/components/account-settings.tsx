@@ -4,8 +4,17 @@ import { Panel } from "@lynx/ui/components/panel"
 import { DeleteAccount } from "@/components/delete-account"
 import { NewPasswordForm } from "@/components/auth/password-forms"
 
-/** Account settings shared by every role: email, password, delete account. */
-export function AccountSettings({ email }: { email: string }) {
+/**
+ * Account settings shared by every role: email, password, delete account.
+ * Role-specific panels go in `children` (shown before "Delete account").
+ */
+export function AccountSettings({
+  email,
+  children,
+}: {
+  email: string
+  children?: React.ReactNode
+}) {
   return (
     <div className="flex max-w-3xl flex-col gap-gap-md">
       <Headline as="h1" size="headline" lead="Settings." muted="Your login and your account." />
@@ -22,6 +31,7 @@ export function AccountSettings({ email }: { email: string }) {
         </div>
         <NewPasswordForm mode="change" />
       </Panel>
+      {children}
       <Panel className="flex flex-col gap-gap-md">
         <div>
           <h2 className="text-label text-text-primary">Delete account</h2>

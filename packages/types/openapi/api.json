@@ -2820,6 +2820,676 @@
           }
         }
       }
+    },
+    "/me/candidate": {
+      "get": {
+        "summary": "The candidate's profile (null before onboarding) and prefill suggestions",
+        "tags": [
+          "candidate"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "candidate": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "targetRoles": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "countries": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "experienceLevel": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "educationLevel": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "pathways": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "visaStatus": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "currentLocation": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "phone": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "phoneIsWhatsapp": {
+                          "type": "boolean"
+                        },
+                        "visibleToRecruiters": {
+                          "type": "boolean"
+                        },
+                        "showContactToRecruiters": {
+                          "type": "boolean"
+                        },
+                        "jobAlerts": {
+                          "type": "boolean"
+                        },
+                        "newsletter": {
+                          "type": "boolean"
+                        },
+                        "matchingCvVersionId": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "onboardedAt": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "targetRoles",
+                        "countries",
+                        "experienceLevel",
+                        "educationLevel",
+                        "pathways",
+                        "visaStatus",
+                        "currentLocation",
+                        "phone",
+                        "phoneIsWhatsapp",
+                        "visibleToRecruiters",
+                        "showContactToRecruiters",
+                        "jobAlerts",
+                        "newsletter",
+                        "matchingCvVersionId",
+                        "onboardedAt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "suggestions": {
+                      "type": "object",
+                      "properties": {
+                        "targetRoles": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "currentLocation": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "phone": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "educationLevel": {
+                          "nullable": true,
+                          "type": "string",
+                          "enum": [
+                            "high_school",
+                            "diploma",
+                            "bachelors",
+                            "masters",
+                            "doctorate",
+                            "other"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "targetRoles",
+                        "currentLocation",
+                        "phone",
+                        "educationLevel"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "candidate",
+                    "suggestions"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/candidate/profile": {
+      "put": {
+        "summary": "Save the candidate's profile answers (onboarding step 2, or later edits)",
+        "tags": [
+          "candidate"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "targetRoles": {
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80
+                    }
+                  },
+                  "countries": {
+                    "minItems": 1,
+                    "maxItems": 10,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "AE",
+                        "SA",
+                        "QA",
+                        "OM",
+                        "KW",
+                        "BH",
+                        "DE",
+                        "NL",
+                        "IE",
+                        "GB",
+                        "FR",
+                        "BE",
+                        "LU",
+                        "AT",
+                        "CH",
+                        "PL",
+                        "CZ",
+                        "SE",
+                        "FI",
+                        "DK",
+                        "NO",
+                        "IT",
+                        "ES",
+                        "PT",
+                        "EE",
+                        "MT",
+                        "CY",
+                        "SG",
+                        "MY",
+                        "JP",
+                        "AU",
+                        "NZ",
+                        "CA",
+                        "US",
+                        "IN"
+                      ]
+                    }
+                  },
+                  "experienceLevel": {
+                    "type": "string",
+                    "enum": [
+                      "student",
+                      "fresher",
+                      "junior",
+                      "mid",
+                      "senior",
+                      "lead"
+                    ]
+                  },
+                  "educationLevel": {
+                    "type": "string",
+                    "enum": [
+                      "high_school",
+                      "diploma",
+                      "bachelors",
+                      "masters",
+                      "doctorate",
+                      "other"
+                    ]
+                  },
+                  "pathways": {
+                    "minItems": 1,
+                    "maxItems": 4,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "internship",
+                        "first_job",
+                        "job_switch",
+                        "higher_education"
+                      ]
+                    }
+                  },
+                  "visaStatus": {
+                    "type": "string",
+                    "enum": [
+                      "needs_sponsorship",
+                      "has_permit",
+                      "citizen",
+                      "not_sure"
+                    ]
+                  },
+                  "currentLocation": {
+                    "nullable": true,
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "phone": {
+                    "nullable": true,
+                    "type": "string",
+                    "pattern": "^\\+?[0-9 ()-]{7,20}$"
+                  },
+                  "phoneIsWhatsapp": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "targetRoles",
+                  "countries",
+                  "experienceLevel",
+                  "educationLevel",
+                  "pathways",
+                  "visaStatus",
+                  "currentLocation",
+                  "phone",
+                  "phoneIsWhatsapp"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "targetRoles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "countries": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "experienceLevel": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "educationLevel": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "pathways": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "visaStatus": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "currentLocation": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "phone": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "phoneIsWhatsapp": {
+                      "type": "boolean"
+                    },
+                    "visibleToRecruiters": {
+                      "type": "boolean"
+                    },
+                    "showContactToRecruiters": {
+                      "type": "boolean"
+                    },
+                    "jobAlerts": {
+                      "type": "boolean"
+                    },
+                    "newsletter": {
+                      "type": "boolean"
+                    },
+                    "matchingCvVersionId": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "onboardedAt": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetRoles",
+                    "countries",
+                    "experienceLevel",
+                    "educationLevel",
+                    "pathways",
+                    "visaStatus",
+                    "currentLocation",
+                    "phone",
+                    "phoneIsWhatsapp",
+                    "visibleToRecruiters",
+                    "showContactToRecruiters",
+                    "jobAlerts",
+                    "newsletter",
+                    "matchingCvVersionId",
+                    "onboardedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/candidate/consents": {
+      "put": {
+        "summary": "Save what the candidate agrees to; logs every change (policy PRIV-03)",
+        "tags": [
+          "candidate"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "visibleToRecruiters": {
+                    "type": "boolean"
+                  },
+                  "showContactToRecruiters": {
+                    "type": "boolean"
+                  },
+                  "jobAlerts": {
+                    "type": "boolean"
+                  },
+                  "newsletter": {
+                    "type": "boolean"
+                  },
+                  "completeOnboarding": {
+                    "default": false,
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "visibleToRecruiters",
+                  "showContactToRecruiters",
+                  "jobAlerts",
+                  "newsletter"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "targetRoles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "countries": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "experienceLevel": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "educationLevel": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "pathways": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "visaStatus": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "currentLocation": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "phone": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "phoneIsWhatsapp": {
+                      "type": "boolean"
+                    },
+                    "visibleToRecruiters": {
+                      "type": "boolean"
+                    },
+                    "showContactToRecruiters": {
+                      "type": "boolean"
+                    },
+                    "jobAlerts": {
+                      "type": "boolean"
+                    },
+                    "newsletter": {
+                      "type": "boolean"
+                    },
+                    "matchingCvVersionId": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "onboardedAt": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetRoles",
+                    "countries",
+                    "experienceLevel",
+                    "educationLevel",
+                    "pathways",
+                    "visaStatus",
+                    "currentLocation",
+                    "phone",
+                    "phoneIsWhatsapp",
+                    "visibleToRecruiters",
+                    "showContactToRecruiters",
+                    "jobAlerts",
+                    "newsletter",
+                    "matchingCvVersionId",
+                    "onboardedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

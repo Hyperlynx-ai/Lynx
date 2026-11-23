@@ -7,8 +7,9 @@ test.describe("candidate accounts", () => {
     const email = testEmail("candidate")
 
     await signUp(page, "/signup", { name: "Ada Candidate", email })
-    await expect(page).toHaveURL(/\/app$/)
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Welcome, Ada.")
+    // New candidates start with onboarding (chunk 2.3).
+    await expect(page).toHaveURL(/\/app\/onboarding$/)
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Start with your CV.")
 
     await logOut(page)
 
@@ -17,7 +18,7 @@ test.describe("candidate accounts", () => {
 
     await page.getByLabel("Password").fill(PASSWORD)
     await page.getByRole("button", { name: "Log in", exact: true }).click()
-    await expect(page).toHaveURL(/\/app$/)
+    await expect(page).toHaveURL(/\/app\/onboarding$/)
   })
 
   test("refuses weak passwords", async ({ page }) => {
@@ -38,7 +39,7 @@ test.describe("candidate accounts", () => {
   test("delete account removes access", async ({ page }) => {
     const email = testEmail("delete")
     await signUp(page, "/signup", { name: "Del Candidate", email })
-    await expect(page).toHaveURL(/\/app$/)
+    await expect(page).toHaveURL(/\/app\/onboarding$/)
 
     await page.goto("/app/settings")
     await page.getByLabel("Type DELETE to confirm").fill("DELETE")

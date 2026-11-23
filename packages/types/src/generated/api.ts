@@ -1136,6 +1136,276 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/candidate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The candidate's profile (null before onboarding) and prefill suggestions */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            candidate: {
+                                targetRoles: string[];
+                                countries: string[];
+                                experienceLevel: string | null;
+                                educationLevel: string | null;
+                                pathways: string[];
+                                visaStatus: string | null;
+                                currentLocation: string | null;
+                                phone: string | null;
+                                phoneIsWhatsapp: boolean;
+                                visibleToRecruiters: boolean;
+                                showContactToRecruiters: boolean;
+                                jobAlerts: boolean;
+                                newsletter: boolean;
+                                matchingCvVersionId: string | null;
+                                onboardedAt: string | null;
+                            } | null;
+                            suggestions: {
+                                targetRoles: string[];
+                                currentLocation: string | null;
+                                phone: string | null;
+                                /** @enum {string|null} */
+                                educationLevel: "high_school" | "diploma" | "bachelors" | "masters" | "doctorate" | "other" | null;
+                            };
+                        };
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/candidate/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save the candidate's profile answers (onboarding step 2, or later edits) */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        targetRoles: string[];
+                        countries: ("AE" | "SA" | "QA" | "OM" | "KW" | "BH" | "DE" | "NL" | "IE" | "GB" | "FR" | "BE" | "LU" | "AT" | "CH" | "PL" | "CZ" | "SE" | "FI" | "DK" | "NO" | "IT" | "ES" | "PT" | "EE" | "MT" | "CY" | "SG" | "MY" | "JP" | "AU" | "NZ" | "CA" | "US" | "IN")[];
+                        /** @enum {string} */
+                        experienceLevel: "student" | "fresher" | "junior" | "mid" | "senior" | "lead";
+                        /** @enum {string} */
+                        educationLevel: "high_school" | "diploma" | "bachelors" | "masters" | "doctorate" | "other";
+                        pathways: ("internship" | "first_job" | "job_switch" | "higher_education")[];
+                        /** @enum {string} */
+                        visaStatus: "needs_sponsorship" | "has_permit" | "citizen" | "not_sure";
+                        currentLocation: string | null;
+                        phone: string | null;
+                        phoneIsWhatsapp: boolean;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            targetRoles: string[];
+                            countries: string[];
+                            experienceLevel: string | null;
+                            educationLevel: string | null;
+                            pathways: string[];
+                            visaStatus: string | null;
+                            currentLocation: string | null;
+                            phone: string | null;
+                            phoneIsWhatsapp: boolean;
+                            visibleToRecruiters: boolean;
+                            showContactToRecruiters: boolean;
+                            jobAlerts: boolean;
+                            newsletter: boolean;
+                            matchingCvVersionId: string | null;
+                            onboardedAt: string | null;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/candidate/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save what the candidate agrees to; logs every change (policy PRIV-03) */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        visibleToRecruiters: boolean;
+                        showContactToRecruiters: boolean;
+                        jobAlerts: boolean;
+                        newsletter: boolean;
+                        /** @default false */
+                        completeOnboarding?: boolean;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            targetRoles: string[];
+                            countries: string[];
+                            experienceLevel: string | null;
+                            educationLevel: string | null;
+                            pathways: string[];
+                            visaStatus: string | null;
+                            currentLocation: string | null;
+                            phone: string | null;
+                            phoneIsWhatsapp: boolean;
+                            visibleToRecruiters: boolean;
+                            showContactToRecruiters: boolean;
+                            jobAlerts: boolean;
+                            newsletter: boolean;
+                            matchingCvVersionId: string | null;
+                            onboardedAt: string | null;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {

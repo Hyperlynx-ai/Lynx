@@ -20,6 +20,8 @@ import { adminRoutes } from "./modules/admin/routes.js"
 import { makeRequireUser } from "./modules/auth/plugin.js"
 import { makeRequireRole } from "./modules/auth/require-role.js"
 import { createTokenVerifier, type VerifyToken } from "./modules/auth/verify-token.js"
+import { candidateRoutes } from "./modules/candidates/routes.js"
+import { createSupabaseCandidateStore, type CandidateStore } from "./modules/candidates/store.js"
 import { cvRoutes } from "./modules/cvs/routes.js"
 import { createSupabaseCvStore, type CvStore } from "./modules/cvs/store.js"
 import { healthRoutes } from "./modules/health/routes.js"
@@ -48,9 +50,16 @@ export type AppDeps = {
   aiClient?: AiClient
   /** CV data access acting as the request's user. */
   cvStoreFor?: (request: FastifyRequest) => CvStore | undefined
+  /** Candidate profile and consents, acting as the request's user. */
+  candidateStoreFor?: (request: FastifyRequest) => CandidateStore | undefined
 }
 
 function defaultDeps(env: Env): AppDeps {
+  /** Supabase client acting as the signed-in user (row-level security applies). */
+  const userDb = (request: FastifyRequest) =>
+    env.SUPABASE_URL && env.SUPABASE_PUBLISHABLE_KEY && request.accessToken
+      ? createSupabaseForUser(env.SUPABASE_URL, env.SUPABASE_PUBLISHABLE_KEY, request.accessToken)
+      : undefined
   const supabaseAdmin =
     env.SUPABASE_URL && env.SUPABASE_SECRET_KEY
       ? createSupabaseAdmin(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY)
@@ -64,13 +73,12 @@ function defaultDeps(env: Env): AppDeps {
       supabaseAdmin,
     }),
     cvStoreFor: (request) => {
-      if (!env.SUPABASE_URL || !env.SUPABASE_PUBLISHABLE_KEY || !request.accessToken) return
-      const db = createSupabaseForUser(
-        env.SUPABASE_URL,
-        env.SUPABASE_PUBLISHABLE_KEY,
-        request.accessToken
-      )
-      return createSupabaseCvStore(db, request.user!.id)
+      const db = userDb(request)
+      return db ? createSupabaseCvStore(db, request.user!.id) : undefined
+    },
+    candidateStoreFor: (request) => {
+      const db = userDb(request)
+      return db ? createSupabaseCandidateStore(db, request.user!.id) : undefined
     },
   }
 }
@@ -81,7 +89,8 @@ function defaultDeps(env: Env): AppDeps {
  */
 export async function configureApp(instance: FastifyInstance, env: Env, deps?: AppDeps) {
   const app = instance.withTypeProvider<ZodTypeProvider>()
-  const { verifyToken, supabaseAdmin, aiClient, cvStoreFor } = deps ?? defaultDeps(env)
+  const { verifyToken, supabaseAdmin, aiClient, cvStoreFor, candidateStoreFor } =
+    deps ?? defaultDeps(env)
 
   app.setValidatorCompiler(validatorCompiler)
   app.setSerializerCompiler(serializerCompiler)
@@ -109,6 +118,12 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
     requireCandidate,
     cvStoreFor: cvStoreFor ?? (() => undefined),
     aiClient,
+  })
+  await app.register(candidateRoutes, {
+    requireUser,
+    requireCandidate,
+    candidateStoreFor: candidateStoreFor ?? (() => undefined),
+    cvStoreFor: cvStoreFor ?? (() => undefined),
   })
 
   app.get("/openapi.json", { schema: { hide: true } }, async () => app.swagger())
