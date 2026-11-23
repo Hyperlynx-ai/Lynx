@@ -424,6 +424,9 @@ pay in Razorpay test mode.
 
 ## Risks and how we handle them
 
+Current workarounds and deferred items are tracked in
+`docs/known-limitations.md`.
+
 | Risk | Handling |
 |---|---|
 | **Scraping LinkedIn, Indeed and similar sites** breaks their terms of service. It can lead to blocked IPs, legal letters, and in LinkedIn's case, lawsuits. | Scrapers are isolated adapters, each with an off switch. Jobs link back to the source. No logged-in scraping. A takedown process. Review with a lawyer before public launch. |
