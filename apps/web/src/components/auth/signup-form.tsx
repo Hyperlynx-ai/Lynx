@@ -25,6 +25,8 @@ type SignupFormProps = {
 export function SignupForm({ role, loginHref }: SignupFormProps) {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
+  /** Which field the error is about (gets a red border). */
+  const [invalid, setInvalid] = useState<"email" | "password" | null>(null)
   const [checkEmail, setCheckEmail] = useState(false)
   const [pending, setPending] = useState(false)
 
@@ -35,13 +37,16 @@ export function SignupForm({ role, loginHref }: SignupFormProps) {
     const email = String(form.get("email") ?? "").trim()
     const password = String(form.get("password") ?? "")
     setError(null)
+    setInvalid(null)
 
     if (role === "recruiter" && isFreeEmailDomain(email)) {
       setError(WORK_EMAIL_MESSAGE)
+      setInvalid("email")
       return
     }
     if (password.length < 8 || !/[a-z]/i.test(password) || !/\d/.test(password)) {
       setError(`Choose a stronger password. ${PASSWORD_HINT}`)
+      setInvalid("password")
       return
     }
 
@@ -97,7 +102,15 @@ export function SignupForm({ role, loginHref }: SignupFormProps) {
               : undefined
           }
         >
-          <Input id="email" name="email" type="email" autoComplete="email" required />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            aria-invalid={invalid === "email" || undefined}
+            aria-describedby={invalid === "email" ? "signup-error" : undefined}
+          />
         </Field>
         <Field htmlFor="password" label="Password" hint={PASSWORD_HINT}>
           <Input
@@ -107,10 +120,15 @@ export function SignupForm({ role, loginHref }: SignupFormProps) {
             autoComplete="new-password"
             minLength={8}
             required
-            aria-describedby="password-hint"
+            aria-invalid={invalid === "password" || undefined}
+            aria-describedby={invalid === "password" ? "signup-error" : "password-hint"}
           />
         </Field>
-        {error ? <Notice tone="error">{error}</Notice> : null}
+        {error ? (
+          <div id="signup-error">
+            <Notice tone="error">{error}</Notice>
+          </div>
+        ) : null}
         <Button type="submit" variant="heroPrimary" className="w-full" disabled={pending}>
           {pending ? "Creating your account…" : "Create account"}
         </Button>

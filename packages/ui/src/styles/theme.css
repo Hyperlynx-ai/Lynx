@@ -26,7 +26,9 @@
   --color-mint-fill-hover: #f6fdfa;
   --color-white: #ffffff;
   --color-black: #000000;
-  /* Red and amber chart colours: not defined by the skill yet (owner decision). */
+  /* Signals (skill rule 7): red for errors only, amber for chart warnings only. */
+  --color-error: #ff5f57;
+  --color-warning: #f5a524;
 
   /* ---------- shadcn/ui semantic names, pointing at the tokens ---------- */
   /* Note: in this project `accent` means MINT (the skill's name). shadcn
@@ -44,6 +46,7 @@
   --color-muted-foreground: var(--color-text-secondary);
   --color-input: var(--color-border);
   --color-ring: var(--color-accent);
+  --color-destructive: var(--color-error);
 
   /* ---------- Typography ---------- */
   --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;

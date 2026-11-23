@@ -31,7 +31,7 @@ Each rule comes with its reason, so you can judge edge cases instead of guessing
 4. **Keep the fused headline.** Every section headline is one text block: a lead clause in white, then a muted continuation clause in `#94979E`, inline on the same line flow. Never split the muted clause into a separate subhead line. *Why: it carries two levels of hierarchy while keeping vertical rhythm tight.*
 5. **One pale-mint band at a time.** The `#E4F1EB` surface is a rare inversion for data-visualization proof content, never a default alternating background, and never on two bands at once. Ink flips to `#131415` / `#18191B` inside it.
 6. **Hero primary is the white pill.** The highest-contrast control on the first screen is a solid white (`#FFFFFF`) pill with black text, 44px tall. The secondary is a transparent outline pill beside it. Outline is never the primary. Do not reuse the nav-utility button values (4px radius, 23px tall, transparent) for the hero CTA.
-7. **Red and amber are data, not chrome.** They appear only as semantic chart states (spike/error, warning triangle) - never as buttons, borders, or backgrounds.
+7. **Red and amber are signals, not chrome.** Red `#FF5F57` (token `error`) marks errors only: validation and error messages, the border of an invalid form field, the edge and marker of an error notice, and chart error/spike states. Amber `#F5A524` (token `warning`) is for chart warning states only. Never use either as a button fill, a large background, a section wash or decoration. *Why: like mint, scarcity keeps them meaningful; red must always mean "something is wrong".* (Owner decision, 2026-11-23: red added for form errors.)
 8. **Elevation is nearly flat.** Structure comes from hairline borders and rules, not shadows. Only two shadows exist (see Graphics & effects).
 
 ## Tokens (full set in `assets/tokens.css`)
@@ -47,6 +47,8 @@ Each rule comes with its reason, so you can judge edge cases instead of guessing
 | border-subtle | `#18191B` | near-invisible structure; ink on mint band |
 | accent | `#34D59A` | mint accent (rationed) |
 | accent-hover | `#47D18C` | accent hover state |
+| error | `#FF5F57` | errors only: messages, invalid field borders, error notices, chart errors (rule 7) |
+| warning | `#F5A524` | chart warning states only (rule 7) |
 
 Also in the source: ink-on-mint `#131415`, mint sibling `#CAE6D9`, mint-fill hover `#F6FDFA`, deep near-black `#181818`.
 
@@ -129,10 +131,9 @@ Fused headline markup:
 The source does not specify everything. For these gaps use the defaults below and mention in your summary that you did so, so the owner can promote them into the skill:
 
 - **Responsive:** the spec only describes desktop. Scale display type down fluidly (e.g. `clamp()`) while keeping the 1.13 line-height and negative tracking; collapse multi-column grids to one column on narrow screens; reduce the 240px section padding proportionally; keep the 0-radius and black-dominant rules at every size.
-- **Form inputs:** treat as square controls - transparent fill, `1px solid #303236`, 0 radius, 44px tall, white text, `#94979E` placeholder; focus border switches to `#34D59A`.
+- **Form inputs:** treat as square controls - transparent fill, `1px solid #303236`, 0 radius, 44px tall, white text, `#94979E` placeholder; focus border switches to `#34D59A`; an invalid field gets an `#FF5F57` border and its message is in `#FF5F57`, prefixed by a mono `!`.
 - **Focus rings / keyboard states:** visible 1px-2px mint outline offset by 2px (this is accent-as-signal, consistent with rule 3).
 - **Reduced motion:** honor `prefers-reduced-motion` by disabling marquee and slide animations.
-- **Red/amber chart colors:** the source names them but gives no hex values. Define them once in `tokens.css` and reuse; do not pick ad hoc shades per chart.
 - **Content-specific motifs:** the source is written around a developer-infrastructure product (shell-command CTA, database branching diagrams, terminal logs). Keep the *pattern* (mono command styling, branching-line graphics, terminal-style panels) but replace the literal content with whatever fits this site's own product.
 
 Never resolve a gap by adding a new color, a new radius, a drop shadow, a gradient background, or a new typeface.
@@ -142,6 +143,7 @@ Never resolve a gap by adding a new color, a new radius, a drop shadow, a gradie
 - [ ] Background is `#000000`; no full-frame saturated gradient anywhere.
 - [ ] Every card/panel/grid cell/navbar has 0 radius; only buttons and status dots are pill-rounded.
 - [ ] Mint `#34D59A` appears only on CTA pill, icon glyphs, code tokens, chart strokes, status dot.
+- [ ] Red `#FF5F57` appears only on error states (messages, invalid borders, error notices, chart errors); amber only on chart warnings; neither fills a button or background.
 - [ ] Section headlines use the fused lead + muted-clause pattern inline (no separate subhead).
 - [ ] At most one `#E4F1EB` band, and it holds data-viz proof content with dark ink.
 - [ ] Hero primary is the white pill; secondary is the outline pill; nav-utility values not reused.

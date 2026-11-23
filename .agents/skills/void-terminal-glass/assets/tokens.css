@@ -21,11 +21,11 @@
   --color-accent-soft: #cae6d9;       /* mint token sibling */
   --color-mint-fill-hover: #f6fdfa;
 
-  /* TODO (owner): the spec names red/amber as semantic chart states but gives no hex.
-     Define once here and reuse; never pick ad hoc shades per chart.
-  --color-chart-error: ;
-  --color-chart-warning: ;
-  */
+  /* Signals (rule 7). Red: errors only (messages, invalid field borders, error
+     notices, chart errors). Amber: chart warnings only. Never fills or washes.
+     Owner decision 2026-11-23. Contrast on #000: red 7.0:1, amber 10.3:1. */
+  --color-error: #ff5f57;
+  --color-warning: #f5a524;
 
   /* Typography */
   --font-sans: "Inter", system-ui, sans-serif;

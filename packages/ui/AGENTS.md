@@ -26,6 +26,10 @@ Shared design system for every screen. The root `AGENTS.md` still applies.
 - `accent` means **mint** here (the skill's name), and mint is rationed: CTA
   pill, icon glyphs, code tokens, chart strokes, status dot. shadcn
   components often use `bg-accent` for hover: change those to `bg-surface`.
+- `error` (red `#FF5F57`) is for error states only: messages, invalid field
+  borders (`aria-invalid`), error notices, chart errors. `warning` (amber) is
+  for chart warnings only. Never as a button fill or background. Use `<Notice
+  tone="error">` and `<Field error=...>` instead of styling errors by hand.
 - Cards, panels, grid cells, inputs and the navbar are square (radius 0);
   only buttons and status dots are pills. shadcn's `rounded-md` etc. resolve
   to nothing on purpose.
