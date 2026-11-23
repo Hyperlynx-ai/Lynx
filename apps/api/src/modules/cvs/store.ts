@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js"
 
-import type { CvData } from "@lynx/shared/cv"
+import type { CvData } from "../../shared/cv.js"
 
 export type CvStatus = "uploaded" | "parsing" | "parsed" | "failed" | "not_a_cv"
 export type CvVersionSource = "parsed" | "ai_edit" | "candidate_edit" | "tailored"

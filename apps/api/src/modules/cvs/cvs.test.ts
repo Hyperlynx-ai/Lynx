@@ -5,7 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js"
 import { createLocalJWKSet, exportJWK, generateKeyPair, SignJWT } from "jose"
 import { beforeAll, describe, expect, it, vi } from "vitest"
 
-import { CvData } from "@lynx/shared/cv"
+import { CvData } from "../../shared/cv.js"
 
 import { buildApp } from "../../create-app.js"
 import { readEnv } from "../../env.js"

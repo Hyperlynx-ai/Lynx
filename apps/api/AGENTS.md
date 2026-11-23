@@ -20,6 +20,8 @@ src/
   create-app.ts      buildApp(): registers plugins and every module.
                      (Not named app.ts: Vercel would treat that as the entry.)
   env.ts             all environment variables, validated with zod
+  lib/               Supabase clients: admin (secret key) and per-user
+  shared/            GENERATED copies of packages/shared files (pnpm shared:sync)
   modules/<name>/    one folder per feature
     routes.ts        Fastify routes with zod schemas (request + response)
     service.ts       business logic, no HTTP details
@@ -33,6 +35,15 @@ src/
   `packages/types`. Run `pnpm api:types` and commit the result.
 - Every route checks the caller's role and ownership (from Phase 1 on).
 - Never log personal data or IP addresses; the logger is configured for this.
+- Never import `@lynx/shared` (or other workspace TypeScript packages): the
+  deployed API can't load them (KL-19). Add the file to `FILES` in
+  `scripts/shared-sync.mjs`, run `pnpm shared:sync`, and import from
+  `src/shared/`.
+- Candidate data is read and written **as the user** (`cvStoreFor`, the
+  publishable key + their token) so row-level security applies; the secret
+  key is only for what users can't do themselves (ADR 0010).
+- AI calls go through `aiClient.call(task, ...)`: it enforces the daily cap
+  (`modules/ai/caps.ts`) and logs every call in `ai_calls`.
 - Calls to `services/ai` send `Authorization: Bearer ${AI_SERVICE_TOKEN}`.
 - New environment variables go in `src/env.ts` and `.env.example`.
 - Tests never call real external services (policy TEST-03): stub `fetch`.

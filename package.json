@@ -17,6 +17,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "ai:eval": "pnpm --filter ai eval",
+    "shared:sync": "node scripts/shared-sync.mjs",
     "api:types": "pnpm --filter api openapi:export && pnpm --filter @lynx/types generate",
     "db:start": "supabase start -x vector,logflare,edge-runtime,imgproxy",
     "db:env": "node scripts/local-env.mjs",

@@ -2,7 +2,7 @@ import type { FastifyReply, FastifyRequest, preHandlerHookHandler } from "fastif
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import { z } from "zod"
 
-import { CV_MEDIA_TYPES, CvData, isCvMediaType, MAX_CV_BYTES } from "@lynx/shared/cv"
+import { CV_MEDIA_TYPES, CvData, isCvMediaType, MAX_CV_BYTES } from "../../shared/cv.js"
 
 import { AiError, AiUsage, type AiClient } from "../ai/client.js"
 import type { CvRow, CvStore, CvVersionRow, CvVersionSummary } from "./store.js"
