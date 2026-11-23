@@ -5,10 +5,22 @@ import { usePathname } from "next/navigation"
 
 import { cn } from "@lynx/ui/lib/utils"
 
-/** Area navigation link; the current page is white with a mint underline. */
-export function AppNavLink({ href, children }: { href: string; children: React.ReactNode }) {
+/**
+ * Area navigation link; the current page is white with a mint underline.
+ * `exact` links (an area's home, e.g. /app) are active only on that page,
+ * not on every page below it.
+ */
+export function AppNavLink({
+  href,
+  exact = false,
+  children,
+}: {
+  href: string
+  exact?: boolean
+  children: React.ReactNode
+}) {
   const pathname = usePathname()
-  const active = pathname === href || (href !== "/" && pathname.startsWith(`${href}/`))
+  const active = pathname === href || (!exact && href !== "/" && pathname.startsWith(`${href}/`))
   return (
     <Link
       href={href}

@@ -28,7 +28,7 @@ export function AppShell({ area, homeHref, nav, user, children }: AppShellProps)
             className="order-3 flex w-full gap-gap-md md:order-none md:w-auto"
           >
             {nav.map((item) => (
-              <AppNavLink key={item.href} href={item.href}>
+              <AppNavLink key={item.href} href={item.href} exact={item.href === homeHref}>
                 {item.label}
               </AppNavLink>
             ))}
