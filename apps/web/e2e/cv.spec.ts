@@ -12,10 +12,9 @@ test.describe("candidate CV", () => {
     // service, so this checks everything up to the AI call: the upload to
     // the private bucket, row-level security and the API's error handling.
     await signUp(page, "/signup", { name: "Cara Cv", email: testEmail("cv") })
-    await expect(page).toHaveURL(/\/app$/)
+    await expect(page).toHaveURL(/\/app\/onboarding$/)
 
-    await page.getByRole("link", { name: "Upload your CV" }).click()
-    await expect(page).toHaveURL(/\/app\/cv$/)
+    await page.goto("/app/cv")
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Your CV.")
     await expect(page.getByText("Demo: please use the sample CV")).toBeVisible()
 
@@ -45,7 +44,7 @@ test.describe("candidate CV", () => {
 
   test("rejects files that aren't PDF or DOCX before uploading", async ({ page }) => {
     await signUp(page, "/signup", { name: "Tim Type", email: testEmail("cvtype") })
-    await expect(page).toHaveURL(/\/app$/)
+    await expect(page).toHaveURL(/\/app\/onboarding$/)
     await page.goto("/app/cv")
     await page.getByLabel("CV file").setInputFiles({
       name: "cv.txt",
