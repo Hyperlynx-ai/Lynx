@@ -1,0 +1,40 @@
+# Known limitations
+
+Things we know are missing, risky or worked around, because of a current
+limitation (budget, no domain, a tool's plan, time). Nothing here is
+forgotten: each item says what it affects and what unblocks it.
+
+**Rules for agents and teammates**
+
+- When you defer something because of a limitation, add it here in the same
+  PR (next free `KL-` number) and mention it in the PR description.
+- When you fix one, move it to "Resolved" with the PR number. Never delete
+  entries.
+- Check this list before starting a chunk: some items block or change it.
+
+## Open
+
+| ID | Limitation | What it affects | Unblocked by | Revisit |
+|---|---|---|---|---|
+| KL-01 | **Vercel Hobby plan** (free): non-commercial use only; only the owner's commits deploy; scheduled jobs at most once a day. | Teammates' PRs get no previews; outside users shouldn't use the site; jobs need Inngest (0006). | Vercel Pro. | Before teammates contribute and before outside users. |
+| KL-02 | **Public repository** (ADR 0009), forced by KL-01: Hobby can't connect a private organization repository. | Code, prompts, plans, issues and commit emails are visible to anyone. Nothing confidential may be committed (SEC-10). | Vercel Pro, then make the repository private. | Same as KL-01. |
+| KL-03 | **No branch protection on `main`** (owner's choice for now). Only local git hooks and agent rules stop pushes to `main`. | Anyone with write access can push to `main` from GitHub. | Turn on branch protection (free for public repositories): PR required, CI required, no force push, no deletion. | When teammates join. |
+| KL-04 | **No email domain.** Supabase's built-in email only reaches members of the Supabase organization and is rate-limited (a few per hour). | Email confirmation at sign-up is **off** (anyone can sign up with any address); password-reset emails only reach the team; job alerts and newsletters (Phase 8) can't be sent. | A domain + Resend, then Supabase custom SMTP (8.1); turn email confirmation on. | Phase 8, or as soon as the domain is available. |
+| KL-05 | **Prototype's Gemini key**, possibly a free-tier key (Google may use what we send). | Policy AI-02: only synthetic or test data may go to the AI until a paid key is in place. No real CVs in production. | A paid AI provider key with a spending limit. | Before real users (10.4 at the latest). |
+| KL-06 | **Supabase free plan**: projects pause after a week without activity; 500 MB database, 1 GB storage; no point-in-time backups. | Production can go to sleep before a demo; CVs and interview recordings will outgrow storage. | Supabase Pro for `lynx-prod`. | Before the demo (10.5). |
+| KL-07 | **Google sign-in has no automated test** (needs a real Google account). The server-side steps it relies on are tested. | A Google-specific regression would only be noticed by hand. | A Google test account usable in CI, or a manual check in every auth-related PR. | When auth changes. |
+| KL-08 | **Previews use the staging database**, which only receives a PR's migrations after it merges. | A PR that adds tables shows errors on its own preview until merged. | Supabase branching (paid) or applying migrations to staging per PR. | When it starts slowing reviews. |
+| KL-09 | **No rate limiting on the API yet** (policy SEC-07). Supabase Auth has its own limits; AI calls have per-user daily caps from Phase 2.1. | Public API endpoints could be hammered. | Rate limiting in `apps/api` (e.g. per user and per IP). | Before public launch (10.4). |
+| KL-10 | **Free-email list is curated** (~33 providers). Disposable-email services aren't blocked. | A fake recruiter could sign up. | Manual recruiter approval (4.1) is the real gate; optionally a maintained disposable-domain list. | Phase 4. |
+| KL-11 | **Admin user list** shows the newest 100 accounts; no search or paging. | Fine while small. | Full admin console (10.1). | Phase 10. |
+| KL-12 | **macOS setup not verified** (`pnpm setup:check`, `pnpm dev`, hooks) on a fresh clone. | A teammate on a Mac might hit a setup issue. | Run the README setup on the Mac. | Next time the owner works on the Mac. |
+| KL-13 | **Major upgrades held back**: TypeScript 7 (typescript-eslint and Vercel's API build don't support it yet) and `@types/node` above 22 (must match the Node 22 runtime). Dependabot ignores these majors. | We stay on TypeScript 5.x and Node 22 types. | typescript-eslint support for TS 7; moving the runtime to a newer Node LTS. | Every few months. |
+| KL-14 | **`hyperlynx.ai` domain** serves the old `hyperlynx-frontend` project; the owner will decide what happens to it. Its DNS is at a third-party provider. | Lynx runs on `lynx-web-pi.vercel.app`; no custom domain, no email domain (KL-04). | Owner decision. | When the owner says. |
+| KL-15 | **Vercel compiles `apps/api` with TypeScript strict mode off.** We run an extra non-strict check (`tsconfig.vercel.json`) so code compiles both ways. | Code relying on strict-only narrowing fails on Vercel even though local checks pass (caught by the extra check). | A Vercel setting or build change that honours our tsconfig. | When Vercel's Node builder changes. |
+| KL-16 | **Python AI service cold start** on Vercel takes a few seconds. | First request after idle is slow; the API's health check waits up to 10 s. | Keep-warm pings, or Fluid compute / a paid plan with longer-lived instances. | When AI features are user-facing (Phase 2+). |
+
+## Resolved
+
+| ID | Limitation | Resolved in |
+|---|---|---|
+| (none yet) | | |

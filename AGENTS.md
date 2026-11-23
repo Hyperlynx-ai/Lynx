@@ -88,6 +88,9 @@ site (paid programmes).
     changing `.agents/`, run `node scripts/agents-sync.mjs`. (GIT-07)
 15. **Keep the roadmap true.** Update the chunk's status in
     `docs/roadmap.md` in the same PR. (GIT-08)
+16. **Log limitations.** If something can't be done properly because of a
+    current limitation (plan, budget, missing domain, missing access), add it
+    to `docs/known-limitations.md` in the same PR instead of silently skipping it.
 
 ## Merging
 
@@ -108,6 +111,8 @@ is unclear. Full list: `docs/policies/08-escalation.md`.
 ## Where to find things
 
 - `docs/roadmap.md`: the plan, phase by phase, and the status of each chunk.
+- `docs/known-limitations.md`: what's deferred or worked around and why. Check it
+  before a chunk; add to it when you defer something.
 - `docs/policies/`: detailed rules (git workflow, protected areas, security,
   privacy and AI, dependencies, testing, database, escalation).
 - `docs/playbooks/`: step-by-step guides for teammates who work through agents.
