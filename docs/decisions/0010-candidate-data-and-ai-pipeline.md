@@ -38,7 +38,8 @@ personal data to an AI model and the first that writes candidate data.
   daily caps before calling.
 
 **Structured CV** (`CvData`, defined in Python in `services/ai` and mirrored
-as zod in `apps/api`): `basics` (name, headline, contact, location, links,
+as zod in `packages/shared/src/cv.ts`, which `apps/api` gets as a generated
+copy because of KL-19): `basics` (name, headline, contact, location, links,
 summary), `experience[]`, `education[]`, `projects[]`, `skills[]` (grouped),
 `certifications[]`, `languages[]`, `achievements[]`. Dates are free-text
 strings as written in the CV. Every piece of text keeps the candidate's own
