@@ -20,16 +20,26 @@ import { fileURLToPath } from "node:url"
 const root = join(dirname(fileURLToPath(import.meta.url)), "..")
 const checkOnly = process.argv.includes("--check")
 
-/** Files from packages/shared/src that apps/api uses. They must not import other files. */
-const FILES = ["cv.ts", "candidate.ts", "facts.ts"]
+/** Files from packages/shared/src that apps/api uses. They may import each other. */
+const FILES = ["cv.ts", "candidate.ts", "facts.ts", "cv-edit.ts"]
 
 let stale = 0
 for (const file of FILES) {
   const source = join(root, "packages", "shared", "src", file)
   const target = join(root, "apps", "api", "src", "shared", file)
-  const body = readFileSync(source, "utf8").replace(/\r\n/g, "\n")
-  if (/from\s+["']\.\.?\//.test(body)) {
-    console.error(`✖ packages/shared/src/${file} imports a relative file; copies must stand alone.`)
+  // Relative imports may only point at other copied files. The API needs
+  // explicit .js extensions (NodeNext), so "./cv" becomes "./cv.js".
+  const body = readFileSync(source, "utf8")
+    .replace(/\r\n/g, "\n")
+    .replace(/(from\s+["'])\.\/([\w-]+)(["'])/g, (_match, open, name, close) => {
+      if (!FILES.includes(`${name}.ts`)) {
+        console.error(`✖ packages/shared/src/${file} imports ./${name}, which isn't in FILES.`)
+        process.exit(1)
+      }
+      return `${open}./${name}.js${close}`
+    })
+  if (/from\s+["']\.\.\//.test(body)) {
+    console.error(`✖ packages/shared/src/${file} imports from outside packages/shared/src.`)
     process.exit(1)
   }
   const content =

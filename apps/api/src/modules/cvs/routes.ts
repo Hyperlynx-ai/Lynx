@@ -6,6 +6,7 @@ import { CV_MEDIA_TYPES, CvData, isCvMediaType, MAX_CV_BYTES } from "../../share
 
 import { factsFromCv } from "../../shared/facts.js"
 import { AiError, AiUsage, type AiClient } from "../ai/client.js"
+import type { CandidateStore } from "../candidates/store.js"
 import type { FactStore } from "../facts/store.js"
 import type { CvRow, CvStore, CvVersionRow, CvVersionSummary } from "./store.js"
 
@@ -76,13 +77,15 @@ type CvRoutesOptions = {
   cvStoreFor: (request: FastifyRequest) => CvStore | undefined
   /** Where facts read from the CV are saved ("What Lynx knows about you"). */
   factStoreFor?: (request: FastifyRequest) => FactStore | undefined
+  /** A newly read CV becomes the one used for matching. */
+  candidateStoreFor?: (request: FastifyRequest) => CandidateStore | undefined
   aiClient: AiClient | undefined
 }
 
 /** The signed-in candidate's CVs: upload, AI parsing and versions (chunk 2.2). */
 export const cvRoutes: FastifyPluginAsyncZod<CvRoutesOptions> = async (
   app,
-  { requireUser, requireCandidate, cvStoreFor, factStoreFor, aiClient }
+  { requireUser, requireCandidate, cvStoreFor, factStoreFor, candidateStoreFor, aiClient }
 ) => {
   const common = { preHandler: [requireUser, requireCandidate] }
   const doc = { tags: ["cvs"], security: [{ bearer: [] }] }
@@ -141,9 +144,14 @@ export const cvRoutes: FastifyPluginAsyncZod<CvRoutesOptions> = async (
       data: result.cv,
     })
     await store.setStatus(cv.id, "parsed")
-    // Lynx's memory follows the newest CV. A failure here must not lose the parse.
+    // The newest CV becomes the matching CV, and Lynx's CV facts follow it.
+    // A failure here must not lose the parse.
     try {
       await factStoreFor?.(request)?.replaceCvFacts(version.id, factsFromCv(result.cv))
+      const candidates = candidateStoreFor?.(request)
+      if (await candidates?.get()) {
+        await candidates!.save({ matching_cv_version_id: version.id })
+      }
     } catch (error) {
       request.log.warn({ cvId: cv.id, err: (error as Error).message }, "saving CV facts failed")
     }

@@ -28,6 +28,12 @@ tasks:
     fallbacks:
       - google:gemini-3.5-flash
 
+  # One CV section + instruction -> edited section (POST /v1/cv/edit).
+  cv_edit:
+    model: google:gemini-3.6-flash
+    fallbacks:
+      - google:gemini-3.5-flash
+
   # Free text from "Tell Lynx more" -> facts (POST /v1/facts/extract).
   facts_extract:
     model: google:gemini-3.6-flash

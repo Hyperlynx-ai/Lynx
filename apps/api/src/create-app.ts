@@ -22,6 +22,7 @@ import { makeRequireRole } from "./modules/auth/require-role.js"
 import { createTokenVerifier, type VerifyToken } from "./modules/auth/verify-token.js"
 import { candidateRoutes } from "./modules/candidates/routes.js"
 import { createSupabaseCandidateStore, type CandidateStore } from "./modules/candidates/store.js"
+import { cvEditRoutes } from "./modules/cvs/edit-routes.js"
 import { cvRoutes } from "./modules/cvs/routes.js"
 import { factRoutes } from "./modules/facts/routes.js"
 import { createSupabaseFactStore, type FactStore } from "./modules/facts/store.js"
@@ -134,6 +135,7 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
     requireCandidate,
     cvStoreFor,
     factStoreFor,
+    candidateStoreFor,
     aiClient,
   })
   await app.register(candidateRoutes, {
@@ -143,6 +145,14 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
     cvStoreFor,
   })
   await app.register(factRoutes, { requireUser, requireCandidate, factStoreFor, aiClient })
+  await app.register(cvEditRoutes, {
+    requireUser,
+    requireCandidate,
+    cvStoreFor,
+    candidateStoreFor,
+    factStoreFor,
+    aiClient,
+  })
   await app.register(exportRoutes, {
     requireUser,
     requireCandidate,

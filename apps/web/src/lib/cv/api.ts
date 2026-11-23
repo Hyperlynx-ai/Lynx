@@ -13,9 +13,10 @@ export async function listCvs(): Promise<CvFile[] | null> {
   return ((await res.json()) as CvList).cvs
 }
 
-/** One CV with its versions and the latest content, or null. */
-export async function getCv(id: string): Promise<CvDetail | null> {
-  const res = await apiFetchAsUser(`/cvs/${encodeURIComponent(id)}`)
+/** One CV with its versions and the latest (or a chosen) version's content, or null. */
+export async function getCv(id: string, version?: number): Promise<CvDetail | null> {
+  const query = version ? `?version=${version}` : ""
+  const res = await apiFetchAsUser(`/cvs/${encodeURIComponent(id)}${query}`)
   if (!res.ok) return null
   return (await res.json()) as CvDetail
 }

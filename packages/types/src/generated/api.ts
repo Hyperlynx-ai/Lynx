@@ -1792,6 +1792,516 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/cvs/{id}/ai-edit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ask Lynx to edit one section; returns a proposal (nothing is saved) */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        section: "basics" | "summary" | "experience" | "education" | "projects" | "skills" | "certifications" | "languages" | "achievements";
+                        instruction: string;
+                        version?: number;
+                        targetRole?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {string} */
+                            section: "basics" | "summary" | "experience" | "education" | "projects" | "skills" | "certifications" | "languages" | "achievements";
+                            before: unknown;
+                            after: unknown;
+                            explanation: string;
+                            warnings: string[];
+                        };
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                502: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cvs/{id}/tailor": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tailor the CV to a role: proposals for the summary, experience and skills */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        role: string;
+                        version?: number;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            proposals: {
+                                /** @enum {string} */
+                                section: "basics" | "summary" | "experience" | "education" | "projects" | "skills" | "certifications" | "languages" | "achievements";
+                                before: unknown;
+                                after: unknown;
+                                explanation: string;
+                                warnings: string[];
+                            }[];
+                            failed: {
+                                /** @enum {string} */
+                                section: "basics" | "summary" | "experience" | "education" | "projects" | "skills" | "certifications" | "languages" | "achievements";
+                                error: string;
+                            }[];
+                        };
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                502: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cvs/{id}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Save edited CV content as a new version */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        data: {
+                            basics: {
+                                name: string | null;
+                                headline: string | null;
+                                email: string | null;
+                                phone: string | null;
+                                location: string | null;
+                                links: {
+                                    label: string | null;
+                                    url: string;
+                                }[];
+                                summary: string | null;
+                            };
+                            experience: {
+                                title: string | null;
+                                company: string | null;
+                                location: string | null;
+                                start: string | null;
+                                end: string | null;
+                                highlights: string[];
+                            }[];
+                            education: {
+                                institution: string | null;
+                                degree: string | null;
+                                field: string | null;
+                                location: string | null;
+                                start: string | null;
+                                end: string | null;
+                                grade: string | null;
+                                highlights: string[];
+                            }[];
+                            projects: {
+                                name: string | null;
+                                url: string | null;
+                                start: string | null;
+                                end: string | null;
+                                technologies: string[];
+                                highlights: string[];
+                            }[];
+                            skills: {
+                                name: string | null;
+                                skills: string[];
+                            }[];
+                            certifications: {
+                                name: string;
+                                issuer: string | null;
+                                date: string | null;
+                                url: string | null;
+                            }[];
+                            languages: {
+                                name: string;
+                                level: string | null;
+                            }[];
+                            achievements: string[];
+                        };
+                        /** @enum {string} */
+                        source: "candidate_edit" | "ai_edit" | "tailored";
+                        label?: string | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            version: number;
+                            /** @enum {string} */
+                            source: "parsed" | "ai_edit" | "candidate_edit" | "tailored";
+                            label: string | null;
+                            createdAt: string;
+                            data: {
+                                basics: {
+                                    name: string | null;
+                                    headline: string | null;
+                                    email: string | null;
+                                    phone: string | null;
+                                    location: string | null;
+                                    links: {
+                                        label: string | null;
+                                        url: string;
+                                    }[];
+                                    summary: string | null;
+                                };
+                                experience: {
+                                    title: string | null;
+                                    company: string | null;
+                                    location: string | null;
+                                    start: string | null;
+                                    end: string | null;
+                                    highlights: string[];
+                                }[];
+                                education: {
+                                    institution: string | null;
+                                    degree: string | null;
+                                    field: string | null;
+                                    location: string | null;
+                                    start: string | null;
+                                    end: string | null;
+                                    grade: string | null;
+                                    highlights: string[];
+                                }[];
+                                projects: {
+                                    name: string | null;
+                                    url: string | null;
+                                    start: string | null;
+                                    end: string | null;
+                                    technologies: string[];
+                                    highlights: string[];
+                                }[];
+                                skills: {
+                                    name: string | null;
+                                    skills: string[];
+                                }[];
+                                certifications: {
+                                    name: string;
+                                    issuer: string | null;
+                                    date: string | null;
+                                    url: string | null;
+                                }[];
+                                languages: {
+                                    name: string;
+                                    level: string | null;
+                                }[];
+                                achievements: string[];
+                            };
+                        };
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/candidate/matching-cv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Choose the CV version Lynx uses for matching (and for its CV facts) */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        cvId: string;
+                        version: number;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            matchingCvVersionId: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/export": {
         parameters: {
             query?: never;
