@@ -44,3 +44,19 @@ export async function logOut(page: Page) {
 export async function expectAlert(page: Page, text: string) {
   await expect(page.getByRole("alert").filter({ hasText: text })).toBeVisible()
 }
+
+/** Signs up a candidate and finishes onboarding with minimal answers (no CV). */
+export async function onboardedCandidate(page: Page, name: string, label: string) {
+  await signUp(page, "/signup", { name, email: testEmail(label) })
+  await expect(page).toHaveURL(/\/app\/onboarding$/)
+  await page.getByRole("link", { name: /Skip for now/ }).click()
+  await page.getByLabel("Roles you're looking for").fill("Data Analyst")
+  await page.getByText("Netherlands").click()
+  await page.getByLabel("Work experience").selectOption("junior")
+  await page.getByLabel("Highest education").selectOption("masters")
+  await page.getByText("A new job (I'm working now)").click()
+  await page.getByLabel("Work authorization").selectOption("needs_sponsorship")
+  await page.getByRole("button", { name: "Continue" }).click()
+  await page.getByRole("button", { name: "Finish" }).click()
+  await expect(page).toHaveURL(/\/app$/)
+}

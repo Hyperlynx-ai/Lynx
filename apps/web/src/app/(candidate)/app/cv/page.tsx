@@ -35,7 +35,10 @@ export default async function CvPage() {
   const user = await requireRole("candidate", "/app/cv")
   const cvs = await listCvs()
   const latest = cvs?.[0]
-  const detail = latest?.status === "parsed" ? await getCv(latest.id) : null
+  // Show the newest CV Lynx has read, even if a newer upload failed.
+  const shown = cvs?.find((cv) => cv.status === "parsed")
+  const pending = latest && latest !== shown ? latest : undefined
+  const detail = shown ? await getCv(shown.id) : null
   const current = detail?.current ?? null
   const name = current?.data.basics.name
 
@@ -63,28 +66,33 @@ export default async function CvPage() {
         </Notice>
       ) : null}
 
-      {latest && current && detail ? (
-        <section aria-label="Your CV, as Lynx read it" className="flex flex-col gap-gap-md">
-          <SourceLine file={latest} version={current.version} label={current.label} />
-          <CvView cv={current.data} />
-          <CvFileActions cvId={latest.id} fileName={latest.fileName} />
-        </section>
-      ) : latest ? (
+      {pending ? (
         <section aria-label="Your latest upload" className="flex flex-col gap-gap-md">
-          <Notice tone={latest.status === "parsing" ? "info" : "error"} title={latest.fileName}>
-            {STATUS_NOTE[latest.status] ?? STATUS_NOTE.failed}
+          <Notice tone={pending.status === "parsing" ? "info" : "error"} title={pending.fileName}>
+            {STATUS_NOTE[pending.status] ?? STATUS_NOTE.failed}
+            {shown ? " Lynx is still using your earlier CV below." : ""}
           </Notice>
           <CvFileActions
-            cvId={latest.id}
-            fileName={latest.fileName}
-            canRetry={latest.status === "uploaded" || latest.status === "failed"}
+            cvId={pending.id}
+            fileName={pending.fileName}
+            canRetry={pending.status === "uploaded" || pending.status === "failed"}
           />
+        </section>
+      ) : null}
+
+      {shown && current && detail ? (
+        <section aria-label="Your CV, as Lynx read it" className="flex flex-col gap-gap-md">
+          <SourceLine file={shown} version={current.version} label={current.label} />
+          <CvView cv={current.data} />
+          <CvFileActions cvId={shown.id} fileName={shown.fileName} />
         </section>
       ) : null}
 
       {cvs !== null ? <CvUpload userId={user.id} compact={Boolean(latest)} /> : null}
 
-      {cvs && cvs.length > 1 ? <EarlierUploads files={cvs.slice(1)} /> : null}
+      {cvs && cvs.length > 1 ? (
+        <EarlierUploads files={cvs.filter((cv) => cv !== shown && cv !== pending)} />
+      ) : null}
     </div>
   )
 }
@@ -100,6 +108,7 @@ function SourceLine(props: { file: CvFile; version: number; label: string | null
 }
 
 function EarlierUploads({ files }: { files: CvFile[] }) {
+  if (!files.length) return null
   return (
     <section aria-labelledby="earlier-uploads" className="flex flex-col gap-gap-sm">
       <h2 id="earlier-uploads" className="text-label text-text-secondary">

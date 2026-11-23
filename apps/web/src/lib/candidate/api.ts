@@ -27,3 +27,13 @@ export async function isOnboarded(userId: string): Promise<boolean> {
     .maybeSingle()
   return Boolean(data?.onboarded_at)
 }
+
+export type Fact =
+  paths["/me/facts"]["get"]["responses"]["200"]["content"]["application/json"]["facts"][number]
+
+/** Everything Lynx knows about the candidate, or null if the API failed. */
+export async function getFacts(): Promise<Fact[] | null> {
+  const res = await apiFetchAsUser("/me/facts")
+  if (!res.ok) return null
+  return ((await res.json()) as { facts: Fact[] }).facts
+}
