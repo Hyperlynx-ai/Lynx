@@ -23,7 +23,8 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", {
 
 /** What happened to a CV that isn't readable yet, and what to do. */
 const STATUS_NOTE: Record<string, string> = {
-  uploaded: "Lynx hasn't read this file yet.",
+  uploaded:
+    "Lynx hasn't read this file yet. If you reached today's CV-reading limit, try again tomorrow.",
   parsing: "Lynx is reading this file. Refresh in a moment.",
   failed: cvErrorMessage("parse_failed"),
   not_a_cv: cvErrorMessage("not_a_cv"),

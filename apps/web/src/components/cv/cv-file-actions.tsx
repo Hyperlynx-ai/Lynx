@@ -9,7 +9,7 @@ import { LoadingState } from "@lynx/ui/components/states"
 
 import { deleteCv, retryCv } from "@/app/(candidate)/app/cv/actions"
 
-import { cvErrorMessage } from "./messages"
+import { cvErrorMessage, isSavedFileError } from "./messages"
 
 type CvFileActionsProps = {
   cvId: string
@@ -32,7 +32,7 @@ export function CvFileActions({ cvId, fileName, canRetry = false }: CvFileAction
     const result = kind === "retry" ? await retryCv(cvId) : await deleteCv(cvId)
     setBusy(null)
     setConfirming(false)
-    if (!result.ok) setError(cvErrorMessage(result.error))
+    if (!result.ok && !isSavedFileError(result.error)) setError(cvErrorMessage(result.error))
     startTransition(() => router.refresh())
   }
 

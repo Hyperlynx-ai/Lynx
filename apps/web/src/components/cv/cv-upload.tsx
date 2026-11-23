@@ -12,7 +12,7 @@ import { cn } from "@lynx/ui/lib/utils"
 import { registerCv } from "@/app/(candidate)/app/cv/actions"
 import { createClient } from "@/lib/supabase/client"
 
-import { cvErrorMessage } from "./messages"
+import { cvErrorMessage, isSavedFileError } from "./messages"
 
 const TYPES: Record<string, CvMediaType> = {
   pdf: "application/pdf",
@@ -67,7 +67,7 @@ export function CvUpload({ userId, compact = false }: { userId: string; compact?
       sizeBytes: file.size,
     })
     setPhase("idle")
-    if (!result.ok) setError(cvErrorMessage(result.error))
+    if (!result.ok && !isSavedFileError(result.error)) setError(cvErrorMessage(result.error))
     if (inputRef.current) inputRef.current.value = ""
     router.refresh()
   }
