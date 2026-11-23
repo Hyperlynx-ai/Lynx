@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 
 from . import __version__
+from .cv_routes import router as cv_router
 from .security import require_service_token
 from .settings import get_settings
 from .tasks import Usage, make_agent, run_task
@@ -17,6 +18,7 @@ app = FastAPI(
     docs_url=None,
     redoc_url=None,
 )
+app.include_router(cv_router)
 
 
 class Health(BaseModel):

@@ -1,0 +1,76 @@
+{
+  "basics": {
+    "name": "Rohan Verma",
+    "headline": "Mechanical Engineering Graduate",
+    "email": "rohan.verma@example.com",
+    "phone": "+91 90000 00003",
+    "location": "Pune, India",
+    "links": [{ "label": "LinkedIn", "url": "linkedin.com/in/rohan-verma-example" }],
+    "summary": null
+  },
+  "experience": [
+    {
+      "title": "Design Intern",
+      "company": "Fabrikam Auto Components",
+      "location": "Chakan, Pune",
+      "start": "Jan 2025",
+      "end": "Jun 2025",
+      "highlights": [
+        "Redesigned a brake-caliper bracket in SolidWorks, reducing its weight by 14%",
+        "Ran FEA studies in ANSYS for 6 components"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Example College of Engineering",
+      "degree": "B.E.",
+      "field": "Mechanical Engineering",
+      "location": "Pune, India",
+      "start": "2021",
+      "end": "2025",
+      "grade": "CGPA 8.9/10",
+      "highlights": []
+    },
+    {
+      "institution": "Example Junior College",
+      "degree": "HSC (Class XII)",
+      "field": "Science",
+      "location": "Nagpur, India",
+      "start": null,
+      "end": "2021",
+      "grade": "91%",
+      "highlights": []
+    }
+  ],
+  "projects": [
+    {
+      "name": "Formula Student Electric Car",
+      "url": null,
+      "start": "2022",
+      "end": "2024",
+      "technologies": ["SolidWorks", "ANSYS", "MATLAB"],
+      "highlights": [
+        "Led the 8-person chassis team",
+        "Designed the spaceframe chassis; car finished 5th in endurance at Formula Bharat 2024"
+      ]
+    }
+  ],
+  "skills": [
+    { "name": null, "skills": ["SolidWorks", "ANSYS", "MATLAB", "AutoCAD", "GD&T", "Python"] }
+  ],
+  "certifications": [
+    {
+      "name": "Certified SOLIDWORKS Associate (CSWA)",
+      "issuer": "Dassault Systemes",
+      "date": "2023",
+      "url": null
+    }
+  ],
+  "languages": [
+    { "name": "English", "level": "Fluent" },
+    { "name": "Hindi", "level": "Native" },
+    { "name": "German", "level": "A2" }
+  ],
+  "achievements": ["Department rank 2, Mechanical Engineering, 2025"]
+}

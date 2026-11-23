@@ -10,6 +10,8 @@ dependencies = [
     "psycopg[binary]>=3.3.9",
     "pydantic-ai-slim[google,openai]>=2.71.0",
     "pydantic-settings>=2.16.3",
+    "pypdf>=7.1.1",
+    "python-docx>=1.2.0",
     "python-dotenv>=1.2.4",
     "pyyaml>=6.0.4",
     "sqlalchemy>=2.1.9",
@@ -17,6 +19,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "fpdf2>=2.9.0",
+    "pydantic-evals==2.71.0",
     "pyright>=1.1.414",
     "pytest>=9.2.0",
     "pytest-asyncio>=1.5.0",
@@ -33,7 +37,7 @@ extend-exclude = [".venv"]
 select = ["E", "F", "I", "B", "UP", "SIM", "ASYNC"]
 
 [tool.pyright]
-include = ["lynx_ai", "tests", "main.py"]
+include = ["lynx_ai", "evals", "tests", "main.py"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
 venvPath = "."
