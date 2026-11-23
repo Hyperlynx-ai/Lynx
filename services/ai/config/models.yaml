@@ -21,6 +21,13 @@ tasks:
     fallbacks:
       - google:gemini-3.5-flash
 
+  # CV file (PDF read natively, DOCX as text) -> structured CV (POST /v1/cv/parse).
+  # "compat:" models get the PDF's text instead of the file.
+  cv_parse:
+    model: google:gemini-3.6-flash
+    fallbacks:
+      - google:gemini-3.5-flash
+
 # OpenAI-compatible endpoints, used as "compat:<name>/<model>".
 # Example (uncomment and set the key to use it):
 #   qwen:

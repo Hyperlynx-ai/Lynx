@@ -1,6 +1,10 @@
 import swagger from "@fastify/swagger"
 import type { SupabaseClient } from "@supabase/supabase-js"
-import Fastify, { type FastifyInstance, type FastifyServerOptions } from "fastify"
+import Fastify, {
+  type FastifyInstance,
+  type FastifyRequest,
+  type FastifyServerOptions,
+} from "fastify"
 import {
   jsonSchemaTransform,
   serializerCompiler,
@@ -10,11 +14,14 @@ import {
 
 import { readEnv, type Env } from "./env.js"
 import { createSupabaseAdmin } from "./lib/supabase-admin.js"
+import { createSupabaseForUser } from "./lib/supabase-user.js"
 import { createAiClient, type AiClient } from "./modules/ai/client.js"
 import { adminRoutes } from "./modules/admin/routes.js"
 import { makeRequireUser } from "./modules/auth/plugin.js"
 import { makeRequireRole } from "./modules/auth/require-role.js"
 import { createTokenVerifier, type VerifyToken } from "./modules/auth/verify-token.js"
+import { cvRoutes } from "./modules/cvs/routes.js"
+import { createSupabaseCvStore, type CvStore } from "./modules/cvs/store.js"
 import { healthRoutes } from "./modules/health/routes.js"
 import { meRoutes } from "./modules/me/routes.js"
 
@@ -39,6 +46,8 @@ export type AppDeps = {
   verifyToken?: VerifyToken
   supabaseAdmin?: SupabaseClient
   aiClient?: AiClient
+  /** CV data access acting as the request's user. */
+  cvStoreFor?: (request: FastifyRequest) => CvStore | undefined
 }
 
 function defaultDeps(env: Env): AppDeps {
@@ -54,6 +63,15 @@ function defaultDeps(env: Env): AppDeps {
       token: env.AI_SERVICE_TOKEN,
       supabaseAdmin,
     }),
+    cvStoreFor: (request) => {
+      if (!env.SUPABASE_URL || !env.SUPABASE_PUBLISHABLE_KEY || !request.accessToken) return
+      const db = createSupabaseForUser(
+        env.SUPABASE_URL,
+        env.SUPABASE_PUBLISHABLE_KEY,
+        request.accessToken
+      )
+      return createSupabaseCvStore(db, request.user!.id)
+    },
   }
 }
 
@@ -63,7 +81,7 @@ function defaultDeps(env: Env): AppDeps {
  */
 export async function configureApp(instance: FastifyInstance, env: Env, deps?: AppDeps) {
   const app = instance.withTypeProvider<ZodTypeProvider>()
-  const { verifyToken, supabaseAdmin, aiClient } = deps ?? defaultDeps(env)
+  const { verifyToken, supabaseAdmin, aiClient, cvStoreFor } = deps ?? defaultDeps(env)
 
   app.setValidatorCompiler(validatorCompiler)
   app.setSerializerCompiler(serializerCompiler)
@@ -81,10 +99,17 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
   app.decorate("env", env)
   const requireUser = makeRequireUser(verifyToken)
   const requireAdmin = makeRequireRole(supabaseAdmin)("admin")
+  const requireCandidate = makeRequireRole(supabaseAdmin)("candidate")
 
   await app.register(healthRoutes)
   await app.register(meRoutes, { requireUser, supabaseAdmin })
   await app.register(adminRoutes, { requireUser, requireAdmin, supabaseAdmin, aiClient })
+  await app.register(cvRoutes, {
+    requireUser,
+    requireCandidate,
+    cvStoreFor: cvStoreFor ?? (() => undefined),
+    aiClient,
+  })
 
   app.get("/openapi.json", { schema: { hide: true } }, async () => app.swagger())
 

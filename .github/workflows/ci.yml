@@ -42,6 +42,9 @@ jobs:
       - name: Agent mirrors are in sync (.agents -> each tool)
         run: node scripts/agents-sync.mjs --check
 
+      - name: Shared copies in apps/api are in sync
+        run: node scripts/shared-sync.mjs --check
+
       - name: Applied migrations are never edited
         if: github.event_name == 'pull_request'
         run: node scripts/check-migrations.mjs origin/${{ github.base_ref }}

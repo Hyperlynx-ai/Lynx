@@ -1,0 +1,78 @@
+{
+  "basics": {
+    "name": "Aarav Sharma",
+    "headline": "Backend Software Engineer",
+    "email": "aarav.sharma@example.com",
+    "phone": "+91 90000 00001",
+    "location": "Bengaluru, India",
+    "links": [
+      { "label": "LinkedIn", "url": "linkedin.com/in/aarav-sharma-example" },
+      { "label": "GitHub", "url": "github.com/aarav-sharma-example" }
+    ],
+    "summary": "Backend engineer with 4 years of experience building payment and logistics APIs in Python and Go. Looking for backend roles in Dubai or Abu Dhabi."
+  },
+  "experience": [
+    {
+      "title": "Software Engineer II",
+      "company": "Northwind Payments",
+      "location": "Bengaluru, India",
+      "start": "Jul 2023",
+      "end": "Present",
+      "highlights": [
+        "Built a settlement service in Go that processes 2 million transactions a day",
+        "Cut p95 API latency from 480 ms to 120 ms by adding Redis caching",
+        "Mentored 3 junior engineers"
+      ]
+    },
+    {
+      "title": "Software Engineer",
+      "company": "Contoso Logistics",
+      "location": "Pune, India",
+      "start": "Jun 2021",
+      "end": "Jun 2023",
+      "highlights": [
+        "Developed shipment-tracking APIs in Python (FastAPI) used by 40 warehouse partners",
+        "Migrated batch jobs from cron to Airflow"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Example Institute of Technology",
+      "degree": "B.Tech",
+      "field": "Computer Science and Engineering",
+      "location": "Pune, India",
+      "start": "2017",
+      "end": "2021",
+      "grade": "CGPA 8.4/10",
+      "highlights": ["Final-year project: route optimisation for delivery vans"]
+    }
+  ],
+  "projects": [
+    {
+      "name": "ledger-lite",
+      "url": "github.com/aarav-sharma-example/ledger-lite",
+      "start": "2024",
+      "end": null,
+      "technologies": ["Go", "PostgreSQL"],
+      "highlights": ["Open-source double-entry ledger library with 300 GitHub stars"]
+    }
+  ],
+  "skills": [
+    { "name": "Languages", "skills": ["Go", "Python", "SQL"] },
+    { "name": "Tools", "skills": ["PostgreSQL", "Redis", "Kafka", "Docker", "AWS"] }
+  ],
+  "certifications": [
+    {
+      "name": "AWS Certified Developer - Associate",
+      "issuer": "Amazon Web Services",
+      "date": "2024",
+      "url": null
+    }
+  ],
+  "languages": [
+    { "name": "English", "level": "Fluent" },
+    { "name": "Hindi", "level": "Native" }
+  ],
+  "achievements": ["Winner, Example City Fintech Hackathon 2022"]
+}

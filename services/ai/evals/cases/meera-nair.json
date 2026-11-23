@@ -1,0 +1,87 @@
+{
+  "basics": {
+    "name": "Meera Nair",
+    "headline": "Registered Staff Nurse (ICU)",
+    "email": "meera.nair@example.com",
+    "phone": "+91 90000 00002",
+    "location": "Kochi, Kerala, India",
+    "links": [],
+    "summary": "Registered nurse with 5 years of critical-care experience in multi-specialty hospitals. Passed the DHA Prometric exam and looking for ICU nursing roles in the UAE."
+  },
+  "experience": [
+    {
+      "title": "Staff Nurse, Medical ICU",
+      "company": "Lakeside Multi-Specialty Hospital",
+      "location": "Kochi, India",
+      "start": "Mar 2022",
+      "end": "Present",
+      "highlights": [
+        "Care for up to 3 ventilated patients per shift in a 24-bed ICU",
+        "Trained 12 new nurses on infection-control protocols",
+        "Member of the hospital's rapid-response team"
+      ]
+    },
+    {
+      "title": "Staff Nurse",
+      "company": "Example Medical Centre",
+      "location": "Thrissur, India",
+      "start": "Aug 2020",
+      "end": "Feb 2022",
+      "highlights": [
+        "Worked in general medicine and post-operative wards",
+        "Maintained accurate patient records in the hospital EMR"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Example College of Nursing",
+      "degree": "B.Sc. Nursing",
+      "field": null,
+      "location": "Kochi, India",
+      "start": "2016",
+      "end": "2020",
+      "grade": "78%",
+      "highlights": []
+    }
+  ],
+  "projects": [],
+  "skills": [
+    {
+      "name": "Clinical skills",
+      "skills": [
+        "Ventilator management",
+        "Arterial blood gas sampling",
+        "IV cannulation",
+        "Wound care"
+      ]
+    },
+    { "name": "Systems", "skills": ["Electronic medical records"] }
+  ],
+  "certifications": [
+    {
+      "name": "Basic Life Support (BLS)",
+      "issuer": "American Heart Association",
+      "date": "2025",
+      "url": null
+    },
+    {
+      "name": "Advanced Cardiovascular Life Support (ACLS)",
+      "issuer": "American Heart Association",
+      "date": "2024",
+      "url": null
+    },
+    {
+      "name": "DHA Prometric exam (Registered Nurse)",
+      "issuer": "Dubai Health Authority",
+      "date": "2025",
+      "url": null
+    }
+  ],
+  "languages": [
+    { "name": "Malayalam", "level": "Native" },
+    { "name": "English", "level": "Fluent" },
+    { "name": "Hindi", "level": "Conversational" }
+  ],
+  "achievements": ["Best Nurse of the Year, Lakeside Multi-Specialty Hospital, 2024"]
+}

@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-23",
+  "configured": "google:gemini-3.6-flash",
+  "average_overall": 0.982,
+  "pass_mark": 0.9,
+  "failed_cases": [],
+  "cases": {
+    "aarav-sharma-pdf": {
+      "scores": {
+        "basics": 1.0,
+        "experience": 1.0,
+        "education": 0.857,
+        "projects": 1.0,
+        "skills": 1.0,
+        "certifications": 1.0,
+        "languages": 1.0,
+        "achievements": 1.0,
+        "overall": 0.982
+      },
+      "model": "gemini-3.6-flash",
+      "input_tokens": 1934,
+      "output_tokens": 2892,
+      "duration_s": 27.6
+    },
+    "meera-nair-docx": {
+      "scores": {
+        "basics": 1.0,
+        "experience": 1.0,
+        "education": 1.0,
+        "projects": 1.0,
+        "skills": 1.0,
+        "certifications": 1.0,
+        "languages": 1.0,
+        "achievements": 1.0,
+        "overall": 1.0
+      },
+      "model": "gemini-3.6-flash",
+      "input_tokens": 1766,
+      "output_tokens": 2374,
+      "duration_s": 14.1
+    },
+    "rohan-verma-pdf": {
+      "scores": {
+        "basics": 1.0,
+        "experience": 1.0,
+        "education": 0.714,
+        "projects": 1.0,
+        "skills": 1.0,
+        "certifications": 1.0,
+        "languages": 1.0,
+        "achievements": 1.0,
+        "overall": 0.964
+      },
+      "model": "gemini-3.6-flash",
+      "input_tokens": 1934,
+      "output_tokens": 2669,
+      "duration_s": 21.2
+    }
+  }
+}

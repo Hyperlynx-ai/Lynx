@@ -32,13 +32,25 @@ function sign(claims: { sub?: string; email?: string }, issuer = `${SUPABASE_URL
 /** A tiny stand-in for the Supabase admin client (no network in tests, TEST-03). */
 function fakeSupabase(profile: Record<string, unknown> | null) {
   const deleteUser = vi.fn(async () => ({ data: {}, error: null }))
+  // One stored CV file in the user's folder.
+  let files = [{ name: "abcdefgh12.pdf" }]
+  const removeFiles = vi.fn(async (paths: string[]) => {
+    files = files.filter((f) => !paths.includes(`${USER_ID}/${f.name}`))
+    return { data: [], error: null }
+  })
   const client = {
     from: () => ({
       select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: profile, error: null }) }) }),
     }),
     auth: { admin: { deleteUser } },
+    storage: {
+      from: () => ({
+        list: async () => ({ data: files, error: null }),
+        remove: removeFiles,
+      }),
+    },
   }
-  return { client: client as unknown as SupabaseClient, deleteUser }
+  return { client: client as unknown as SupabaseClient, deleteUser, removeFiles }
 }
 
 async function app(
@@ -49,7 +61,7 @@ async function app(
     verifyToken,
     supabaseAdmin: supabase.client,
   })
-  return { instance, deleteUser: supabase.deleteUser }
+  return { instance, deleteUser: supabase.deleteUser, removeFiles: supabase.removeFiles }
 }
 
 describe("GET /me", () => {
@@ -92,7 +104,7 @@ describe("GET /me", () => {
 
 describe("DELETE /me", () => {
   it("deletes only the caller's own account", async () => {
-    const { instance, deleteUser } = await app()
+    const { instance, deleteUser, removeFiles } = await app()
     const token = await sign({ sub: USER_ID })
     const res = await instance.inject({
       method: "DELETE",
@@ -101,6 +113,7 @@ describe("DELETE /me", () => {
     })
     expect(res.statusCode).toBe(204)
     expect(deleteUser).toHaveBeenCalledWith(USER_ID)
+    expect(removeFiles).toHaveBeenCalledWith([`${USER_ID}/abcdefgh12.pdf`])
     await instance.close()
   })
 
