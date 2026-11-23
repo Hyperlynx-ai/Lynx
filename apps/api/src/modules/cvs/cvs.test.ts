@@ -1,152 +1,28 @@
-import { readFileSync } from "node:fs"
-import { join } from "node:path"
-
-import type { SupabaseClient } from "@supabase/supabase-js"
-import { createLocalJWKSet, exportJWK, generateKeyPair, SignJWT } from "jose"
 import { beforeAll, describe, expect, it, vi } from "vitest"
-
-import { CvData } from "../../shared/cv.js"
 
 import { buildApp } from "../../create-app.js"
 import { readEnv } from "../../env.js"
+import {
+  CANDIDATE,
+  fakeAdmin,
+  memoryDb,
+  OTHER,
+  PDF,
+  RECRUITER,
+  SAMPLE,
+  testAuth,
+  usage,
+} from "../../testing/helpers.js"
 import { AiError, type AiClient } from "../ai/client.js"
-import { createTokenVerifier } from "../auth/verify-token.js"
 import { isOwnUploadPath } from "./routes.js"
-import type { CvRow, CvStore, CvVersionRow } from "./store.js"
 
-const SUPABASE_URL = "https://project.supabase.test"
-const CANDIDATE = "11111111-1111-1111-1111-111111111111"
-const OTHER = "22222222-2222-2222-2222-222222222222"
-const RECRUITER = "33333333-3333-3333-3333-333333333333"
-const ROLES: Record<string, string> = {
-  [CANDIDATE]: "candidate",
-  [OTHER]: "candidate",
-  [RECRUITER]: "recruiter",
-}
-const PDF = "application/pdf"
-const SAMPLE = CvData.parse(
-  JSON.parse(
-    readFileSync(
-      join(import.meta.dirname, "../../../../../packages/shared/fixtures/cv-sample.json"),
-      "utf8"
-    )
-  )
-)
-const USAGE = {
-  task: "cv_parse",
-  model: "test",
-  input_tokens: 1,
-  output_tokens: 1,
-  latency_ms: 1,
-  cost_usd: null,
-}
-
-let privateKey: Awaited<ReturnType<typeof generateKeyPair>>["privateKey"]
-let verifyToken: ReturnType<typeof createTokenVerifier>
+let auth: Awaited<ReturnType<typeof testAuth>>
+const bearer = (sub: string) => auth.bearer(sub)
+const USAGE = usage("cv_parse")
 
 beforeAll(async () => {
-  const pair = await generateKeyPair("ES256")
-  privateKey = pair.privateKey
-  const jwk = { ...(await exportJWK(pair.publicKey)), alg: "ES256", kid: "test" }
-  verifyToken = createTokenVerifier(SUPABASE_URL, createLocalJWKSet({ keys: [jwk] }))
+  auth = await testAuth()
 })
-
-const bearer = async (sub: string) => ({
-  authorization: `Bearer ${await new SignJWT({ sub })
-    .setProtectedHeader({ alg: "ES256", kid: "test" })
-    .setIssuer(`${SUPABASE_URL}/auth/v1`)
-    .setAudience("authenticated")
-    .setExpirationTime("5m")
-    .sign(privateKey)}`,
-})
-
-/** In-memory database and storage with row-level-security-like ownership. */
-function memoryDb() {
-  const files = new Set<string>()
-  const cvs = new Map<string, CvRow>()
-  const versions: CvVersionRow[] = []
-  let n = 0
-  const now = () => new Date(Date.UTC(2026, 10, 23, 0, 0, n++)).toISOString()
-  const uuid = () => `00000000-0000-4000-8000-${String(++n).padStart(12, "0")}`
-
-  function storeFor(userId: string): CvStore {
-    const own = (id: string) => {
-      const cv = cvs.get(id)
-      return cv && cv.user_id === userId ? cv : null
-    }
-    return {
-      async signedUrl(path) {
-        return files.has(path) && path.startsWith(`${userId}/`)
-          ? `https://x.supabase.co/storage/v1/object/sign/cvs/${path}?token=t`
-          : null
-      },
-      async removeFile(path) {
-        files.delete(path)
-      },
-      async insertCv(input) {
-        if ([...cvs.values()].some((c) => c.storage_path === input.storage_path)) {
-          throw Object.assign(new Error("duplicate"), { code: "23505" })
-        }
-        const row: CvRow = {
-          ...input,
-          id: uuid(),
-          user_id: userId,
-          created_at: now(),
-          updated_at: now(),
-        }
-        cvs.set(row.id, row)
-        return row
-      },
-      async listCvs() {
-        return [...cvs.values()].filter((c) => c.user_id === userId).reverse()
-      },
-      async getCv(id) {
-        return own(id)
-      },
-      async setStatus(id, status) {
-        const cv = own(id)
-        if (cv) cv.status = status
-      },
-      async deleteCv(id) {
-        if (own(id)) cvs.delete(id)
-      },
-      async listVersions(cvId) {
-        return versions.filter((v) => v.cv_id === cvId && own(cvId)).reverse()
-      },
-      async getVersion(cvId, version) {
-        const mine = versions.filter((v) => v.cv_id === cvId && own(cvId))
-        return version === undefined
-          ? (mine.at(-1) ?? null)
-          : (mine.find((v) => v.version === version) ?? null)
-      },
-      async addVersion(cvId, input) {
-        const row: CvVersionRow = {
-          ...input,
-          id: uuid(),
-          cv_id: cvId,
-          version: versions.filter((v) => v.cv_id === cvId).length + 1,
-          created_at: now(),
-        }
-        versions.push(row)
-        return row
-      },
-    }
-  }
-  return { files, cvs, versions, storeFor }
-}
-
-function fakeAdmin() {
-  const client = {
-    from: () => ({
-      select: () => ({
-        eq: (_: string, id: string) => ({
-          maybeSingle: async () => ({ data: ROLES[id] ? { role: ROLES[id] } : null, error: null }),
-        }),
-      }),
-    }),
-  }
-  return client as unknown as SupabaseClient
-}
 
 async function setup(
   answer: () => Promise<unknown> = async () => ({
@@ -159,7 +35,7 @@ async function setup(
   const call = vi.fn(answer)
   const aiClient = { usedToday: async () => 0, call } as unknown as AiClient
   const app = await buildApp(readEnv({ NODE_ENV: "test", AI_SERVICE_URL: "http://ai.test" }), {
-    verifyToken,
+    verifyToken: auth.verifyToken,
     supabaseAdmin: fakeAdmin(),
     aiClient,
     cvStoreFor: (request) => db.storeFor(request.user!.id),
