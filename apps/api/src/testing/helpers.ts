@@ -12,6 +12,7 @@ import { createLocalJWKSet, exportJWK, generateKeyPair, SignJWT } from "jose"
 import { createTokenVerifier, type VerifyToken } from "../modules/auth/verify-token.js"
 import type { CandidateRow, CandidateStore, ConsentRow } from "../modules/candidates/store.js"
 import type { CvRow, CvStore, CvVersionRow } from "../modules/cvs/store.js"
+import type { FactRow, FactStore } from "../modules/facts/store.js"
 import { CvData } from "../shared/cv.js"
 
 export const SUPABASE_URL = "https://project.supabase.test"
@@ -197,4 +198,57 @@ export function memoryCandidates() {
     }
   }
   return { rows, consents, storeFor }
+}
+
+/** In-memory facts per user ("What Lynx knows about you"). */
+export function memoryFacts() {
+  const rows: (FactRow & { user_id: string })[] = []
+  let n = 0
+  const uuid = () => `00000000-0000-4000-9000-${String(++n).padStart(12, "0")}`
+  function storeFor(userId: string): FactStore {
+    const mine = () => rows.filter((r) => r.user_id === userId)
+    const store: FactStore = {
+      async list() {
+        return mine()
+      },
+      async count() {
+        return mine().length
+      },
+      async add(facts) {
+        const now = new Date().toISOString()
+        const added = facts.map((f) => ({
+          id: uuid(),
+          user_id: userId,
+          category: f.category,
+          text: f.text,
+          source: f.source,
+          cv_version_id: f.cv_version_id ?? null,
+          created_at: now,
+          updated_at: now,
+        }))
+        rows.push(...added)
+        return added
+      },
+      async update(id, fact) {
+        const row = mine().find((r) => r.id === id)
+        if (!row) return null
+        Object.assign(row, fact, { source: "candidate", cv_version_id: null })
+        return row
+      },
+      async remove(id) {
+        const i = rows.findIndex((r) => r.id === id && r.user_id === userId)
+        if (i < 0) return false
+        rows.splice(i, 1)
+        return true
+      },
+      async replaceCvFacts(cvVersionId, facts) {
+        for (let i = rows.length - 1; i >= 0; i--) {
+          if (rows[i]!.user_id === userId && rows[i]!.source === "cv") rows.splice(i, 1)
+        }
+        await store.add(facts.map((f) => ({ ...f, source: "cv", cv_version_id: cvVersionId })))
+      },
+    }
+    return store
+  }
+  return { rows, storeFor }
 }

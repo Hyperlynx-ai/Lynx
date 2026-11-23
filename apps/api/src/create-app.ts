@@ -23,6 +23,9 @@ import { createTokenVerifier, type VerifyToken } from "./modules/auth/verify-tok
 import { candidateRoutes } from "./modules/candidates/routes.js"
 import { createSupabaseCandidateStore, type CandidateStore } from "./modules/candidates/store.js"
 import { cvRoutes } from "./modules/cvs/routes.js"
+import { factRoutes } from "./modules/facts/routes.js"
+import { createSupabaseFactStore, type FactStore } from "./modules/facts/store.js"
+import { exportRoutes } from "./modules/me/export.js"
 import { createSupabaseCvStore, type CvStore } from "./modules/cvs/store.js"
 import { healthRoutes } from "./modules/health/routes.js"
 import { meRoutes } from "./modules/me/routes.js"
@@ -52,6 +55,8 @@ export type AppDeps = {
   cvStoreFor?: (request: FastifyRequest) => CvStore | undefined
   /** Candidate profile and consents, acting as the request's user. */
   candidateStoreFor?: (request: FastifyRequest) => CandidateStore | undefined
+  /** What Lynx knows about the candidate, acting as the request's user. */
+  factStoreFor?: (request: FastifyRequest) => FactStore | undefined
 }
 
 function defaultDeps(env: Env): AppDeps {
@@ -80,6 +85,10 @@ function defaultDeps(env: Env): AppDeps {
       const db = userDb(request)
       return db ? createSupabaseCandidateStore(db, request.user!.id) : undefined
     },
+    factStoreFor: (request) => {
+      const db = userDb(request)
+      return db ? createSupabaseFactStore(db, request.user!.id) : undefined
+    },
   }
 }
 
@@ -89,8 +98,15 @@ function defaultDeps(env: Env): AppDeps {
  */
 export async function configureApp(instance: FastifyInstance, env: Env, deps?: AppDeps) {
   const app = instance.withTypeProvider<ZodTypeProvider>()
-  const { verifyToken, supabaseAdmin, aiClient, cvStoreFor, candidateStoreFor } =
-    deps ?? defaultDeps(env)
+  const none = () => undefined
+  const {
+    verifyToken,
+    supabaseAdmin,
+    aiClient,
+    cvStoreFor = none,
+    candidateStoreFor = none,
+    factStoreFor = none,
+  } = deps ?? defaultDeps(env)
 
   app.setValidatorCompiler(validatorCompiler)
   app.setSerializerCompiler(serializerCompiler)
@@ -116,14 +132,24 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
   await app.register(cvRoutes, {
     requireUser,
     requireCandidate,
-    cvStoreFor: cvStoreFor ?? (() => undefined),
+    cvStoreFor,
+    factStoreFor,
     aiClient,
   })
   await app.register(candidateRoutes, {
     requireUser,
     requireCandidate,
-    candidateStoreFor: candidateStoreFor ?? (() => undefined),
-    cvStoreFor: cvStoreFor ?? (() => undefined),
+    candidateStoreFor,
+    cvStoreFor,
+  })
+  await app.register(factRoutes, { requireUser, requireCandidate, factStoreFor, aiClient })
+  await app.register(exportRoutes, {
+    requireUser,
+    requireCandidate,
+    supabaseAdmin,
+    cvStoreFor,
+    candidateStoreFor,
+    factStoreFor,
   })
 
   app.get("/openapi.json", { schema: { hide: true } }, async () => app.swagger())

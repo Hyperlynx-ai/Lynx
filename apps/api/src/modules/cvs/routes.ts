@@ -4,7 +4,9 @@ import { z } from "zod"
 
 import { CV_MEDIA_TYPES, CvData, isCvMediaType, MAX_CV_BYTES } from "../../shared/cv.js"
 
+import { factsFromCv } from "../../shared/facts.js"
 import { AiError, AiUsage, type AiClient } from "../ai/client.js"
+import type { FactStore } from "../facts/store.js"
 import type { CvRow, CvStore, CvVersionRow, CvVersionSummary } from "./store.js"
 
 /** How long the AI service's download link to the file stays valid. */
@@ -72,13 +74,15 @@ type CvRoutesOptions = {
   requireCandidate: preHandlerHookHandler
   /** A store acting as the user, or undefined when Supabase isn't configured. */
   cvStoreFor: (request: FastifyRequest) => CvStore | undefined
+  /** Where facts read from the CV are saved ("What Lynx knows about you"). */
+  factStoreFor?: (request: FastifyRequest) => FactStore | undefined
   aiClient: AiClient | undefined
 }
 
 /** The signed-in candidate's CVs: upload, AI parsing and versions (chunk 2.2). */
 export const cvRoutes: FastifyPluginAsyncZod<CvRoutesOptions> = async (
   app,
-  { requireUser, requireCandidate, cvStoreFor, aiClient }
+  { requireUser, requireCandidate, cvStoreFor, factStoreFor, aiClient }
 ) => {
   const common = { preHandler: [requireUser, requireCandidate] }
   const doc = { tags: ["cvs"], security: [{ bearer: [] }] }
@@ -137,6 +141,12 @@ export const cvRoutes: FastifyPluginAsyncZod<CvRoutesOptions> = async (
       data: result.cv,
     })
     await store.setStatus(cv.id, "parsed")
+    // Lynx's memory follows the newest CV. A failure here must not lose the parse.
+    try {
+      await factStoreFor?.(request)?.replaceCvFacts(version.id, factsFromCv(result.cv))
+    } catch (error) {
+      request.log.warn({ cvId: cv.id, err: (error as Error).message }, "saving CV facts failed")
+    }
     return reply.code(201).send({
       cv: toFile({ ...cv, status: "parsed" }),
       version: toVersion(version),
