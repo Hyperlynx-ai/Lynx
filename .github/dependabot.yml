@@ -10,6 +10,14 @@ updates:
     groups:
       minor-and-patch:
         update-types: [minor, patch]
+    ignore:
+      # Known limitation KL-13 (docs/known-limitations.md):
+      # TypeScript 7 breaks typescript-eslint and Vercel's API build;
+      # @types/node must match the Node.js runtime (22).
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: uv
     directory: /services/ai
