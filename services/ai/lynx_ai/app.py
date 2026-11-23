@@ -2,15 +2,14 @@
 
 from typing import Annotated, Literal
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 
 from . import __version__
-from .prompts import load_prompt
-from .registry import get_registry
 from .security import require_service_token
 from .settings import get_settings
+from .tasks import Usage, make_agent, run_task
 
 app = FastAPI(
     title="Hyperlynx AI service",
@@ -45,14 +44,13 @@ class PingRequest(BaseModel):
 
 
 class PingResponse(BaseModel):
-    task: Literal["ping"]
-    model: str
     output: str
+    usage: Usage
 
 
 def get_ping_agent() -> Agent[None, str]:
     """The agent for the `ping` task. Tests replace it via dependency overrides."""
-    return Agent(get_registry().build("ping"), instructions=load_prompt("ping"))
+    return make_agent("ping", str)
 
 
 @app.post("/v1/ping", dependencies=[Depends(require_service_token)])
@@ -61,10 +59,5 @@ async def ping(
     agent: Annotated[Agent[None, str], Depends(get_ping_agent)],
 ) -> PingResponse:
     """Smoke test for the whole AI chain: registry -> provider -> model."""
-    try:
-        result = await agent.run(body.message)
-    except Exception as error:  # provider errors must not leak details to callers
-        raise HTTPException(status.HTTP_502_BAD_GATEWAY, "The AI provider failed") from error
-    return PingResponse(
-        task="ping", model=get_registry().resolve("ping").model, output=result.output
-    )
+    output, usage = await run_task("ping", agent, body.message)
+    return PingResponse(output=output, usage=usage)

@@ -32,6 +32,8 @@ forgotten: each item says what it affects and what unblocks it.
 | KL-14 | **`hyperlynx.ai` domain** serves the old `hyperlynx-frontend` project; the owner will decide what happens to it. Its DNS is at a third-party provider. | Lynx runs on `lynx-web-pi.vercel.app`; no custom domain, no email domain (KL-04). | Owner decision. | When the owner says. |
 | KL-15 | **Vercel compiles `apps/api` with TypeScript strict mode off.** We run an extra non-strict check (`tsconfig.vercel.json`) so code compiles both ways. | Code relying on strict-only narrowing fails on Vercel even though local checks pass (caught by the extra check). | A Vercel setting or build change that honours our tsconfig. | When Vercel's Node builder changes. |
 | KL-16 | **Python AI service cold start** on Vercel takes a few seconds. | First request after idle is slow; the API's health check waits up to 10 s. | Keep-warm pings, or Fluid compute / a paid plan with longer-lived instances. | When AI features are user-facing (Phase 2+). |
+| KL-17 | **`gemini-3.8-flash` is often overloaded** (HTTP 503 "high demand") on our key, so every call waited for it to fail before falling back (15+ s). Tasks use `gemini-3.6-flash`, with `gemini-3.5-flash` as fallback. | Slightly older model; fine for parsing and editing CVs. | 3.8 becoming reliably available, or a paid key with priority (KL-05). | When switching to a paid key. |
+| KL-18 | **No AI cost estimates.** `prices:` in `services/ai/config/models.yaml` is empty while we use a free key, so `ai_calls.cost_usd` is empty. Token counts are logged. | The admin usage view shows tokens, not money. | Fill in `prices:` from the provider's price list. | With the paid key (KL-05). |
 
 ## Resolved
 

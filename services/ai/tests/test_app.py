@@ -28,6 +28,9 @@ def test_ping_runs_the_configured_agent(client: TestClient, auth_headers: dict[s
 
     assert res.status_code == 200
     body = res.json()
-    assert body["task"] == "ping"
     assert body["output"] == "Hello from a test model."
-    assert body["model"]  # the configured model name is reported
+    usage = body["usage"]
+    assert usage["task"] == "ping"
+    assert usage["model"]  # the model that answered is reported
+    assert usage["input_tokens"] >= 0 and usage["output_tokens"] >= 0
+    assert usage["latency_ms"] >= 0
