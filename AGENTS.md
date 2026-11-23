@@ -1,5 +1,7 @@
 # Agent guide
 
+> **Picking up the work?** Read [`docs/handoff.md`](docs/handoff.md) first: current status, what's unfinished, and known traps.
+
 Every AI agent (Claude Code, Codex, opencode, Gemini CLI, Cursor, Copilot,
 Kilo Code, or any other) and every teammate working in this repository must
 read and follow this file. It is short on purpose: the rules here are

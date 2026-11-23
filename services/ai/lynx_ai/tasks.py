@@ -3,6 +3,7 @@ versioned prompt, structured output, and usage reported back to apps/api
 (which logs it in ai_calls and enforces caps; policy AI-07).
 """
 
+import asyncio
 import time
 from collections.abc import Sequence
 from typing import Any
@@ -13,6 +14,17 @@ from pydantic_ai import Agent
 
 from .prompts import load_prompt
 from .registry import get_registry
+
+#: Wait before the one retry after a provider says "too many requests" (HTTP 429).
+RATE_LIMIT_RETRY_SECONDS = 6.0
+
+
+def is_rate_limited(error: BaseException) -> bool:
+    """True if the provider refused because of a rate limit (HTTP 429), also when
+    every model of a fallback chain refused (an exception group)."""
+    if isinstance(error, BaseExceptionGroup):
+        return all(is_rate_limited(e) for e in error.exceptions)
+    return getattr(error, "status_code", None) == 429
 
 
 class Usage(BaseModel):
@@ -41,7 +53,14 @@ async def run_task[T](
     """Runs the agent and measures it. Provider errors become a 502 without details."""
     started = time.perf_counter()
     try:
-        result = await agent.run(user_input)
+        try:
+            result = await agent.run(user_input)
+        except Exception as error:
+            # Free-tier keys allow few requests per minute: wait and retry once.
+            if not is_rate_limited(error):
+                raise
+            await asyncio.sleep(RATE_LIMIT_RETRY_SECONDS)
+            result = await agent.run(user_input)
     except Exception as error:  # never leak provider errors (they may echo input)
         raise HTTPException(status.HTTP_502_BAD_GATEWAY, "The AI provider failed") from error
     latency_ms = int((time.perf_counter() - started) * 1000)

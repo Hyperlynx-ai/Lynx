@@ -12,7 +12,7 @@ inside `services/ai`:
 | What | Command |
 |---|---|
 | Install / update dependencies | `uv sync` |
-| Run the service | `uv run uvicorn main:app --reload --port 4500` |
+| Run the service (auto-reload) | `uv run python dev.py` (not `uvicorn --reload`: on Windows it stops `pnpm dev`) |
 | Tests | `uv run pytest` |
 | Lint and format | `uv run ruff check .` and `uv run ruff format .` |
 | Types | `uv run pyright` |

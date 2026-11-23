@@ -182,20 +182,18 @@ export const cvEditRoutes: FastifyPluginAsyncZod<EditRoutesOptions> = async (app
         return Array.isArray(content) ? content.length > 0 : Boolean(content)
       })
       const instruction = `Tailor this section for a "${role}" role: put the most relevant points first, sharpen wording for that role, and drop what's irrelevant. Don't add anything new.`
-      const results = await Promise.allSettled(
-        sections.map((s) => propose(request, cv, s, instruction, role))
-      )
+      // One section at a time: free-tier AI keys refuse parallel requests (KL-20).
       const proposals: Proposal[] = []
       const failed: { section: CvSection; error: string }[] = []
-      results.forEach((result, i) => {
-        if (result.status === "fulfilled") return proposals.push(result.value)
-        const error = result.reason
-        if (!(error instanceof AiError)) throw error
-        failed.push({
-          section: sections[i]!,
-          error: error.code === "capped" ? "daily_limit" : "ai_failed",
-        })
-      })
+      for (const section of sections) {
+        try {
+          proposals.push(await propose(request, cv, section, instruction, role))
+        } catch (error) {
+          if (!(error instanceof AiError)) throw error
+          failed.push({ section, error: error.code === "capped" ? "daily_limit" : "ai_failed" })
+          if (error.code === "capped") break
+        }
+      }
       if (!proposals.length && failed.length) {
         const capped = failed.some((f) => f.error === "daily_limit")
         return reply.code(capped ? 429 : 502).send({ error: failed[0]!.error })

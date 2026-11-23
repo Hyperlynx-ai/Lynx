@@ -234,7 +234,7 @@ function Tailor({
           {pending ? "Tailoring…" : "Tailor"}
         </Button>
       </div>
-      {pending ? <LoadingState label="lynx is tailoring your cv" /> : null}
+      {pending ? <LoadingState label="lynx is tailoring your cv, about a minute" /> : null}
     </form>
   )
 }
