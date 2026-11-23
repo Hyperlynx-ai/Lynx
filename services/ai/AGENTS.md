@@ -6,13 +6,13 @@ AI and privacy rules in `docs/policies/04-data-privacy-and-ai.md`.
 
 ## Commands
 
-Run from the repo root (`pnpm dev` starts it on http://localhost:8000), or
+Run from the repo root (`pnpm dev` starts it on http://localhost:4500), or
 inside `services/ai`:
 
 | What | Command |
 |---|---|
 | Install / update dependencies | `uv sync` |
-| Run the service | `uv run uvicorn main:app --reload --port 8000` |
+| Run the service | `uv run uvicorn main:app --reload --port 4500` |
 | Tests | `uv run pytest` |
 | Lint and format | `uv run ruff check .` and `uv run ruff format .` |
 | Types | `uv run pyright` |

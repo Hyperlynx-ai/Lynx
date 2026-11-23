@@ -46,7 +46,7 @@ to fill in the Supabase values automatically. Ask the owner for anything else.
 |---|---|
 | Web app (`apps/web`) | http://localhost:3000 |
 | API (`apps/api`) | http://127.0.0.1:4000/health |
-| AI service (`services/ai`) | http://127.0.0.1:8000/health |
+| AI service (`services/ai`) | http://127.0.0.1:4500/health |
 
 ## Layout
 

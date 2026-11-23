@@ -19,7 +19,7 @@ The Next.js app: public site, candidate app, recruiter app and admin console
 
 | What | Command |
 |---|---|
-| Run everything (web 3000, api 4000, ai 8000) | `pnpm dev` |
+| Run everything (web 3000, api 4000, ai 4500) | `pnpm dev` |
 | Only the web app | `pnpm --filter web dev` |
 | Lint / types / build | `pnpm --filter web lint` · `typecheck` · `build` |
 | Browser tests (needs `pnpm db:start` + `pnpm db:env`) | `pnpm e2e` |
