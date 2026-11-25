@@ -280,7 +280,7 @@ edit and download their CV.
 | 2.3 | `feat/p2-onboarding` | Three steps: (1) upload CV; (2) confirm profile: target roles, countries of interest, experience level, education, work authorization or visa status, pathway (internship, job switch, first job, higher education), phone or WhatsApp; (3) consent that approved recruiters can see the profile including contact details (can be hidden later), job alerts every 2 days, weekly newsletter. | Done |
 | 2.4 | `feat/p2-lynx-memory` | Profile page and "What Lynx knows about you": every fact with its source (CV, interview, chat, or the candidate), editable and deletable. "Tell Lynx more" box that turns free text into facts. Download my data. | Done |
 | 2.5 | `feat/p2-cv-editor` | Structured editor. AI edits from an instruction, shown as a before/after diff accepted or rejected per section. Tailor to a target role. Version history. Choose which version is used for matching. | In review |
-| 2.6 | `feat/p2-cv-export` | Three templates: an ATS-friendly classic (based on the prototype's "Jake's Resume" layout), modern, and compact. PDF and DOCX export. Templates may be adapted from an open-source resume builder after a license check. | |
+| 2.6 | `feat/p2-cv-export` | Three templates: an ATS-friendly classic (based on the prototype's "Jake's Resume" layout), modern, and compact. PDF and DOCX export. Templates may be adapted from an open-source resume builder after a license check. | In review |
 
 **Done when:** on production, a new candidate goes from CV upload to an
 AI-edited CV downloaded as PDF and DOCX.
