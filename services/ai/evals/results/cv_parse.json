@@ -1,7 +1,7 @@
 {
-  "date": "2026-11-23",
-  "configured": "google:gemini-3.6-flash",
-  "average_overall": 0.982,
+  "date": "2026-11-25",
+  "configured": "compat:nvidia/minimaxai/minimax-m3.1-flash",
+  "average_overall": 1.0,
   "pass_mark": 0.9,
   "failed_cases": [],
   "cases": {
@@ -9,18 +9,18 @@
       "scores": {
         "basics": 1.0,
         "experience": 1.0,
-        "education": 0.857,
+        "education": 1.0,
         "projects": 1.0,
         "skills": 1.0,
         "certifications": 1.0,
         "languages": 1.0,
         "achievements": 1.0,
-        "overall": 0.982
+        "overall": 1.0
       },
-      "model": "gemini-3.6-flash",
-      "input_tokens": 1934,
-      "output_tokens": 2892,
-      "duration_s": 27.6
+      "model": "minimaxai/minimax-m3.1-flash",
+      "input_tokens": 2533,
+      "output_tokens": 784,
+      "duration_s": 14.5
     },
     "meera-nair-docx": {
       "scores": {
@@ -34,27 +34,27 @@
         "achievements": 1.0,
         "overall": 1.0
       },
-      "model": "gemini-3.6-flash",
-      "input_tokens": 1766,
-      "output_tokens": 2374,
-      "duration_s": 14.1
+      "model": "minimaxai/minimax-m3.1-flash",
+      "input_tokens": 2483,
+      "output_tokens": 728,
+      "duration_s": 8.3
     },
     "rohan-verma-pdf": {
       "scores": {
         "basics": 1.0,
         "experience": 1.0,
-        "education": 0.714,
+        "education": 1.0,
         "projects": 1.0,
         "skills": 1.0,
         "certifications": 1.0,
         "languages": 1.0,
         "achievements": 1.0,
-        "overall": 0.964
+        "overall": 1.0
       },
-      "model": "gemini-3.6-flash",
-      "input_tokens": 1934,
-      "output_tokens": 2669,
-      "duration_s": 21.2
+      "model": "minimaxai/minimax-m3.1-flash",
+      "input_tokens": 2458,
+      "output_tokens": 693,
+      "duration_s": 13.0
     }
   }
 }

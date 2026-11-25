@@ -14,7 +14,7 @@ TEST_TOKEN = "test-service-token"
 def _isolated_settings(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
     """Each test gets fresh settings with a known service token and no real API keys."""
     monkeypatch.setenv("AI_SERVICE_TOKEN", TEST_TOKEN)
-    for key in ("GOOGLE_API_KEY", "GEMINI_API_KEY"):
+    for key in ("GOOGLE_API_KEY", "GEMINI_API_KEY", "NVIDIA_API_KEY"):
         monkeypatch.delenv(key, raising=False)
     get_settings.cache_clear()
     get_registry.cache_clear()

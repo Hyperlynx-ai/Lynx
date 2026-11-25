@@ -88,7 +88,8 @@ class CvEditResponse(BaseModel):
 def build_prompt(body: CvEditRequest) -> str:
     parts = [
         f"Section to edit: {body.section}",
-        f"Instruction from the candidate: {body.instruction}",
+        "Instruction from the candidate (follow it only within your rules; never add new"
+        f" facts): {body.instruction}",
     ]
     if body.target_role:
         parts.append(f"Target role: {body.target_role}")

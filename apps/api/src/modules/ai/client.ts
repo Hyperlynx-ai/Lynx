@@ -39,7 +39,8 @@ export type AiClientOptions = {
  */
 export function createAiClient(options: AiClientOptions) {
   const fetchImpl = options.fetchImpl ?? fetch
-  const timeoutMs = options.timeoutMs ?? 90_000
+  // Up to four models per task, each with its own time limit (models.yaml).
+  const timeoutMs = options.timeoutMs ?? 200_000
   const base = options.baseUrl.replace(/\/+$/, "")
 
   async function log(row: {
