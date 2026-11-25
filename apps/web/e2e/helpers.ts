@@ -108,16 +108,14 @@ export async function seedParsedCv(email: string) {
   const data = JSON.parse(
     readFileSync(join(root, "packages", "shared", "fixtures", "cv-sample.json"), "utf8")
   )
-  const { error: versionError } = await admin
-    .from("cv_versions")
-    .insert({
-      cv_id: cv.id,
-      user_id: user.id,
-      version: 1,
-      source: "parsed",
-      label: "Original",
-      data,
-    })
+  const { error: versionError } = await admin.from("cv_versions").insert({
+    cv_id: cv.id,
+    user_id: user.id,
+    version: 1,
+    source: "parsed",
+    label: "Original",
+    data,
+  })
   if (versionError) throw versionError
   return cv.id as string
 }
