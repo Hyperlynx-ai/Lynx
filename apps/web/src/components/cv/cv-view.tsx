@@ -11,6 +11,11 @@ export function CvView({ cv }: { cv: CvData }) {
 
   return (
     <dl className="border-t border-border">
+      {b.headline ? (
+        <Section label="Headline">
+          <p className="text-body text-text-primary">{b.headline}</p>
+        </Section>
+      ) : null}
       <Section label="Contact">
         {contact.length || b.links.length ? (
           <div className="flex flex-col gap-1 font-mono text-mono text-text-primary">
