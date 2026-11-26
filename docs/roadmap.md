@@ -287,19 +287,21 @@ AI-edited CV downloaded as PDF and DOCX.
 
 ## Phase 3: Jobs engine and opportunities feed
 
+Design: [ADR 0011](decisions/0011-jobs-engine.md).
+
 **Goal:** the opportunities page shows a large, fresh, AI-ranked set of jobs,
 internships and scholarships from many sources.
 
-| Chunk | Branch | What |
-|---|---|---|
-| 3.1 | `feat/p3-jobs-schema` | Jobs, sources and run tables. Normalization (title, company, country, type, remote, seniority, field of work), de-duplication across sources, expiry. Admin page listing sources with on/off switches, "run now" and health. |
-| 3.2 | `feat/p3-scheduler` | Inngest set up in `apps/api` and `services/ai`; scheduled ingestion fanned out per source; run logs. |
-| 3.3 | `feat/p3-source-curated` | Import the team's Google Sheet (Opportunities and Jobs tabs). Admin screens to manage curated listings, replacing the sheet. |
-| 3.4 | `feat/p3-sources-free-apis` | Free public APIs and feeds, each checked for terms and attribution before it is switched on. Candidates: Arbeitnow, Remotive, RemoteOK, Himalayas, Jobicy, The Muse, Adzuna, Jooble, Careerjet, Reed. |
-| 3.5 | `feat/p3-sources-ats` | Public company job boards on Greenhouse, Lever, Ashby, Workable, SmartRecruiters and Recruitee, from an admin-managed company list seeded with employers hiring in the UAE, Europe and India. |
-| 3.6 | `feat/p3-sources-scrapers` | JobSpy (LinkedIn, Indeed, Glassdoor, Google Jobs, ZipRecruiter, Bayt, Naukri), each behind its own switch, with conservative rate limits and no logged-in scraping. If Vercel's limits or IP blocking get in the way, move scrapers to a small always-on worker (decided at that point). |
-| 3.7 | `feat/p3-matching` | Embeddings for jobs and candidates in pgvector. Score = similarity + the prototype's field, skills and seniority signals, then an LLM re-ranks the top 50 with a one-line "why it fits". Cached in `job_matches`; recomputed after ingestion and when the profile or CV changes. Evals. |
-| 3.8 | `feat/p3-opportunities-feed` | Cards: title, company, location, type, posted date, source, match label and reason, **Affiliated** tag. Filters, search, save, hide. "Apply on source" for external jobs. Internships and scholarships view (replaces the old tracker). |
+| Chunk | Branch | What | Status |
+|---|---|---|---|
+| 3.1 | `feat/p3-jobs-schema` | Jobs, sources and run tables. Normalization (title, company, country, type, remote, seniority, field of work), de-duplication across sources, expiry. Admin page listing sources with on/off switches, "run now" and health. | In review |
+| 3.2 | `feat/p3-scheduler` | GitHub Actions workflows (ADR 0011, replacing Inngest): daily ingestion of enabled sources, hourly "run now" requests, run logs. | |
+| 3.3 | `feat/p3-source-curated` | Import the team's Google Sheet (Opportunities and Jobs tabs). Admin screens to manage curated listings, replacing the sheet. | |
+| 3.4 | `feat/p3-sources-free-apis` | Free public APIs and feeds, each checked for terms and attribution before it is switched on. Candidates: Arbeitnow, Remotive, RemoteOK, Himalayas, Jobicy, The Muse, Adzuna, Jooble, Careerjet, Reed. | |
+| 3.5 | `feat/p3-sources-ats` | Public company job boards on Greenhouse, Lever, Ashby, Workable, SmartRecruiters and Recruitee, from an admin-managed company list seeded with employers hiring in the UAE, Europe and India. | |
+| 3.6 | `feat/p3-sources-scrapers` | JobSpy (LinkedIn, Indeed, Glassdoor, Google Jobs, ZipRecruiter, Bayt, Naukri), each behind its own switch, with conservative rate limits and no logged-in scraping. If Vercel's limits or IP blocking get in the way, move scrapers to a small always-on worker (decided at that point). | |
+| 3.7 | `feat/p3-matching` | Embeddings for jobs and candidates in pgvector. Score = similarity + the prototype's field, skills and seniority signals, then an LLM re-ranks the top 50 with a one-line "why it fits". Cached in `job_matches`; recomputed after ingestion and when the profile or CV changes. Evals. | |
+| 3.8 | `feat/p3-opportunities-feed` | Cards: title, company, location, type, posted date, source, match label and reason, **Affiliated** tag. Filters, search, save, hide. "Apply on source" for external jobs. Internships and scholarships view (replaces the old tracker). | |
 
 **Done when:** the production feed shows ranked opportunities from at least
 10 sources, refreshed daily.

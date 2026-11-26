@@ -63,12 +63,8 @@ export async function onboardedCandidate(page: Page, name: string, label: string
   return email
 }
 
-/**
- * Seeds a CV that Lynx has "already read" (the sample CV) for a test user,
- * straight into the local database: the e2e stack has no AI service. Uses
- * the local stack's secret key from apps/api/.env.local (written by db:env).
- */
-export async function seedParsedCv(email: string) {
+/** Supabase client with the local stack's secret key (from apps/api/.env.local). */
+async function localAdminClient() {
   const { readFileSync } = await import("node:fs")
   const { join } = await import("node:path")
   const { createClient } = await import("@supabase/supabase-js")
@@ -79,9 +75,28 @@ export async function seedParsedCv(email: string) {
       .filter((line) => line.includes("="))
       .map((line) => [line.slice(0, line.indexOf("=")), line.slice(line.indexOf("=") + 1)])
   )
-  const admin = createClient(env.SUPABASE_URL!, env.SUPABASE_SECRET_KEY!, {
+  return createClient(env.SUPABASE_URL!, env.SUPABASE_SECRET_KEY!, {
     auth: { persistSession: false },
   })
+}
+
+/** Gives a test user the admin role in the local database. */
+export async function makeAdmin(email: string) {
+  const admin = await localAdminClient()
+  const { error } = await admin.rpc("set_user_role", { target_email: email, new_role: "admin" })
+  if (error) throw error
+}
+
+/**
+ * Seeds a CV that Lynx has "already read" (the sample CV) for a test user,
+ * straight into the local database: the e2e stack has no AI service. Uses
+ * the local stack's secret key from apps/api/.env.local (written by db:env).
+ */
+export async function seedParsedCv(email: string) {
+  const { readFileSync } = await import("node:fs")
+  const { join } = await import("node:path")
+  const root = join(import.meta.dirname, "..", "..", "..")
+  const admin = await localAdminClient()
   const { data: users } = await admin.auth.admin.listUsers({ perPage: 1000 })
   const user = users.users.find((u) => u.email === email)
   if (!user) throw new Error(`no user ${email}`)
