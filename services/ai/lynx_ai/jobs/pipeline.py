@@ -34,12 +34,14 @@ def run_source(
     env: Mapping[str, str] | None = None,
 ) -> RunSummary:
     source = store.source(source_id)
+    if source is None:
+        return RunSummary(source_id, "failed", error="unknown source")
     fetch = adapters.get(source_id)
-    if source is None or fetch is None:
-        return RunSummary(source_id, "failed", error="unknown source or no adapter")
-    run_id = store.start_run(source_id)
+    run_id = store.start_run(source_id)  # also clears an admin's "run now" request
     summary = RunSummary(source_id, "ok")
     try:
+        if fetch is None:
+            raise LookupError("no adapter for this source yet")
         result = fetch(source.get("config") or {}, env if env is not None else os.environ)
         summary.fetched = len(result.jobs)
         jobs = {}

@@ -100,8 +100,11 @@ def test_a_failing_source_is_recorded_without_secrets() -> None:
     assert store.runs[0]["status"] == "failed"
 
 
-def test_unknown_sources_are_reported() -> None:
-    assert run_source("nope", MemoryStore(), {}, env={}).status == "failed"
+def test_sources_without_an_adapter_are_recorded_as_failed() -> None:
+    store = MemoryStore()
+    summary = run_source("nope", store, {}, env={})
+    assert summary.status == "failed"
+    assert store.runs[0]["error"] == "LookupError: no adapter for this source yet"
 
 
 @pytest.mark.skipif(
@@ -123,6 +126,12 @@ def test_postgres_store_round_trip() -> None:
         with engine.begin() as conn:
             conn.execute(text(f"delete from public.jobs where source_id in {sources}"))
             conn.execute(text(f"delete from public.job_runs where source_id in {sources}"))
+            conn.execute(
+                text(
+                    "update public.job_sources set last_run_at = null, last_status = null,"
+                    f" last_error = null, active_jobs = 0 where id in {sources}"
+                )
+            )
 
     def returns(*jobs: RawJob):
         return lambda config, env: FetchResult(list(jobs))
