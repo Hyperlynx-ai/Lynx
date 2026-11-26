@@ -62,7 +62,9 @@ login by default. In each project's Settings → Deployment Protection:
 
 `.github/workflows/jobs-ingest.yml` runs `python -m lynx_ai.jobs` in
 `services/ai`: daily at 01:30 UTC for every enabled source (production),
-hourly for sources an admin asked to "Run now", and manually from
+for sources an admin asked to "Run now" (started at once by the API when
+`GITHUB_DISPATCH_TOKEN` is set in the `lynx-api` Vercel project, else by the
+hourly run), and manually from
 Actions -> Jobs ingestion -> Run workflow (choose production or staging, and
 optionally some sources). It finds each project's connection pooler through
 the Supabase Management API (`scripts/ci/supabase-db-url.py`).
@@ -71,6 +73,12 @@ Repository secrets it reads (set with `gh secret set NAME --repo
 Hyperlynx-ai/Lynx`, which prompts for the value): `SUPABASE_ACCESS_TOKEN`,
 `SUPABASE_PROD_DB_PASSWORD`, `SUPABASE_STAGING_DB_PASSWORD` (already set),
 `CURATED_SHEET_ID`, `REED_API_KEY`. A missing key only fails that source.
+
+`GITHUB_DISPATCH_TOKEN` (Vercel, `lynx-api`, Production and Preview): a
+fine-grained personal access token with access to `Hyperlynx-ai/Lynx` only
+and the single permission "Actions: read and write". Production dispatches
+to the production database, previews to staging. Rotate it before it
+expires (GitHub emails a reminder).
 
 Locally: `pnpm db:start`, then in `services/ai`: `uv run python -m
 lynx_ai.jobs check` or `run --source <id>` (uses `DATABASE_URL` from

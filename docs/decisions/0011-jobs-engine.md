@@ -18,8 +18,10 @@ Limits: Vercel Hobby (short functions, one cron a day), Supabase free plan
 workflows are free for public repositories, run for hours and suit Python
 scrapers. `jobs-ingest.yml` runs the ingestion CLI in `services/ai`
 (`python -m lynx_ai.jobs ...`) once a day for production; staging runs on
-demand. "Run now" in the admin console marks a source as requested; an
-hourly workflow picks requests up (no GitHub token needed in the app).
+demand. "Run now" in the admin console marks a source as requested and,
+when the API has `GITHUB_DISPATCH_TOKEN` (a fine-grained token for this
+repository only, "Actions: read and write"), starts the workflow at once for
+every requested source; an hourly workflow is the fallback.
 Workflow logs are public: they print counts and source names only, never
 personal data or secrets. Inngest may come back for event-driven work
 (emails, Phase 8).
@@ -31,7 +33,11 @@ and health. Order: the curated Google Sheet (3.3), free APIs (3.4: Arbeitnow,
 RemoteOK, Himalayas, Jobicy, and Reed with a key). Dropped after the terms
 check (2026-11-26): Remotive (forbids showing its jobs to collect sign-ups),
 The Muse (terms unreadable), Careerjet (needs each visitor's IP and forbids
-building a job database); Adzuna and Jooble (no keys, owner), public ATS boards (3.5), then scrapers (3.6).
+building a job database); Adzuna and Jooble (no keys, owner). Then public
+company boards (3.5): one source per applicant tracking system (Greenhouse,
+Lever, Ashby, SmartRecruiters, Recruitee) over an admin-managed company list
+(`ats_companies`, Admin -> Companies); Workable was dropped (no seed company
+had a public board). Then scrapers (3.6).
 Terms and attribution are checked before a source is switched on.
 
 **Curated sheet** (owner): synced daily from the team's Google Sheet for
@@ -44,6 +50,7 @@ kept in a secret (`CURATED_SHEET_ID`), not in the repository.
 |---|---|
 | `job_sources` | one row per source: kind (curated, api, ats, scraper), enabled, config, run requested, last run status, counts |
 | `job_runs` | one row per source run: timings, fetched / new / updated / expired counts, error |
+| `ats_companies` | companies whose public boards are read: system, board name, company name, on/off |
 | `jobs` | normalized postings: source + external id (unique), URL, title, company, location, country, remote, type, seniority, field, salary, posted / deadline, first / last seen, status, affiliated flag, de-duplication key, `duplicate_of` |
 | `job_matches` (3.7) | per candidate and job: score, rank, one-line reason |
 
@@ -64,8 +71,9 @@ The first source to bring a job keeps it; the same job from another source
 is stored with `duplicate_of` pointing at it and is hidden from the feed.
 
 **Expiry:** a job is expired when its source no longer lists it in a
-successful run, when its deadline has passed, or 60 days after posting.
-Expired jobs are deleted 30 days later (space, KL-06).
+complete run, when its deadline has passed, or when no run has seen it for 7
+days (sources only list open jobs, so old postings that are still listed
+stay active). Expired jobs are deleted 30 days later (space, KL-06).
 
 **Matching (3.7):** embeddings for jobs and candidates (NVIDIA NIM
 embedding model, pgvector); score = similarity plus field, skills,
@@ -81,7 +89,7 @@ where the web or API needs them, in Vercel. Never in the repository or logs.
 ## Consequences
 
 - No new accounts or paid plans; ingestion isn't bound by Vercel limits.
-- "Run now" waits up to an hour (or the owner starts the workflow from
-  GitHub). Accepted for now.
+- "Run now" starts within minutes with the dispatch token; without it, it
+  waits up to an hour (or the owner starts the workflow from GitHub).
 - Scrapers run from GitHub's IP ranges and may be blocked; the switches turn
   any source off instantly.
