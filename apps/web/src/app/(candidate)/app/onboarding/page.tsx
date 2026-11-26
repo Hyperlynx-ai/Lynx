@@ -48,7 +48,7 @@ export default async function OnboardingPage({
     <div className="flex flex-col gap-gap-lg">
       <div className="flex flex-col gap-gap-md">
         <Eyebrow>Set up your profile</Eyebrow>
-        <Headline as="h1" size="headline" lead={headline.lead} muted={headline.muted} />
+        <Headline as="h1" size="title" lead={headline.lead} muted={headline.muted} />
         <OnboardingSteps current={step} />
       </div>
 

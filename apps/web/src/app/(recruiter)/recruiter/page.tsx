@@ -18,7 +18,7 @@ export default async function RecruiterHome() {
         <Eyebrow>Recruiter workspace</Eyebrow>
         <Headline
           as="h1"
-          size="headline"
+          size="title"
           lead={firstName ? `Welcome, ${firstName}.` : "Welcome."}
           muted="Your company, your roles and Lynx-verified candidates will live here."
         />

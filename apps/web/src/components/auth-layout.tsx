@@ -22,7 +22,7 @@ export function AuthLayout({ eyebrow, lead, muted, points, children }: AuthLayou
     <div className="mx-auto grid max-w-content grid-cols-1 gap-gap-lg px-6 py-gap-lg md:px-10 lg:grid-cols-2 lg:gap-panel">
       <div className="flex flex-col gap-gap-md">
         <Eyebrow>{eyebrow}</Eyebrow>
-        <Headline as="h1" size="headline" lead={lead} muted={muted} />
+        <Headline as="h1" size="title" lead={lead} muted={muted} />
         {points?.length ? (
           <ul className="flex flex-col gap-gap-sm border-t border-border pt-gap-md">
             {points.map((point) => (

@@ -37,7 +37,7 @@ export default async function EditCvPage({
         </Eyebrow>
         <Headline
           as="h1"
-          size="headline"
+          size="title"
           lead="Edit your CV."
           muted="Change anything yourself, or ask Lynx. Lynx only rewrites what's already there; you accept or reject every change."
         />

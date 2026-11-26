@@ -62,12 +62,13 @@ Radius: control `4px` (nav-utility triggers only), pill `9999px` (buttons, statu
 |---|---|---|
 | Hero display | Inter | 68px / 400 / 1.13 / -2.7px |
 | Section headline | Inter | 48px / 400 / 1.13 / -1.9px |
+| App page title | Inter | 32px / 400 / 1.2 / -0.9px |
 | Body | Inter | 16px / 400 / 1.5 |
 | Label (card eyebrows, nav items) | Inter | 16px / 500 / 1.5 / -0.4px |
 | Mono (code panels, terminal timestamps, shell-command CTA) | GeistMono | 13px / 400 / 1.5 |
 | Serif accent | Times New Roman | 16px / 400 / 1.5 - rare, small, inline only |
 
-- Inter carries the entire system at just two display sizes. Do not add intermediate sizes.
+- Inter carries the public, marketing pages at just two display sizes (68 and 48). **App and form screens** (everything signed in, plus log-in, sign-up, password, error and not-found pages) open with the **32px app page title** instead, still as a fused lead + muted headline; 48px titles overwhelmed working screens (owner decision, 2026-11-26). Do not add other sizes.
 - The display weight is 400. In the fused headline, the lead clause stands out through **color** (white vs. `#94979E`), not through heavier weight. Do not raise display weight.
 - Body is white; secondary descriptions drop to `#94979E`.
 - GeistMono is the "developer tool" signal. Use it wherever something is code, a command, a timestamp, or a data readout - and nowhere decorative.
@@ -147,7 +148,7 @@ Never resolve a gap by adding a new color, a new radius, a drop shadow, a gradie
 - [ ] Section headlines use the fused lead + muted-clause pattern inline (no separate subhead).
 - [ ] At most one `#E4F1EB` band, and it holds data-viz proof content with dark ink.
 - [ ] Hero primary is the white pill; secondary is the outline pill; nav-utility values not reused.
-- [ ] Type uses only the defined sizes (68 / 48 / 16 / 13) and families (Inter, GeistMono, rare serif).
+- [ ] Type uses only the defined sizes (68 / 48 / 32 / 16 / 13) and families (Inter, GeistMono, rare serif); app and form screens use the 32px title; 68/48 only on marketing pages.
 - [ ] Layout respects 1600px max-width, 8px base unit, 128px paired-panel gap, uniform grids.
 - [ ] No shadows beyond the two defined; transitions use `0.2s cubic-bezier(0.4, 0, 0.2, 1)`.
 - [ ] All values come from tokens, not hardcoded hex/px.

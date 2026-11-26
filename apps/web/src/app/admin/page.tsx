@@ -27,7 +27,7 @@ export default async function AdminUsersPage() {
     <div className="flex flex-col gap-gap-md">
       <Headline
         as="h1"
-        size="headline"
+        size="title"
         lead="Users."
         muted="Every account on Hyperlynx, newest first."
       />

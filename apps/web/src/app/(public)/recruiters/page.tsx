@@ -46,10 +46,13 @@ export default function RecruitersPage() {
         <Headline
           as="h1"
           size="display"
-          className="mt-gap-md max-w-5xl"
+          className="mt-gap-md max-w-6xl"
           lead="Hire people who have already been interviewed."
-          muted="Hyperlynx candidates practise and verify their skills with Lynx, our AI interviewer, so you start from evidence, not just a CV."
+          muted="Start from evidence, not just a CV."
         />
+        <p className="mt-gap-md max-w-2xl text-body text-text-secondary">
+          Hyperlynx candidates practise and verify their skills with Lynx, our AI interviewer.
+        </p>
         <div className="mt-10 flex flex-wrap items-center gap-gap-sm">
           <Button variant="heroPrimary" asChild>
             <Link href="/recruiters/signup">Create a recruiter account</Link>

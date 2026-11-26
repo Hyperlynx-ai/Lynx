@@ -29,7 +29,7 @@ export default async function CandidateHome() {
         <Eyebrow>Your Hyperlynx home</Eyebrow>
         <Headline
           as="h1"
-          size="headline"
+          size="title"
           lead={firstName ? `Welcome, ${firstName}.` : "Welcome."}
           muted="Lynx is getting to know you. Here's where things stand."
         />

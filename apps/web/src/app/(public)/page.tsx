@@ -14,10 +14,14 @@ export default function HomePage() {
         <Headline
           as="h1"
           size="display"
-          className="mt-gap-md max-w-5xl"
+          className="mt-gap-md max-w-6xl"
           lead="Where ambitious people meet global opportunities."
-          muted="Lynx, our AI agent, ranks the roles that fit you, sharpens your CV and interviews you on camera, so recruiters can hire with confidence."
+          muted="Lynx does the heavy lifting."
         />
+        <p className="mt-gap-md max-w-2xl text-body text-text-secondary">
+          Lynx, our AI agent, ranks the roles that fit you, sharpens your CV and interviews you on
+          camera, so recruiters can hire with confidence.
+        </p>
         <div className="mt-10 flex flex-wrap items-center gap-gap-sm">
           <Button variant="heroPrimary" asChild>
             <Link href="/signup">Find opportunities</Link>

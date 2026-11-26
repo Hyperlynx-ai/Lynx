@@ -7,8 +7,11 @@ type HeadlineProps = {
   lead: React.ReactNode
   /** The gray continuation clause, inline on the same line flow. Never a separate subhead. */
   muted?: React.ReactNode
-  /** `display` = hero (68px), `headline` = section (48px). */
-  size?: "display" | "headline"
+  /**
+   * `display` = hero (68px) and `headline` = section (48px), for public pages;
+   * `title` = page title on signed-in app screens (32px).
+   */
+  size?: "display" | "headline" | "title"
   as?: "h1" | "h2" | "h3"
   className?: string
 }
@@ -24,7 +27,7 @@ function Headline({ lead, muted, size = "headline", as = "h2", className }: Head
     <Tag
       className={cn(
         "font-sans font-normal",
-        size === "display" ? "text-display" : "text-headline",
+        size === "display" ? "text-display" : size === "title" ? "text-title" : "text-headline",
         className
       )}
     >

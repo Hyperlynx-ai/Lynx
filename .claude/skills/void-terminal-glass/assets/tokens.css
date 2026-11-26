@@ -42,6 +42,12 @@
   --text-headline-line: 1.13;
   --text-headline-tracking: -1.9px;
 
+  /* App page title: signed-in screens only (owner decision 2026-11-26) */
+  --text-title-size: 32px;
+  --text-title-weight: 400;
+  --text-title-line: 1.2;
+  --text-title-tracking: -0.9px;
+
   --text-body-size: 16px;
   --text-body-weight: 400;
   --text-body-line: 1.5;
