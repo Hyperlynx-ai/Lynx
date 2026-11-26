@@ -76,6 +76,13 @@ FIELDS: dict[str, list[str]] = {
         "php",
         "ruby",
         "mobile developer",
+        "fullstack",
+        "engineering manager",
+        "vp of engineering",
+        "head of engineering",
+        "software engineering",
+        "web developer",
+        "gtm engineer",
     ],
     "data_ai": [
         "data",
@@ -95,6 +102,11 @@ FIELDS: dict[str, list[str]] = {
         "llm",
         "statistics",
         "bi",
+        "applied scientist",
+        "machine learning scientist",
+        "research engineer",
+        "data engineer",
+        "quantitative",
     ],
     "cloud_devops": [
         "cloud",
@@ -122,6 +134,9 @@ FIELDS: dict[str, list[str]] = {
         "scrum master",
         "agile coach",
         "delivery manager",
+        "programme manager",
+        "program management",
+        "project management",
     ],
     "marketing": [
         "marketing",
@@ -147,6 +162,10 @@ FIELDS: dict[str, list[str]] = {
         "bdr",
         "sdr",
         "inside sales",
+        "renewals",
+        "account lead",
+        "sales manager",
+        "key account",
     ],
     "finance": [
         "finance",
@@ -165,6 +184,11 @@ FIELDS: dict[str, list[str]] = {
         "bookkeeping",
         "controller",
         "actuary",
+        "compliance",
+        "restructuring",
+        "risk",
+        "underwriter",
+        "credit",
     ],
     "hr": [
         "hr",
@@ -186,6 +210,18 @@ FIELDS: dict[str, list[str]] = {
         "procurement",
         "business analyst",
         "operations manager",
+        "area manager",
+        "fulfilment",
+        "fulfillment",
+        "transportation",
+        "logistik",
+        "warehouse",
+        "ground handler",
+        "flight monitor",
+        "shift",
+        "site manager",
+        "opérations",
+        "operations associate",
     ],
     "design": [
         "design",
@@ -215,6 +251,14 @@ FIELDS: dict[str, list[str]] = {
         "chemical engineer",
         "process engineer",
         "quality engineer",
+        "technician",
+        "maintenance",
+        "reliability",
+        "lab engineer",
+        "opto",
+        "mechatronics",
+        "safety technician",
+        "field engineer",
     ],
     "healthcare": [
         "clinical",
@@ -233,6 +277,12 @@ FIELDS: dict[str, list[str]] = {
         "radiographer",
         "laboratory",
         "research scientist",
+        "biomedical",
+        "haematology",
+        "hematology",
+        "scientist specialist",
+        "health care",
+        "care assistant",
     ],
     "customer_support": [
         "customer support",
@@ -243,6 +293,8 @@ FIELDS: dict[str, list[str]] = {
         "support engineer",
         "call center",
         "technical support",
+        "client success",
+        "customer experience",
     ],
     "hospitality": [
         "hotel",
@@ -272,6 +324,18 @@ FIELDS: dict[str, list[str]] = {
         "scholarship",
         "fellowship",
         "academic",
+        "summer student",
+        "student programme",
+        "student program",
+        "students program",
+        "scholars",
+        "research internship",
+        "visiting student",
+        "summer program",
+        "summer programme",
+        "srfp",
+        "research fellow",
+        "graduate program",
     ],
 }
 
@@ -306,6 +370,9 @@ class RawJob:
     salary_currency: str | None = None
     posted_at: datetime | None = None
     deadline: date | None = None
+    #: Set by trusted (curated) sources for listings open to applicants from
+    #: anywhere, e.g. "Global" scholarships: kept even though not remote.
+    open_to_all: bool = False
 
 
 @dataclass
@@ -391,11 +458,13 @@ def detect_type(raw: RawJob) -> str | None:
     return None
 
 
-def dedupe_key(title: str, company: str | None, country: str | None) -> str:
-    """Same title + company + country = same job, whatever the source."""
-    norm = " ".join(
-        re.sub(r"[^a-z0-9]+", " ", f"{title}|{company or ''}|{country or ''}".lower()).split()
-    )
+def dedupe_key(
+    title: str, company: str | None, country: str | None, place: str | None = None
+) -> str:
+    """Same title + company + country + place (city, else the location text) =
+    same job, whatever the source."""
+    parts = [title, company or "", country or "", place or ""]
+    norm = "|".join(" ".join(re.sub(r"[^a-z0-9]+", " ", p.lower()).split()) for p in parts)
     return hashlib.sha256(norm.encode()).hexdigest()[:32]
 
 
@@ -412,7 +481,8 @@ def normalize(raw: RawJob) -> Job | None:
         location and re.search(r"remote|anywhere|worldwide", location, re.I)
     )
     only_remote = location is None or bool(_ONLY_REMOTE.fullmatch(location))
-    if country is None and not (remote and (only_remote or is_open_region(location))):
+    open_region = only_remote or is_open_region(location)
+    if country is None and not ((remote or raw.open_to_all) and open_region):
         return None
     other = " ".join([*raw.categories, description or ""])[:5000]
     posted = raw.posted_at
@@ -437,5 +507,5 @@ def normalize(raw: RawJob) -> Job | None:
         salary_currency=(raw.salary_currency or "").upper()[:3] or None,
         posted_at=posted,
         deadline=raw.deadline,
-        dedupe_key=dedupe_key(title, raw.company, country),
+        dedupe_key=dedupe_key(title, raw.company, country, city or location),
     )

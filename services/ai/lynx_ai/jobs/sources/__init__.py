@@ -23,5 +23,12 @@ class FetchResult:
 
 Fetch = Callable[[Mapping[str, Any], Mapping[str, str]], FetchResult]
 
-#: source id (as in job_sources.id) -> adapter. Filled in by later chunks.
-ADAPTERS: dict[str, Fetch] = {}
+
+def _adapters() -> dict[str, Fetch]:
+    from . import curated_sheet
+
+    return {"curated_sheet": curated_sheet.fetch}
+
+
+#: source id (as in job_sources.id) -> adapter.
+ADAPTERS: dict[str, Fetch] = _adapters()
