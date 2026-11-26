@@ -21,7 +21,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..")
 const checkOnly = process.argv.includes("--check")
 
 /** Files from packages/shared/src that apps/api uses. They may import each other. */
-const FILES = ["cv.ts", "candidate.ts", "facts.ts", "cv-edit.ts"]
+const FILES = ["cv.ts", "candidate.ts", "facts.ts", "cv-edit.ts", "jobs.ts"]
 
 let stale = 0
 for (const file of FILES) {

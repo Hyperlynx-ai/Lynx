@@ -6674,6 +6674,519 @@
           }
         }
       }
+    },
+    "/me/opportunities": {
+      "get": {
+        "summary": "One page of the opportunities feed (ranked matches first)",
+        "tags": [
+          "candidate"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "default": "jobs",
+              "type": "string",
+              "enum": [
+                "jobs",
+                "internships",
+                "scholarships"
+              ]
+            },
+            "in": "query",
+            "name": "view",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "in": "query",
+            "name": "q",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "AE",
+                "SA",
+                "QA",
+                "OM",
+                "KW",
+                "BH",
+                "DE",
+                "NL",
+                "IE",
+                "GB",
+                "FR",
+                "BE",
+                "LU",
+                "AT",
+                "CH",
+                "PL",
+                "CZ",
+                "SE",
+                "FI",
+                "DK",
+                "NO",
+                "IT",
+                "ES",
+                "PT",
+                "EE",
+                "MT",
+                "CY",
+                "SG",
+                "MY",
+                "JP",
+                "AU",
+                "NZ",
+                "CA",
+                "US",
+                "IN"
+              ]
+            },
+            "in": "query",
+            "name": "country",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "software",
+                "data_ai",
+                "cybersecurity",
+                "cloud_devops",
+                "product_project",
+                "design",
+                "marketing",
+                "sales",
+                "finance",
+                "hr",
+                "operations",
+                "core_engineering",
+                "healthcare",
+                "customer_support",
+                "hospitality",
+                "education",
+                "other"
+              ]
+            },
+            "in": "query",
+            "name": "field",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "0",
+                "1",
+                "true",
+                "false"
+              ]
+            },
+            "in": "query",
+            "name": "remote",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "0",
+                "1",
+                "true",
+                "false"
+              ]
+            },
+            "in": "query",
+            "name": "saved",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "company": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "location": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "country": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "city": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "remote": {
+                            "type": "boolean"
+                          },
+                          "employmentType": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "seniority": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "field": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "postedAt": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "deadline": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          },
+                          "isAffiliated": {
+                            "type": "boolean"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "kind": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "kind"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "match": {
+                            "nullable": true,
+                            "type": "object",
+                            "properties": {
+                              "rank": {
+                                "type": "number"
+                              },
+                              "score": {
+                                "type": "number"
+                              },
+                              "label": {
+                                "nullable": true,
+                                "type": "string",
+                                "enum": [
+                                  "strong",
+                                  "good",
+                                  "partial"
+                                ]
+                              },
+                              "reason": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "byAi": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "rank",
+                              "score",
+                              "label",
+                              "reason",
+                              "byAi"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "saved": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title",
+                          "company",
+                          "location",
+                          "country",
+                          "city",
+                          "remote",
+                          "employmentType",
+                          "seniority",
+                          "field",
+                          "postedAt",
+                          "deadline",
+                          "url",
+                          "isAffiliated",
+                          "source",
+                          "match",
+                          "saved"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "page": {
+                      "type": "number"
+                    },
+                    "pageSize": {
+                      "type": "number"
+                    },
+                    "matching": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "waiting",
+                            "updating",
+                            "ready"
+                          ]
+                        },
+                        "matchedAt": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "matchedAt"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "total",
+                    "page",
+                    "pageSize",
+                    "matching"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/opportunities/{jobId}": {
+      "put": {
+        "summary": "Save or hide a job (null clears it)",
+        "tags": [
+          "candidate"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "state": {
+                    "nullable": true,
+                    "type": "string",
+                    "enum": [
+                      "saved",
+                      "hidden"
+                    ]
+                  }
+                },
+                "required": [
+                  "state"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "jobId",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "jobId": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "nullable": true,
+                      "type": "string",
+                      "enum": [
+                        "saved",
+                        "hidden"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "jobId",
+                    "state"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

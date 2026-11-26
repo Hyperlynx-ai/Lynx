@@ -28,6 +28,11 @@ import { factRoutes } from "./modules/facts/routes.js"
 import { createSupabaseFactStore, type FactStore } from "./modules/facts/store.js"
 import { exportRoutes } from "./modules/me/export.js"
 import { sourceRoutes } from "./modules/sources/routes.js"
+import { opportunityRoutes } from "./modules/opportunities/routes.js"
+import {
+  createSupabaseOpportunityStore,
+  type OpportunityStore,
+} from "./modules/opportunities/store.js"
 import { companyRoutes } from "./modules/sources/companies.js"
 import { createWorkflowDispatcher, type DispatchRun } from "./modules/sources/dispatch.js"
 import {
@@ -71,6 +76,8 @@ export type AppDeps = {
   sourceStore?: SourceStore
   /** Company job boards for the ATS sources (admin client). */
   companyStore?: CompanyStore
+  /** The candidate's opportunities feed, acting as the request's user. */
+  opportunityStoreFor?: (request: FastifyRequest) => OpportunityStore | undefined
   /** Starts the ingestion workflow for "Run now" (optional). */
   dispatchRun?: DispatchRun
 }
@@ -116,6 +123,10 @@ function defaultDeps(env: Env): AppDeps {
       const db = userDb(request)
       return db ? createSupabaseFactStore(db, request.user!.id) : undefined
     },
+    opportunityStoreFor: (request) => {
+      const db = userDb(request)
+      return db ? createSupabaseOpportunityStore(db, request.user!.id) : undefined
+    },
   }
 }
 
@@ -133,6 +144,7 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
     cvStoreFor = none,
     candidateStoreFor = none,
     factStoreFor = none,
+    opportunityStoreFor = none,
     sourceStore,
     companyStore,
     dispatchRun,
@@ -193,6 +205,8 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
     candidateStoreFor,
     factStoreFor,
   })
+
+  await app.register(opportunityRoutes, { requireUser, requireCandidate, opportunityStoreFor })
 
   app.get("/openapi.json", { schema: { hide: true } }, async () => app.swagger())
 
