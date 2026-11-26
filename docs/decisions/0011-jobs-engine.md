@@ -28,8 +28,8 @@ personal data or secrets. Inngest may come back for event-driven work
 source, each returning raw postings; the rest of the pipeline is shared.
 Each source has a row in `job_sources` with an on/off switch, run history
 and health. Order: the curated Google Sheet (3.3), free APIs (3.4: Arbeitnow,
-Remotive, RemoteOK, Himalayas, Jobicy, The Muse, and with keys Adzuna,
-Jooble, Careerjet, Reed), public ATS boards (3.5), then scrapers (3.6).
+Remotive, RemoteOK, Himalayas, Jobicy, The Muse, and with keys Careerjet
+and Reed; Adzuna and Jooble dropped, owner 2026-11-26), public ATS boards (3.5), then scrapers (3.6).
 Terms and attribution are checked before a source is switched on.
 
 **Curated sheet** (owner): synced daily from the team's Google Sheet for

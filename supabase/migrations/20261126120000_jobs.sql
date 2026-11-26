@@ -151,8 +151,6 @@ insert into public.job_sources (id, name, kind, notes) values
   ('himalayas', 'Himalayas', 'api', 'Free public API for remote jobs. Link back to the posting.'),
   ('jobicy', 'Jobicy', 'api', 'Free public API for remote jobs. Link back to the posting.'),
   ('themuse', 'The Muse', 'api', 'Free public API. Link back to the posting.'),
-  ('adzuna', 'Adzuna', 'api', 'Needs ADZUNA_APP_ID and ADZUNA_APP_KEY. Show "Jobs by Adzuna".'),
-  ('jooble', 'Jooble', 'api', 'Needs JOOBLE_API_KEY.'),
   ('careerjet', 'Careerjet', 'api', 'Needs CAREERJET_AFFID.'),
   ('reed', 'Reed', 'api', 'UK jobs. Needs REED_API_KEY.')
 on conflict (id) do nothing;
