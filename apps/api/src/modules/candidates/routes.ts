@@ -11,6 +11,7 @@ import {
 } from "../../shared/candidate.js"
 import type { CvStore } from "../cvs/store.js"
 import type { CandidateRow, CandidateStore, ConsentKind } from "./store.js"
+import type { DispatchRun } from "../sources/dispatch.js"
 
 const ErrorResponse = z.object({ error: z.string() })
 
@@ -65,14 +66,30 @@ type CandidateRoutesOptions = {
   requireCandidate: preHandlerHookHandler
   candidateStoreFor: (request: FastifyRequest) => CandidateStore | undefined
   cvStoreFor: (request: FastifyRequest) => CvStore | undefined
+  /** Starts the jobs workflow so new matches come within minutes (optional). */
+  dispatchRun?: DispatchRun | undefined
 }
 
 /** The signed-in candidate's profile and consents (onboarding, chunk 2.3). */
 export const candidateRoutes: FastifyPluginAsyncZod<CandidateRoutesOptions> = async (
   app,
-  { requireUser, requireCandidate, candidateStoreFor, cvStoreFor }
+  { requireUser, requireCandidate, candidateStoreFor, cvStoreFor, dispatchRun }
 ) => {
   const preHandler = [requireUser, requireCandidate]
+
+  /**
+   * The database marks the candidate's matches as requested when their
+   * matching inputs change; this starts the workflow that recomputes them.
+   * Never fails the request (the hourly run is the fallback).
+   */
+  async function refreshMatches(request: FastifyRequest) {
+    if (!dispatchRun) return
+    try {
+      if (!(await dispatchRun())) request.log.warn("matching workflow not started")
+    } catch (error) {
+      request.log.warn({ err: error }, "couldn't start the matching workflow")
+    }
+  }
   const doc = { tags: ["candidate"], security: [{ bearer: [] }] }
 
   function storeOr503(request: FastifyRequest, reply: FastifyReply) {
@@ -149,6 +166,7 @@ export const candidateRoutes: FastifyPluginAsyncZod<CandidateRoutesOptions> = as
         phone: p.phone || null,
         phone_is_whatsapp: Boolean(p.phone) && p.phoneIsWhatsapp,
       })
+      if (row.onboarded_at) await refreshMatches(request)
       return toCandidate(row)
     }
   )
@@ -206,6 +224,7 @@ export const candidateRoutes: FastifyPluginAsyncZod<CandidateRoutesOptions> = as
         newsletter: next.newsletter,
         ...(body.completeOnboarding && first ? { onboarded_at: new Date().toISOString() } : {}),
       })
+      if (body.completeOnboarding && first) await refreshMatches(request)
       return toCandidate(row)
     }
   )

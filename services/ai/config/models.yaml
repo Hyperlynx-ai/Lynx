@@ -56,6 +56,16 @@ tasks:
       - google:gemini-3.6-flash
       - google:gemini-3.5-flash-lite
 
+  # A candidate's top 30 jobs -> fit and a one-line reason (chunk 3.7).
+  # Runs in the jobs workflow (GitHub Actions), not behind an endpoint.
+  job_rerank:
+    model: compat:nvidia/minimaxai/minimax-m3.1-flash
+    timeout_s: 120
+    fallbacks:
+      - compat:nvidia/z-ai/glm-5.3-flash
+      - google:gemini-3.6-flash
+      - google:gemini-3.5-flash-lite
+
 # OpenAI-compatible endpoints, used as "compat:<name>/<model>".
 # Example (uncomment and set the key to use it):
 #   qwen:

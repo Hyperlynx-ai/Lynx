@@ -1,10 +1,9 @@
 /**
- * Starts the "Jobs ingestion" GitHub Actions workflow right away when an admin
- * presses "Run now" (ADR 0011), so they don't wait for the hourly pickup.
- *
- * The run processes every source with a pending request, so two quick clicks
- * are both covered. Without a token the hourly scheduled run still picks the
- * request up.
+ * Starts the "Jobs ingestion" GitHub Actions workflow right away (ADR 0011):
+ * when an admin presses "Run now", and when a candidate's matching inputs
+ * change. The run handles every pending request (sources and candidates), so
+ * quick repeats are covered. Without a token the hourly scheduled run still
+ * picks requests up.
  */
 export type DispatchRun = () => Promise<boolean>
 
