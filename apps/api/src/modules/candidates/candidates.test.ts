@@ -39,13 +39,15 @@ const CONSENTS = {
 async function setup() {
   const candidates = memoryCandidates()
   const cvs = memoryDb()
+  const dispatches: number[] = []
   const app = await buildApp(readEnv({ NODE_ENV: "test", AI_SERVICE_URL: "http://ai.test" }), {
     verifyToken: auth.verifyToken,
     supabaseAdmin: fakeAdmin(),
     candidateStoreFor: (request) => candidates.storeFor(request.user!.id),
     cvStoreFor: (request) => cvs.storeFor(request.user!.id),
+    dispatchRun: async () => dispatches.push(Date.now()) > 0,
   })
-  return { app, candidates, cvs }
+  return { app, candidates, cvs, dispatches }
 }
 
 describe("onboarding", () => {
@@ -77,7 +79,7 @@ describe("onboarding", () => {
   })
 
   it("saves the profile, then the consents, and finishes onboarding", async () => {
-    const { app, candidates } = await setup()
+    const { app, candidates, dispatches } = await setup()
     const headers = await auth.bearer(CANDIDATE)
 
     const early = await app.inject({
@@ -107,6 +109,10 @@ describe("onboarding", () => {
     expect(done.statusCode).toBe(200)
     expect(done.json()).toMatchObject({ visibleToRecruiters: true, jobAlerts: true })
     expect(done.json().onboardedAt).toEqual(expect.any(String))
+    // Finishing onboarding starts the matching workflow; earlier saves don't.
+    expect(dispatches).toHaveLength(1)
+    await app.inject({ method: "PUT", url: "/me/candidate/profile", headers, payload: PROFILE })
+    expect(dispatches).toHaveLength(2)
 
     // Every first answer is logged, including the "no" to the newsletter.
     const log = candidates.consents.get(CANDIDATE)!

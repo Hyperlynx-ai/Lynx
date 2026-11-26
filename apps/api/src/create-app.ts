@@ -172,6 +172,7 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
     requireCandidate,
     candidateStoreFor,
     cvStoreFor,
+    dispatchRun,
   })
   await app.register(factRoutes, { requireUser, requireCandidate, factStoreFor, aiClient })
   await app.register(sourceRoutes, { requireUser, requireAdmin, sourceStore, dispatchRun })
