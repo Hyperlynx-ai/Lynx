@@ -70,8 +70,7 @@ the Supabase Management API (`scripts/ci/supabase-db-url.py`).
 Repository secrets it reads (set with `gh secret set NAME --repo
 Hyperlynx-ai/Lynx`, which prompts for the value): `SUPABASE_ACCESS_TOKEN`,
 `SUPABASE_PROD_DB_PASSWORD`, `SUPABASE_STAGING_DB_PASSWORD` (already set),
-`CURATED_SHEET_ID`, `ADZUNA_APP_ID`, `ADZUNA_APP_KEY`, `JOOBLE_API_KEY`,
-`CAREERJET_AFFID`, `REED_API_KEY`. A missing key only fails that source.
+`CURATED_SHEET_ID`, `CAREERJET_API_KEY`, `REED_API_KEY`. A missing key only fails that source.
 
 Locally: `pnpm db:start`, then in `services/ai`: `uv run python -m
 lynx_ai.jobs check` or `run --source <id>` (uses `DATABASE_URL` from
