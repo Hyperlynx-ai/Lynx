@@ -75,7 +75,6 @@ jobs:
           SCHEDULE: ${{ github.event.schedule }}
           SOURCES: ${{ inputs.sources }}
           CURATED_SHEET_ID: ${{ secrets.CURATED_SHEET_ID }}
-          CAREERJET_API_KEY: ${{ secrets.CAREERJET_API_KEY }}
           REED_API_KEY: ${{ secrets.REED_API_KEY }}
         run: |
           if [ "$SCHEDULE" = "17 * * * *" ]; then
