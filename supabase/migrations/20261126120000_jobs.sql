@@ -144,13 +144,10 @@ revoke execute on function public.jobs_resolve_duplicates() from public, anon, a
 -- The sources we know about. All start switched off; an admin turns them on
 -- after the terms check (ADR 0007).
 insert into public.job_sources (id, name, kind, notes) values
-  ('curated_sheet', 'Hyperlynx curated sheet', 'curated', 'The team''s Google Sheet (Jobs and Opportunities tabs), synced daily.'),
-  ('arbeitnow', 'Arbeitnow', 'api', 'Free public API, Europe-focused. Link back to the posting.'),
-  ('remotive', 'Remotive', 'api', 'Free public API for remote jobs. Credit Remotive and link back.'),
-  ('remoteok', 'RemoteOK', 'api', 'Free public API for remote jobs. Credit RemoteOK and link back.'),
-  ('himalayas', 'Himalayas', 'api', 'Free public API for remote jobs. Link back to the posting.'),
-  ('jobicy', 'Jobicy', 'api', 'Free public API for remote jobs. Link back to the posting.'),
-  ('themuse', 'The Muse', 'api', 'Free public API. Link back to the posting.'),
-  ('careerjet', 'Careerjet', 'api', 'Needs CAREERJET_AFFID.'),
-  ('reed', 'Reed', 'api', 'UK jobs. Needs REED_API_KEY.')
+  ('curated_sheet', 'Hyperlynx curated sheet', 'curated', 'The team''s Google Sheet (Jobs and Opportunities tabs), synced daily. Needs CURATED_SHEET_ID.'),
+  ('arbeitnow', 'Arbeitnow', 'api', 'Free public API, Europe-focused. Commercial use: agree a monthly fee with Arbeitnow before launch (KL-26).'),
+  ('remoteok', 'RemoteOK', 'api', 'Free public API for remote jobs. Credit Remote OK and link back to its job page (no logo).'),
+  ('himalayas', 'Himalayas', 'api', 'Free public API for remote jobs. Credit Himalayas; Apply must use its application link; no resale to aggregators.'),
+  ('jobicy', 'Jobicy', 'api', 'Free public API for remote jobs (last 7 days). Credit Jobicy as the source.'),
+  ('reed', 'Reed', 'api', 'UK jobs. Needs REED_API_KEY. No published API terms: get Reed''s written permission before commercial launch (KL-26).')
 on conflict (id) do nothing;
