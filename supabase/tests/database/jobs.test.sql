@@ -8,8 +8,8 @@ insert into auth.users (id, email, raw_user_meta_data) values
 -- As the ingestion (database owner): two sources bring the same job.
 insert into public.jobs (id, source_id, external_id, url, title, company, country, dedupe_key, first_seen_at) values
   ('e1000000-0000-0000-0000-000000000001', 'arbeitnow', 'a-1', 'https://example.test/a1', 'Backend Engineer', 'Acme', 'DE', 'k1', now() - interval '2 days'),
-  ('e1000000-0000-0000-0000-000000000002', 'remotive', 'r-9', 'https://example.test/r9', 'Backend Engineer', 'Acme', 'DE', 'k1', now() - interval '1 day'),
-  ('e1000000-0000-0000-0000-000000000003', 'remotive', 'r-10', 'https://example.test/r10', 'Data Analyst', 'Beta', 'AE', 'k2', now());
+  ('e1000000-0000-0000-0000-000000000002', 'remoteok', 'r-9', 'https://example.test/r9', 'Backend Engineer', 'Acme', 'DE', 'k1', now() - interval '1 day'),
+  ('e1000000-0000-0000-0000-000000000003', 'remoteok', 'r-10', 'https://example.test/r10', 'Data Analyst', 'Beta', 'AE', 'k2', now());
 insert into public.jobs (source_id, external_id, url, title, dedupe_key, status) values
   ('jobicy', 'old-1', 'https://example.test/old', 'Old job', 'k3', 'expired');
 
