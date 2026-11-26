@@ -1,4 +1,4 @@
-# Handoff: where the work stands (2026-11-24)
+# Handoff: where the work stands (2026-11-26)
 
 Read this first if you are an agent (or a teammate) picking up the work. It
 summarises the state of the project, what is unfinished, how we work, and
@@ -79,9 +79,12 @@ for errors only (design skill rule 7).
   `lynx-prod` = `xwtgskwnoasqxcrqrkdt`. Migrations reach both through the
   `db-migrate.yml` workflow when a PR merges to `main`. Local stack in
   Docker (`pnpm db:start`).
-- **AI:** a free Gemini key (env `GOOGLE_API_KEY`), test/synthetic data
-  only (KL-05, policy AI-02). **Free tier = 20 requests per day per model**
-  (KL-20).
+- **AI:** primary provider **NVIDIA NIM** (`NVIDIA_API_KEY`, OpenAI-compatible,
+  declared as `nvidia` in `services/ai/config/models.yaml`): MiniMax M3.1
+  Flash, then GLM 5.3 Flash, then Gemini (`GOOGLE_API_KEY`) as fallbacks.
+  Test/synthetic data only (KL-05, policy AI-02). Free tiers: Gemini allows
+  20 requests per day per model (KL-20); NIM models get retired (KL-21) —
+  list them with `GET https://integrate.api.nvidia.com/v1/models`.
 - Secrets: real values only in git-ignored `.env.local` files and in
   Vercel / Supabase / GitHub settings. Never print or commit them.
 - The owner runs an Anaconda `python -m http.server` on port 8000 — never
@@ -114,79 +117,32 @@ for errors only (design skill rule 7).
 ## 5. Status
 
 - **Phase 0, Phase 1: done.**
-- **Phase 2** (candidate onboarding, profile, CV and Lynx memory):
-  - 2.1 AI foundation — done (PR #67).
-  - 2.2 CV upload and parsing — done (PR #68).
-  - 2.3 onboarding, profile answers, privacy choices — done (PR #69).
-  - 2.4 "What Lynx knows about you", Tell Lynx more, download my data —
-    done (PR #70). Verified on production after merge (version `a554a75`,
-    migrations applied to staging and production).
-  - **2.5 CV editor — unfinished**, branch `feat/p2-cv-editor` (pushed; no
-    PR yet). See section 6.
-  - **2.6 PDF/DOCX export — not started.** See section 6.
-  - Then the Phase 2 "done when" check on production.
-- **Phase 3 onwards:** not started. See `docs/roadmap.md` (Phase 3 = jobs
+- **Phase 2** (candidate onboarding, profile, CV and Lynx memory): **all
+  chunks built.**
+  - 2.1 AI foundation (PR #67), 2.2 CV upload and parsing (PR #68),
+    2.3 onboarding (PR #69), 2.4 What Lynx knows / download my data
+    (PR #70): merged and verified on production.
+  - 2.5 CV editor (Ask Lynx with diffs, tailor to a role, versions, matching
+    CV; NVIDIA NIM as AI provider): PR #71.
+  - 2.6 PDF and Word export, three templates (classic / modern / compact),
+    made in the browser: PR on branch `feat/p2-cv-export` (stacked on #71).
+  - Left: merge #71 then the 2.6 PR, then the Phase 2 "done when" check on
+    production (a new candidate goes from CV upload to an AI-edited CV
+    downloaded as PDF and DOCX). Creating an account on production needs
+    the owner's OK, so the owner runs it, or approves a synthetic account.
+- **Phase 3 onwards:** not started. See `docs/roadmap.md`: Phase 3 = jobs
   engine and opportunities feed; then recruiters, AI interviews, recruiter
-  search, Lynx assistant, emails, Academy migration, demo hardening).
+  search, Lynx assistant, emails, Academy migration, demo hardening. Ask the
+  owner the open questions for a phase (with recommendations) before
+  building it.
 
-## 6. What's left in Phase 2
+## 6. Evals (policy AI-04)
 
-### 2.5 CV editor (branch `feat/p2-cv-editor`)
-
-Built and committed: `cv_edit` AI task + prompt + tests; `guardEdit`
-(drops new jobs/schools/projects, keeps employers and dates, drops skills
-not in the CV, flags numbers not in the CV) and `cleanCv` with tests; API
-`POST /cvs/:id/ai-edit`, `POST /cvs/:id/tailor` (one section at a time),
-`POST /cvs/:id/versions`, `PUT /me/candidate/matching-cv` (also refreshes
-Lynx's CV facts); a newly parsed CV becomes the matching CV; web editor at
-`/app/cv/[id]/edit` (section forms, "ask lynx" per section, Tailor to a
-role, word diffs with Accept/Reject, Save as version N, versions list with
-"Use for matching" and Open/restore); "Edit with Lynx" button on the CV
-page; one retry after a provider rate limit; `services/ai/dev.py` (see
-traps).
-
-Verified in the local browser: editor loads; Ask Lynx on the summary gives
-a correct diff; Accept + Save created version 2; Use for matching works;
-Tailor produced summary and experience proposals. Skills failed because the
-day's Gemini quota ran out.
-
-To do:
-1. **Model fallback chain (owner approval, protected area):** the free key
-   allows 20 requests/day per model. Proposed for every task in
-   `models.yaml`: `gemini-3.6-flash` → `gemini-3.7-flash` →
-   `gemini-3.5-flash` → `gemini-3.5-flash-lite` (each has its own quota;
-   probe models first: `gemini-3.8-flash` was overloaded,
-   `gemini-flash-latest` timed out). Also: don't retry on a 429 whose
-   `retryDelay` is hours (daily quota) — only on short per-minute limits.
-   Update KL-20 with the "20/day per model" finding (already noted below).
-2. Re-test Tailor end to end (all three sections) once quota is available;
-   the experience section took ~80 s once — consider lowering Gemini
-   thinking for `cv_edit` (`google_thinking_config`), measure first.
-3. An eval for `cv_edit` (policy AI-04): synthetic instructions on the
-   sample CVs; score that nothing is invented (guard warnings, unchanged
-   employers/dates) and that the instruction was followed.
-4. An e2e test for the editor (works without the AI: hand edit → Save →
-   version 2 → Use for matching; "ask lynx" shows a clear error in CI).
-5. Run all checks (below), update roadmap (2.5 In review), open the PR
-   (protected: `models.yaml`; note KL-20).
-
-### 2.6 Exports (`feat/p2-cv-export`)
-
-Per ADR 0010 and the roadmap: three templates — an ATS-friendly classic
-(based on "Jake's Resume" layout), modern, and compact — rendered in the
-**browser** from `CvData`: PDF with `@react-pdf/renderer`, DOCX with
-`docx`. Download buttons on the CV page and editor (for any version). Use
-the built-in PDF fonts (Helvetica / Times) for now and log a KL item that
-non-Latin scripts aren't supported in PDFs yet. Check licences and add to
-`docs/third-party.md`. Test: unit tests that each template renders the
-sample CV without errors; e2e that the download produces a PDF and a DOCX.
-
-### Phase 2 "done when"
-
-On production, a new candidate goes from CV upload to an AI-edited CV
-downloaded as PDF and DOCX. After 2.5 and 2.6 merge, ask the owner to run
-it (creating accounts on production needs the owner's OK), or get explicit
-permission to use a synthetic test account.
+Every AI task has an eval in `services/ai/evals/` (synthetic data); results
+are committed in `evals/results/`. Current (MiniMax M3.1 Flash): cv_parse
+1.0, facts_extract 0.979, cv_edit 1.0. Run one after any prompt or model
+change and commit the result; the free quotas are small, so run them one at
+a time.
 
 ## 7. Commands
 
@@ -222,10 +178,16 @@ onboarding profile, facts and CV versions 1–2.
   there, so shared helper types should accept optional fields.
 - **The local dev servers kept dying:** `uvicorn --reload` on Windows stops
   its worker with a console Ctrl+C that also kills Turborepo (web + API).
-  Fixed on `feat/p2-cv-editor` with `services/ai/dev.py` (restarts uvicorn
-  by terminating it). Don't go back to `--reload`.
-- **Gemini free tier:** 20 requests/day per model; parallel requests get
-  429. Run AI calls one at a time; don't burn quota on repeated evals.
+  `services/ai/dev.py` restarts uvicorn by terminating it instead. Don't go
+  back to `--reload`.
+- **AI free tiers:** Gemini allows 20 requests/day per model and refuses
+  parallel requests; NIM retires models. Keep AI calls sequential, keep the
+  fallback chain, and set `timeout_s` per task in `models.yaml`.
+- **Docker Desktop** may not be running after a restart: the local database
+  needs it (`pnpm db:start`). It's installed under
+  `%LOCALAPPDATA%\Programs\DockerDesktop`.
+- **e2e without AI:** tests that need a parsed CV seed one with
+  `seedParsedCv()` (apps/web/e2e/helpers.ts); CI has no AI service.
 - Vercel: the API entry must stay `apps/api/src/server.ts` (no `app.ts` or
   `index.ts` in `src/`); new build-time env vars go into `turbo.json`.
 - New API env vars: add to `apps/api/src/env.ts`, `.env.example`,

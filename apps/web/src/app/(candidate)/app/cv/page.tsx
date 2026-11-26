@@ -11,6 +11,7 @@ import { CvFileActions } from "@/components/cv/cv-file-actions"
 import { CvUpload } from "@/components/cv/cv-upload"
 import { CvView } from "@/components/cv/cv-view"
 import { DemoNotice } from "@/components/cv/demo-notice"
+import { ExportPanel } from "@/components/cv/export-panel"
 import { cvErrorMessage } from "@/components/cv/messages"
 import { requireRole } from "@/lib/auth/require-role"
 import { getCv, listCvs, type CvFile } from "@/lib/cv/api"
@@ -91,6 +92,7 @@ export default async function CvPage() {
             </Button>
           </div>
           <CvView cv={current.data} />
+          <ExportPanel cv={current.data} />
           <CvFileActions cvId={shown.id} fileName={shown.fileName} />
         </section>
       ) : null}

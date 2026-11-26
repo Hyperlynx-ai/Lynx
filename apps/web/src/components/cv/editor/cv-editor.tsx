@@ -19,6 +19,7 @@ import {
   type Proposal,
 } from "@/lib/cv/editor-actions"
 
+import { ExportPanel } from "../export-panel"
 import { ProposalView } from "./proposal-view"
 import { SectionForm } from "./section-forms"
 
@@ -182,6 +183,11 @@ export function CvEditor(props: {
           />
         ))}
       </div>
+
+      <ExportPanel
+        cv={cleanCv(draft)}
+        note="Downloads what's on screen, including changes you haven't saved yet."
+      />
 
       <SaveBar dirty={dirty || viewingOld} saving={saving} nextVersion={latest + 1} onSave={save} />
 
