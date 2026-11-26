@@ -50,7 +50,19 @@ COUNTRY_NAMES: dict[str, list[str]] = {
     "AU": ["australia"],
     "NZ": ["new zealand"],
     "CA": ["canada"],
-    "US": ["united states", "united states of america", "usa", "u.s.", "u.s.a", "the us"],
+    "US": [
+        "united states",
+        "united states of america",
+        "usa",
+        "u.s.",
+        "u.s.a",
+        "the us",
+        "us only",
+        "us-only",
+        "us based",
+        "us-based",
+        "us remote",
+    ],
     "IN": ["india", "bharat"],
 }
 
@@ -76,6 +88,7 @@ CITIES: dict[str, str] = {
     "munich": "DE",
     "münchen": "DE",
     "hamburg": "DE",
+    "hanover": "DE",
     "frankfurt": "DE",
     "cologne": "DE",
     "köln": "DE",
@@ -268,7 +281,9 @@ def find_country(text: str | None) -> tuple[str | None, str | None]:
     city = next(
         ((name, code) for pattern, name, code in _CITY_PATTERNS if pattern.search(lower)), None
     )
-    country = next((code for pattern, code in _ALIASES if pattern.search(lower)), None)
+    # The country named first wins ("Germany, Netherlands" -> DE).
+    hits = [(m.start(), code) for pattern, code in _ALIASES if (m := pattern.search(lower))]
+    country = min(hits)[1] if hits else None
     if country is None and city:
         country = city[1]
     if country is None and _UK_POSTCODE.search(text.upper()):

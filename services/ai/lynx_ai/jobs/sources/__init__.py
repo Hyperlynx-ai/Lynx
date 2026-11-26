@@ -25,9 +25,16 @@ Fetch = Callable[[Mapping[str, Any], Mapping[str, str]], FetchResult]
 
 
 def _adapters() -> dict[str, Fetch]:
-    from . import curated_sheet
+    from . import arbeitnow, curated_sheet, himalayas, jobicy, reed, remoteok
 
-    return {"curated_sheet": curated_sheet.fetch}
+    return {
+        "curated_sheet": curated_sheet.fetch,
+        "arbeitnow": arbeitnow.fetch,
+        "remoteok": remoteok.fetch,
+        "himalayas": himalayas.fetch,
+        "jobicy": jobicy.fetch,
+        "reed": reed.fetch,
+    }
 
 
 #: source id (as in job_sources.id) -> adapter.

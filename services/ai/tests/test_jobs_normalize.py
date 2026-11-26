@@ -119,3 +119,13 @@ def test_the_same_title_in_two_towns_is_two_jobs() -> None:
     )
     assert seattle is not None and arlington is not None
     assert seattle.dedupe_key != arlington.dedupe_key
+
+
+def test_remote_words_and_single_country_sources() -> None:
+    us_only = normalize(raw(location="US Only", remote=True))
+    assert us_only is not None and us_only.country == "US"
+    german_remote = normalize(raw(location="Homeoffice", country_hint="DE"))
+    assert german_remote is not None
+    assert (german_remote.country, german_remote.remote) == ("DE", True)
+    uk_town = normalize(raw(location="Little Snoring", country_hint="GB"))
+    assert uk_town is not None and uk_town.country == "GB"
