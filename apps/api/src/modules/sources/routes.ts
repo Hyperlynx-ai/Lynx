@@ -2,6 +2,7 @@ import type { preHandlerHookHandler } from "fastify"
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import { z } from "zod"
 
+import type { DispatchRun } from "./dispatch.js"
 import type { RunRow, SourceRow, SourceStore } from "./store.js"
 
 const ErrorResponse = z.object({ error: z.string() })
@@ -64,12 +65,13 @@ type SourceRoutesOptions = {
   requireUser: preHandlerHookHandler
   requireAdmin: preHandlerHookHandler
   sourceStore: SourceStore | undefined
+  dispatchRun?: DispatchRun | undefined
 }
 
 /** Admin console: job sources with switches, "run now" and health (chunk 3.1). */
 export const sourceRoutes: FastifyPluginAsyncZod<SourceRoutesOptions> = async (
   app,
-  { requireUser, requireAdmin, sourceStore }
+  { requireUser, requireAdmin, sourceStore, dispatchRun }
 ) => {
   const preHandler = [requireUser, requireAdmin]
   const doc = { tags: ["admin"], security: [{ bearer: [] }] }
@@ -138,10 +140,15 @@ export const sourceRoutes: FastifyPluginAsyncZod<SourceRoutesOptions> = async (
       preHandler,
       schema: {
         ...doc,
-        summary: "Ask for a run of this source (picked up by the hourly workflow)",
+        summary: "Ask for a run of this source (started now if dispatch is set up, else hourly)",
         params: Id,
         response: {
-          202: z.object({ id: z.string(), requested: z.literal(true) }),
+          202: z.object({
+            id: z.string(),
+            requested: z.literal(true),
+            /** The workflow was started now (false: the hourly run picks it up). */
+            started: z.boolean(),
+          }),
           403: ErrorResponse,
           404: ErrorResponse,
           503: ErrorResponse,
@@ -153,7 +160,16 @@ export const sourceRoutes: FastifyPluginAsyncZod<SourceRoutesOptions> = async (
       if (!(await sourceStore.requestRun(request.params.id))) {
         return reply.code(404).send({ error: "not_found" })
       }
-      return reply.code(202).send({ id: request.params.id, requested: true as const })
+      let started = false
+      if (dispatchRun) {
+        try {
+          started = await dispatchRun()
+        } catch (error) {
+          request.log.warn({ err: error }, "couldn't start the ingestion workflow")
+        }
+        if (!started) request.log.warn("ingestion workflow not started; hourly run will pick up")
+      }
+      return reply.code(202).send({ id: request.params.id, requested: true as const, started })
     }
   )
 }

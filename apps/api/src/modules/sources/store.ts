@@ -80,3 +80,66 @@ export function createSupabaseSourceStore(admin: SupabaseClient): SourceStore {
     },
   }
 }
+
+/** Applicant tracking systems with a company-board source (ats_companies.ats). */
+export const ATS = ["greenhouse", "lever", "ashby", "smartrecruiters", "recruitee"] as const
+export type Ats = (typeof ATS)[number]
+
+export type CompanyRow = {
+  id: string
+  ats: Ats
+  slug: string
+  name: string
+  enabled: boolean
+  created_at: string
+}
+
+/** Companies whose public job boards are ingested (admin client: callers check the role). */
+export interface CompanyStore {
+  list(): Promise<CompanyRow[]>
+  /** Returns "duplicate" if this board is already listed. */
+  add(company: { ats: Ats; slug: string; name: string }): Promise<CompanyRow | "duplicate">
+  /** These return false if the company doesn't exist. */
+  setEnabled(id: string, enabled: boolean): Promise<boolean>
+  remove(id: string): Promise<boolean>
+}
+
+const COMPANY_COLUMNS = "id, ats, slug, name, enabled, created_at"
+
+export function createSupabaseCompanyStore(admin: SupabaseClient): CompanyStore {
+  return {
+    async list() {
+      const { data, error } = await admin
+        .from("ats_companies")
+        .select(COMPANY_COLUMNS)
+        .order("name")
+        .order("ats")
+      if (error) throw error
+      return (data ?? []) as CompanyRow[]
+    },
+    async add(company) {
+      const { data, error } = await admin
+        .from("ats_companies")
+        .insert(company)
+        .select(COMPANY_COLUMNS)
+        .single()
+      if (error?.code === "23505") return "duplicate"
+      if (error) throw error
+      return data as CompanyRow
+    },
+    async setEnabled(id, enabled) {
+      const { data, error } = await admin
+        .from("ats_companies")
+        .update({ enabled })
+        .eq("id", id)
+        .select("id")
+      if (error) throw error
+      return (data ?? []).length > 0
+    },
+    async remove(id) {
+      const { data, error } = await admin.from("ats_companies").delete().eq("id", id).select("id")
+      if (error) throw error
+      return (data ?? []).length > 0
+    },
+  }
+}

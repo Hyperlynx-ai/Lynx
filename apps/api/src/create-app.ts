@@ -28,7 +28,14 @@ import { factRoutes } from "./modules/facts/routes.js"
 import { createSupabaseFactStore, type FactStore } from "./modules/facts/store.js"
 import { exportRoutes } from "./modules/me/export.js"
 import { sourceRoutes } from "./modules/sources/routes.js"
-import { createSupabaseSourceStore, type SourceStore } from "./modules/sources/store.js"
+import { companyRoutes } from "./modules/sources/companies.js"
+import { createWorkflowDispatcher, type DispatchRun } from "./modules/sources/dispatch.js"
+import {
+  type CompanyStore,
+  createSupabaseCompanyStore,
+  createSupabaseSourceStore,
+  type SourceStore,
+} from "./modules/sources/store.js"
 import { createSupabaseCvStore, type CvStore } from "./modules/cvs/store.js"
 import { healthRoutes } from "./modules/health/routes.js"
 import { meRoutes } from "./modules/me/routes.js"
@@ -62,6 +69,10 @@ export type AppDeps = {
   factStoreFor?: (request: FastifyRequest) => FactStore | undefined
   /** Job sources for the admin console (admin client). */
   sourceStore?: SourceStore
+  /** Company job boards for the ATS sources (admin client). */
+  companyStore?: CompanyStore
+  /** Starts the ingestion workflow for "Run now" (optional). */
+  dispatchRun?: DispatchRun
 }
 
 function defaultDeps(env: Env): AppDeps {
@@ -78,6 +89,16 @@ function defaultDeps(env: Env): AppDeps {
     verifyToken: env.SUPABASE_URL ? createTokenVerifier(env.SUPABASE_URL) : undefined,
     supabaseAdmin,
     sourceStore: supabaseAdmin ? createSupabaseSourceStore(supabaseAdmin) : undefined,
+    companyStore: supabaseAdmin ? createSupabaseCompanyStore(supabaseAdmin) : undefined,
+    // Deployed only: production writes to production, PR previews to staging.
+    dispatchRun:
+      env.GITHUB_DISPATCH_TOKEN && env.VERCEL_ENV && env.VERCEL_ENV !== "development"
+        ? createWorkflowDispatcher({
+            token: env.GITHUB_DISPATCH_TOKEN,
+            repository: `${env.VERCEL_GIT_REPO_OWNER ?? "Hyperlynx-ai"}/${env.VERCEL_GIT_REPO_SLUG ?? "Lynx"}`,
+            target: env.VERCEL_ENV === "production" ? "production" : "staging",
+          })
+        : undefined,
     aiClient: createAiClient({
       baseUrl: env.AI_SERVICE_URL,
       token: env.AI_SERVICE_TOKEN,
@@ -113,6 +134,8 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
     candidateStoreFor = none,
     factStoreFor = none,
     sourceStore,
+    companyStore,
+    dispatchRun,
   } = deps ?? defaultDeps(env)
 
   app.setValidatorCompiler(validatorCompiler)
@@ -151,7 +174,8 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
     cvStoreFor,
   })
   await app.register(factRoutes, { requireUser, requireCandidate, factStoreFor, aiClient })
-  await app.register(sourceRoutes, { requireUser, requireAdmin, sourceStore })
+  await app.register(sourceRoutes, { requireUser, requireAdmin, sourceStore, dispatchRun })
+  await app.register(companyRoutes, { requireUser, requireAdmin, companyStore })
   await app.register(cvEditRoutes, {
     requireUser,
     requireCandidate,

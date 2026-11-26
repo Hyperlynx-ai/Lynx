@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/auth/require-role"
 const nav = [
   { href: "/admin", label: "Users" },
   { href: "/admin/sources", label: "Job sources" },
+  { href: "/admin/companies", label: "Companies" },
 ]
 
 /** Admin console: only signed-in admins get past this layout. */

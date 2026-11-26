@@ -2,7 +2,9 @@
 # PROTECTED AREA. Logs are public: the ingestion prints counts only.
 #
 # - Daily at 01:30 UTC (07:00 IST): every enabled source, production.
-# - Hourly: sources an admin asked to "Run now" in the admin console.
+# - "Run now" in the admin console: the API starts this workflow with
+#   sources=requested (needs GITHUB_DISPATCH_TOKEN in the lynx-api Vercel
+#   project); the hourly run is the fallback.
 # - Manually (Actions -> Jobs ingestion -> Run workflow): choose the
 #   database and, optionally, some sources.
 # - Pull requests touching the ingestion: a connection check against staging.
@@ -25,7 +27,7 @@ on:
         options: [production, staging]
         default: production
       sources:
-        description: Source ids, comma separated (empty = every enabled source)
+        description: Source ids, comma separated (empty = every enabled source; "requested" = those an admin asked to run)
         type: string
         default: ""
   pull_request:
@@ -77,7 +79,7 @@ jobs:
           CURATED_SHEET_ID: ${{ secrets.CURATED_SHEET_ID }}
           REED_API_KEY: ${{ secrets.REED_API_KEY }}
         run: |
-          if [ "$SCHEDULE" = "17 * * * *" ]; then
+          if [ "$SCHEDULE" = "17 * * * *" ] || [ "$SOURCES" = "requested" ]; then
             set -- --requested
           elif [ -n "$SOURCES" ]; then
             set --
