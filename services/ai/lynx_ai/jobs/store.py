@@ -12,8 +12,10 @@ from sqlalchemy import Engine, text
 
 from .normalize import Job
 
-#: Days after posting when a job expires, and days an expired job is kept.
-MAX_AGE_DAYS = 60
+#: A job its source hasn't listed for this many days expires (sources only
+#: list open jobs, so an old job that is still listed stays active), and an
+#: expired job is deleted after KEEP_EXPIRED_DAYS.
+STALE_DAYS = 7
 KEEP_EXPIRED_DAYS = 30
 
 
@@ -65,13 +67,29 @@ class PostgresJobStore:
         with self.engine.connect() as conn:
             row = (
                 conn.execute(
-                    text("select id, enabled, config from public.job_sources where id = :id"),
+                    text("select id, kind, enabled, config from public.job_sources where id = :id"),
                     {"id": source_id},
                 )
                 .mappings()
                 .first()
             )
-            return dict(row) if row else None
+            if not row:
+                return None
+            source = dict(row)
+            if source["kind"] == "ats":
+                # Company boards for this ATS come from the admin-managed list.
+                companies = conn.execute(
+                    text(
+                        "select slug, name from public.ats_companies"
+                        " where ats = :id and enabled order by name"
+                    ),
+                    {"id": source_id},
+                ).mappings()
+                source["config"] = {
+                    **(source.get("config") or {}),
+                    "companies": [dict(c) for c in companies],
+                }
+            return source
 
     def requested_sources(self) -> list[str]:
         with self.engine.connect() as conn:
@@ -147,14 +165,14 @@ class PostgresJobStore:
             )
 
     def housekeeping(self) -> dict[str, int]:
-        """Expires old or past-deadline jobs, deletes long-expired ones, marks duplicates."""
+        """Expires past-deadline jobs and jobs no longer listed, deletes long-expired
+        ones, marks duplicates."""
         with self.engine.begin() as conn:
             aged = conn.execute(
                 text(
                     "update public.jobs set status = 'expired', expired_at = now()"
-                    " where status = 'active' and (deadline < current_date or"
-                    " coalesce(posted_at, first_seen_at)"
-                    f" < now() - interval '{MAX_AGE_DAYS} days')"
+                    " where status = 'active' and (deadline < current_date"
+                    f" or last_seen_at < now() - interval '{STALE_DAYS} days')"
                 )
             ).rowcount
             deleted = conn.execute(
