@@ -346,8 +346,12 @@ def _word_patterns(words: list[str]) -> list[re.Pattern[str]]:
 
 _FIELD_PATTERNS = {name: _word_patterns(words) for name, words in FIELDS.items()}
 _TAG = re.compile(r"<[^>]+>")
-_SPACE = re.compile(r"[ \t\r\f\v ]+")
-_ONLY_REMOTE = re.compile(r"\W*(fully\s+|100%\s+)?remote(\s+(job|position|role|work))?\W*", re.I)
+_SPACE = re.compile(r"[ \t\r\f\v\u00a0]+")
+_ONLY_REMOTE = re.compile(
+    r"\W*(fully\s+|100%\s+)?(remote|home\s?office|werken op afstand|télétravail|telearbeit)"
+    r"(\s+(job|position|role|work))?\W*",
+    re.I,
+)
 
 
 @dataclass
@@ -373,6 +377,9 @@ class RawJob:
     #: Set by trusted (curated) sources for listings open to applicants from
     #: anywhere, e.g. "Global" scholarships: kept even though not remote.
     open_to_all: bool = False
+    #: The country a single-country source is about (Reed: GB), used when the
+    #: location doesn't name one (e.g. a town that isn't in our city list).
+    country_hint: str | None = None
 
 
 @dataclass
@@ -477,8 +484,15 @@ def normalize(raw: RawJob) -> Job | None:
     description = clean_text(raw.description)
     location = (clean_text(raw.location, 300) or "").replace("\n", " ").strip() or None
     country, city = find_country(location)
+    if country is None and raw.country_hint:
+        country = raw.country_hint
     remote = bool(raw.remote) or bool(
-        location and re.search(r"remote|anywhere|worldwide", location, re.I)
+        location
+        and re.search(
+            r"remote|home\s?office|werken op afstand|télétravail|telearbeit|anywhere|worldwide",
+            location,
+            re.I,
+        )
     )
     only_remote = location is None or bool(_ONLY_REMOTE.fullmatch(location))
     open_region = only_remote or is_open_region(location)
