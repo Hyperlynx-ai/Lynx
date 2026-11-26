@@ -37,7 +37,8 @@ DNS), so new DNS records (e.g. for email sending) are added there.
 |---|---|---|---|
 | `lynx-web`, `lynx-api` | `ENABLE_EXPERIMENTAL_COREPACK=1` | all | lets Vercel use pnpm 12 from `packageManager` |
 | `lynx-api`, `lynx-ai` | `AI_SERVICE_TOKEN` | production, preview (different values) | shared secret for API → AI calls |
-| `lynx-ai` | `GOOGLE_API_KEY` | production, preview | Gemini (policy AI-02: test data only for now) |
+| `lynx-ai` | `NVIDIA_API_KEY` | production, preview | NVIDIA NIM, the primary AI provider (MiniMax M3.1 Flash); test data only (AI-02) |
+| `lynx-ai` | `GOOGLE_API_KEY` | production, preview | Gemini, fallback models (policy AI-02: test data only for now) |
 | `lynx-api` | `SUPABASE_URL` | production (lynx-prod), preview (lynx-staging) | Supabase project URL |
 | `lynx-api` | `SUPABASE_SECRET_KEY` | production, preview (per project) | server-only; bypasses row-level security |
 | `lynx-api` | `SUPABASE_PUBLISHABLE_KEY` | production, preview (per project) | for queries made as the signed-in user (CVs and other candidate data) |

@@ -1,15 +1,15 @@
 {
-  "date": "2026-11-23",
-  "configured": "google:gemini-3.6-flash",
-  "average_overall": 0.924,
+  "date": "2026-11-25",
+  "configured": "compat:nvidia/minimaxai/minimax-m3.1-flash",
+  "average_overall": 0.979,
   "pass_mark": 0.85,
   "failed_cases": [],
   "cases": {
     "relocation-nurse": {
-      "recall": 0.667,
-      "categories": 0.667,
+      "recall": 1.0,
+      "categories": 1.0,
       "no_forbidden": 1.0,
-      "overall": 0.778
+      "overall": 1.0
     },
     "engineer-preferences": {
       "recall": 1.0,

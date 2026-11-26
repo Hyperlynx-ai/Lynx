@@ -37,7 +37,7 @@ extend-exclude = [".venv"]
 select = ["E", "F", "I", "B", "UP", "SIM", "ASYNC"]
 
 [tool.pyright]
-include = ["lynx_ai", "evals", "tests", "main.py"]
+include = ["lynx_ai", "evals", "tests", "main.py", "dev.py"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
 venvPath = "."

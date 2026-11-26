@@ -14,32 +14,58 @@
 #   LYNX_MODEL_<TASK>="primary-model,fallback-1,fallback-2"
 
 tasks:
-  # Smoke test of the AI chain (POST /v1/ping).
-  # gemini-3.8-flash is often overloaded (503) on our key; see KL-17.
-  ping:
-    model: google:gemini-3.6-flash
-    fallbacks:
-      - google:gemini-3.5-flash
+  # Primary: MiniMax M3.1 Flash on NVIDIA NIM (cv_parse sample: score 1.0 in
+  # 9 s). Then GLM 5.3 Flash (NIM), then Gemini. The free Gemini key allows
+  # only 20 requests a day per model and is often overloaded (KL-17, KL-20).
+  # timeout_s: a model slower than this is abandoned for the next one.
+  # "compat:" models get a PDF's text, not the file (scanned PDFs: KL-22).
 
-  # CV file (PDF read natively, DOCX as text) -> structured CV (POST /v1/cv/parse).
-  # "compat:" models get the PDF's text instead of the file.
-  cv_parse:
-    model: google:gemini-3.6-flash
+  # Smoke test of the AI chain (POST /v1/ping).
+  ping:
+    model: compat:nvidia/minimaxai/minimax-m3.1-flash
+    timeout_s: 15
     fallbacks:
-      - google:gemini-3.5-flash
+      - compat:nvidia/z-ai/glm-5.3-flash
+      - google:gemini-3.6-flash
+      - google:gemini-3.5-flash-lite
+
+  # CV file -> structured CV (POST /v1/cv/parse).
+  cv_parse:
+    model: compat:nvidia/minimaxai/minimax-m3.1-flash
+    timeout_s: 45
+    fallbacks:
+      - compat:nvidia/z-ai/glm-5.3-flash
+      - google:gemini-3.6-flash
+      - google:gemini-3.5-flash-lite
+
+  # One CV section + instruction -> edited section (POST /v1/cv/edit).
+  cv_edit:
+    model: compat:nvidia/minimaxai/minimax-m3.1-flash
+    timeout_s: 30
+    fallbacks:
+      - compat:nvidia/z-ai/glm-5.3-flash
+      - google:gemini-3.6-flash
+      - google:gemini-3.5-flash-lite
 
   # Free text from "Tell Lynx more" -> facts (POST /v1/facts/extract).
   facts_extract:
-    model: google:gemini-3.6-flash
+    model: compat:nvidia/minimaxai/minimax-m3.1-flash
+    timeout_s: 25
     fallbacks:
-      - google:gemini-3.5-flash
+      - compat:nvidia/z-ai/glm-5.3-flash
+      - google:gemini-3.6-flash
+      - google:gemini-3.5-flash-lite
 
 # OpenAI-compatible endpoints, used as "compat:<name>/<model>".
 # Example (uncomment and set the key to use it):
 #   qwen:
 #     base_url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1
 #     api_key_env: QWEN_API_KEY
-providers: {}
+providers:
+  # NVIDIA NIM (build.nvidia.com): OpenAI-compatible; key in NVIDIA_API_KEY.
+  nvidia:
+    base_url: https://integrate.api.nvidia.com/v1
+    api_key_env: NVIDIA_API_KEY
 
 # US dollars per million tokens, for cost estimates in ai_calls. Check the
 # provider's current price list when adding a model.

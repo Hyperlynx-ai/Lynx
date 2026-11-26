@@ -105,8 +105,9 @@ def _use(agent: Agent[None, ParsedCv], file_bytes: bytes) -> None:
 
 
 def test_cv_parse_sends_pdfs_to_the_model_as_files(
-    client: TestClient, auth_headers: dict[str, str]
+    client: TestClient, auth_headers: dict[str, str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    monkeypatch.setenv("LYNX_MODEL_CV_PARSE", "google:native-pdf-model")
     seen: list[ModelMessage] = []
     _use(_agent_returning({"is_cv": True, "cv": SAMPLE}, seen), b"%PDF-1.7 fake")
 
@@ -144,8 +145,9 @@ def test_cv_parse_sends_docx_as_text(client: TestClient, auth_headers: dict[str,
 
 
 def test_cv_parse_returns_an_empty_cv_for_other_documents(
-    client: TestClient, auth_headers: dict[str, str]
+    client: TestClient, auth_headers: dict[str, str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    monkeypatch.setenv("LYNX_MODEL_CV_PARSE", "google:native-pdf-model")
     _use(_agent_returning({"is_cv": False, "cv": SAMPLE}, []), b"%PDF-1.7 invoice")
 
     res = client.post(
@@ -165,3 +167,21 @@ def test_cv_parse_needs_the_service_token_and_a_supported_type(
     assert client.post("/v1/cv/parse", json=body).status_code == 401
     other = {"file_url": SIGNED, "media_type": "image/png"}
     assert client.post("/v1/cv/parse", json=other, headers=auth_headers).status_code == 422
+
+
+def test_openai_compatible_models_get_the_pdf_text(
+    client: TestClient, auth_headers: dict[str, str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("LYNX_MODEL_CV_PARSE", "compat:nvidia/some-model")
+    pdf = (Path(__file__).resolve().parents[1] / "evals/fixtures/aarav-sharma.pdf").read_bytes()
+    seen: list[ModelMessage] = []
+    _use(_agent_returning({"is_cv": True, "cv": SAMPLE}, seen), pdf)
+
+    res = client.post(
+        "/v1/cv/parse", json={"file_url": SIGNED, "media_type": PDF}, headers=auth_headers
+    )
+
+    assert res.status_code == 200, res.text
+    content = _user_content(seen)
+    assert any(isinstance(c, str) and "Northwind Payments" in c for c in content)
+    assert not any(isinstance(c, BinaryContent) for c in content)

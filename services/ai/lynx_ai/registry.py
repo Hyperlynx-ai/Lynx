@@ -32,6 +32,8 @@ class TaskModels:
     task: str
     model: str
     fallbacks: tuple[str, ...] = ()
+    #: Per-model time limit; a slow model is abandoned for the next fallback.
+    timeout_s: float | None = None
 
 
 @dataclass(frozen=True)
@@ -64,10 +66,12 @@ class ModelRegistry:
         for name, spec in (data.get("tasks") or {}).items():
             if not isinstance(spec, dict) or not spec.get("model"):
                 raise ValueError(f"{path}: task '{name}' needs a 'model'")
+            timeout = spec.get("timeout_s")
             tasks[name] = TaskModels(
                 task=name,
                 model=str(spec["model"]),
                 fallbacks=tuple(str(m) for m in spec.get("fallbacks") or ()),
+                timeout_s=float(timeout) if timeout is not None else None,
             )
         providers: dict[str, CompatProvider] = {}
         for name, spec in (data.get("providers") or {}).items():
@@ -93,7 +97,13 @@ class ModelRegistry:
         override = environ.get(f"LYNX_MODEL_{task.upper()}", "").strip()
         if override:
             names = [n.strip() for n in override.split(",") if n.strip()]
-            return TaskModels(task=task, model=names[0], fallbacks=tuple(names[1:]))
+            configured = self.tasks.get(task)
+            return TaskModels(
+                task=task,
+                model=names[0],
+                fallbacks=tuple(names[1:]),
+                timeout_s=configured.timeout_s if configured else None,
+            )
         try:
             return self.tasks[task]
         except KeyError:

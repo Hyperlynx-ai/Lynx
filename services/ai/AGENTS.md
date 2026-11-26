@@ -12,7 +12,7 @@ inside `services/ai`:
 | What | Command |
 |---|---|
 | Install / update dependencies | `uv sync` |
-| Run the service | `uv run uvicorn main:app --reload --port 4500` |
+| Run the service (auto-reload) | `uv run python dev.py` (not `uvicorn --reload`: on Windows it stops `pnpm dev`) |
 | Tests | `uv run pytest` |
 | Lint and format | `uv run ruff check .` and `uv run ruff format .` |
 | Types | `uv run pyright` |
@@ -60,6 +60,8 @@ tests/                pytest tests (never call real providers)
 - Any OpenAI-compatible endpoint (Qwen, Kimi, GLM, MiniMax, self-hosted, a
   LiteLLM proxy...): declare it under `providers:` in `models.yaml` and use
   `"compat:<name>/<model>"`. These models get document text instead of files.
+  NVIDIA NIM is declared as `nvidia` (key `NVIDIA_API_KEY`); list its models
+  with `GET https://integrate.api.nvidia.com/v1/models` (they get retired).
 - Per-environment override without a code change:
   `LYNX_MODEL_<TASK>="primary,fallback1"`.
 

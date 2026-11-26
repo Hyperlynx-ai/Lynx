@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
 import { AI_TEST_DATA_ONLY } from "@lynx/shared/policy"
+import { Button } from "@lynx/ui/components/button"
 import { Eyebrow } from "@lynx/ui/components/eyebrow"
 import { Headline } from "@lynx/ui/components/headline"
 import { Notice } from "@lynx/ui/components/notice"
@@ -52,7 +54,7 @@ export default async function CvPage() {
           lead={current && name ? `${name}.` : "Your CV."}
           muted={
             current
-              ? "This is what Lynx read from your CV. Check it; editing arrives soon."
+              ? "This is your CV as Lynx reads it. Edit it yourself or with Lynx, and download it."
               : "Upload it once: Lynx reads it in about 20 seconds and builds your profile from it."
           }
         />
@@ -83,6 +85,11 @@ export default async function CvPage() {
       {shown && current && detail ? (
         <section aria-label="Your CV, as Lynx read it" className="flex flex-col gap-gap-md">
           <SourceLine file={shown} version={current.version} label={current.label} />
+          <div className="flex flex-wrap gap-gap-md">
+            <Button asChild variant="heroPrimary">
+              <Link href={`/app/cv/${shown.id}/edit`}>Edit with Lynx</Link>
+            </Button>
+          </div>
           <CvView cv={current.data} />
           <CvFileActions cvId={shown.id} fileName={shown.fileName} />
         </section>

@@ -63,3 +63,12 @@ def test_cost_estimate_uses_configured_prices() -> None:
     assert registry.estimate_cost("google:m", 1_000_000, 500_000) == 1.5
     assert registry.estimate_cost("m", 2_000_000, 0) == 1.0  # provider prefix optional
     assert registry.estimate_cost("other", 10, 10) is None
+
+
+def test_tasks_can_set_a_per_model_timeout(tmp_path: Path) -> None:
+    config = tmp_path / "models.yaml"
+    config.write_text("tasks:\n  slow:\n    model: google:a\n    timeout_s: 30\n", encoding="utf-8")
+    registry = ModelRegistry.from_file(config)
+    assert registry.resolve("slow", {}).timeout_s == 30
+    # An environment override keeps the configured time limit.
+    assert registry.resolve("slow", {"LYNX_MODEL_SLOW": "google:b"}).timeout_s == 30

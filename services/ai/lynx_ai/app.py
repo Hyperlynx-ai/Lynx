@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 
 from . import __version__
+from .cv_edit import router as cv_edit_router
 from .cv_routes import router as cv_router
 from .facts_routes import router as facts_router
 from .security import require_service_token
@@ -20,6 +21,7 @@ app = FastAPI(
     redoc_url=None,
 )
 app.include_router(cv_router)
+app.include_router(cv_edit_router)
 app.include_router(facts_router)
 
 

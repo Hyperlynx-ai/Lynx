@@ -47,7 +47,8 @@ export async function expectAlert(page: Page, text: string) {
 
 /** Signs up a candidate and finishes onboarding with minimal answers (no CV). */
 export async function onboardedCandidate(page: Page, name: string, label: string) {
-  await signUp(page, "/signup", { name, email: testEmail(label) })
+  const email = testEmail(label)
+  await signUp(page, "/signup", { name, email })
   await expect(page).toHaveURL(/\/app\/onboarding$/)
   await page.getByRole("link", { name: /Skip for now/ }).click()
   await page.getByLabel("Roles you're looking for").fill("Data Analyst")
@@ -59,4 +60,62 @@ export async function onboardedCandidate(page: Page, name: string, label: string
   await page.getByRole("button", { name: "Continue" }).click()
   await page.getByRole("button", { name: "Finish" }).click()
   await expect(page).toHaveURL(/\/app$/)
+  return email
+}
+
+/**
+ * Seeds a CV that Lynx has "already read" (the sample CV) for a test user,
+ * straight into the local database: the e2e stack has no AI service. Uses
+ * the local stack's secret key from apps/api/.env.local (written by db:env).
+ */
+export async function seedParsedCv(email: string) {
+  const { readFileSync } = await import("node:fs")
+  const { join } = await import("node:path")
+  const { createClient } = await import("@supabase/supabase-js")
+  const root = join(import.meta.dirname, "..", "..", "..")
+  const env = Object.fromEntries(
+    readFileSync(join(root, "apps", "api", ".env.local"), "utf8")
+      .split(/\r?\n/)
+      .filter((line) => line.includes("="))
+      .map((line) => [line.slice(0, line.indexOf("=")), line.slice(line.indexOf("=") + 1)])
+  )
+  const admin = createClient(env.SUPABASE_URL!, env.SUPABASE_SECRET_KEY!, {
+    auth: { persistSession: false },
+  })
+  const { data: users } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  const user = users.users.find((u) => u.email === email)
+  if (!user) throw new Error(`no user ${email}`)
+  const path = `${user.id}/e2eseeded01.pdf`
+  const pdf = readFileSync(
+    join(root, "apps", "web", "public", "samples", "hyperlynx-sample-cv.pdf")
+  )
+  await admin.storage
+    .from("cvs")
+    .upload(path, pdf, { contentType: "application/pdf", upsert: true })
+  const { data: cv, error } = await admin
+    .from("cvs")
+    .insert({
+      user_id: user.id,
+      storage_path: path,
+      file_name: "Sample CV.pdf",
+      media_type: "application/pdf",
+      size_bytes: pdf.length,
+      status: "parsed",
+    })
+    .select("id")
+    .single()
+  if (error) throw error
+  const data = JSON.parse(
+    readFileSync(join(root, "packages", "shared", "fixtures", "cv-sample.json"), "utf8")
+  )
+  const { error: versionError } = await admin.from("cv_versions").insert({
+    cv_id: cv.id,
+    user_id: user.id,
+    version: 1,
+    source: "parsed",
+    label: "Original",
+    data,
+  })
+  if (versionError) throw versionError
+  return cv.id as string
 }
