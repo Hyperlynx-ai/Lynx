@@ -58,6 +58,25 @@ login by default. In each project's Settings → Deployment Protection:
   server-to-server (web → api → ai) and protect themselves (login tokens,
   service token).
 
+### Jobs ingestion (GitHub Actions, ADR 0011)
+
+`.github/workflows/jobs-ingest.yml` runs `python -m lynx_ai.jobs` in
+`services/ai`: daily at 01:30 UTC for every enabled source (production),
+hourly for sources an admin asked to "Run now", and manually from
+Actions -> Jobs ingestion -> Run workflow (choose production or staging, and
+optionally some sources). It finds each project's connection pooler through
+the Supabase Management API (`scripts/ci/supabase-db-url.py`).
+
+Repository secrets it reads (set with `gh secret set NAME --repo
+Hyperlynx-ai/Lynx`, which prompts for the value): `SUPABASE_ACCESS_TOKEN`,
+`SUPABASE_PROD_DB_PASSWORD`, `SUPABASE_STAGING_DB_PASSWORD` (already set),
+`CURATED_SHEET_ID`, `ADZUNA_APP_ID`, `ADZUNA_APP_KEY`, `JOOBLE_API_KEY`,
+`CAREERJET_AFFID`, `REED_API_KEY`. A missing key only fails that source.
+
+Locally: `pnpm db:start`, then in `services/ai`: `uv run python -m
+lynx_ai.jobs check` or `run --source <id>` (uses `DATABASE_URL` from
+`.env.local`).
+
 ### Vercel quirks (keep these or deployments break)
 
 - **`apps/api` entry:** Vercel looks for `src/app.ts`, `src/index.ts` or
