@@ -57,7 +57,8 @@ kept in a secret (`CURATED_SHEET_ID`), not in the repository.
 | `job_runs` | one row per source run: timings, fetched / new / updated / expired counts, error |
 | `ats_companies` | companies whose public boards are read: system, board name, company name, on/off |
 | `jobs` | normalized postings: source + external id (unique), URL, title, company, location, country, remote, type, seniority, field, salary, posted / deadline, first / last seen, status, affiliated flag, de-duplication key, `duplicate_of` |
-| `job_matches` (3.7) | per candidate and job: score, rank, one-line reason |
+| `candidate_match_state` (3.7) | per candidate: profile embedding and hash, requested / matched times, last error |
+| `job_matches` (3.7) | per candidate and job: rank, score, label, one-line reason, whether the AI re-ranked it |
 
 Jobs are public data: signed-in users may read active jobs; only the
 ingestion (database owner) writes.
@@ -80,12 +81,30 @@ complete run, when its deadline has passed, or when no run has seen it for 7
 days (sources only list open jobs, so old postings that are still listed
 stay active). Expired jobs are deleted 30 days later (space, KL-06).
 
-**Matching (3.7):** embeddings for jobs and candidates (NVIDIA NIM
-embedding model, pgvector); score = similarity plus field, skills,
-seniority and country signals; the AI re-ranks the top 50 per candidate
-with a one-line reason. Stored in `job_matches`; recomputed after the daily
-ingestion and when a candidate's profile or matching CV changes. Candidate
-data goes to the AI provider, so test data only until KL-05 is resolved.
+**Matching (3.7):** everything runs in the jobs workflow (Python, as the
+database owner); the deployed services only read `job_matches`.
+- Embeddings: NVIDIA `nemotron-3.5-embed-1b` (multilingual), 768
+  dimensions, stored as `halfvec(768)` (half the space; about 1.5 KB a
+  job). Jobs are embedded after each ingestion (`embed`), newest first,
+  within a time budget; candidate profiles (onboarding answers, matching
+  CV, Lynx's skill/goal/preference facts) are re-embedded only when their
+  text changes (`candidate_match_state.profile_hash`).
+- Retrieval: the 300 nearest visible jobs in the candidate's countries, or
+  remote without a country ("Remote, US" usually needs US residency); exact
+  search, no vector index needed at this size.
+- Score (0-1): 0.55 similarity + 0.25 same field of work + 0.2 skills the
+  job names, then the prototype's seniority adjustments (a student or
+  fresher vs a senior role x0.55, ...), internship fit and a small
+  freshness bonus. Labels: strong >= 0.6, good >= 0.45, partial >= 0.3.
+- The AI (`job_rerank`, eval in `evals/job_rerank.py`) re-ranks the top 30
+  with a fit score and one-line reason; the final score averages both. If
+  the AI fails, the computed ranking stays, with template reasons.
+- The top 100 go to `job_matches`. Recomputed for everyone after the daily
+  ingestion, and within minutes when a candidate's matching inputs change:
+  a trigger marks `candidate_match_state.requested_at` and the API starts
+  the workflow (`GITHUB_DISPATCH_TOKEN`; else the hourly run).
+Candidate data goes to the AI provider, so test data only until KL-05 is
+resolved.
 
 **Secrets:** database passwords (already in GitHub Actions), source API keys,
 `CURATED_SHEET_ID` and `NVIDIA_API_KEY` live in GitHub Actions secrets and,

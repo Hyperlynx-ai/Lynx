@@ -72,7 +72,10 @@ the Supabase Management API (`scripts/ci/supabase-db-url.py`).
 Repository secrets it reads (set with `gh secret set NAME --repo
 Hyperlynx-ai/Lynx`, which prompts for the value): `SUPABASE_ACCESS_TOKEN`,
 `SUPABASE_PROD_DB_PASSWORD`, `SUPABASE_STAGING_DB_PASSWORD` (already set),
-`CURATED_SHEET_ID`, `REED_API_KEY`. A missing key only fails that source.
+`CURATED_SHEET_ID`, `REED_API_KEY`, `NVIDIA_API_KEY` (job and profile
+embeddings, AI re-ranking) and `GOOGLE_API_KEY` (fallback models). A missing
+source key only fails that source; without `NVIDIA_API_KEY` the embed and
+match steps are skipped.
 
 `GITHUB_DISPATCH_TOKEN` (Vercel, `lynx-api`, Production and Preview): a
 fine-grained personal access token with access to `Hyperlynx-ai/Lynx` only
