@@ -52,17 +52,30 @@ jobs:
       - name: Formatting
         run: pnpm format:check
 
-      - name: Lint, type check, test and build (changed packages only)
+      # Build runs as its own step: `next build` empties apps/web/.next while
+      # `next typegen` (the web type check) writes route types into it, so
+      # running them at the same time made CI fail at random.
+      - name: Lint, type check and test (changed packages only)
         if: github.event_name == 'pull_request'
-        run: pnpm turbo run lint typecheck test build --affected
+        run: pnpm turbo run lint typecheck test --affected
         env:
           # Compare against the PR's base branch (Turborepo looks for a local
           # `main` branch otherwise, which the checkout doesn't create).
           TURBO_SCM_BASE: origin/${{ github.base_ref }}
 
-      - name: Lint, type check, test and build (everything)
+      - name: Build (changed packages only)
+        if: github.event_name == 'pull_request'
+        run: pnpm turbo run build --affected
+        env:
+          TURBO_SCM_BASE: origin/${{ github.base_ref }}
+
+      - name: Lint, type check and test (everything)
         if: github.event_name == 'push'
-        run: pnpm turbo run lint typecheck test build
+        run: pnpm turbo run lint typecheck test
+
+      - name: Build (everything)
+        if: github.event_name == 'push'
+        run: pnpm turbo run build
 
   security:
     name: Secrets and dependencies
