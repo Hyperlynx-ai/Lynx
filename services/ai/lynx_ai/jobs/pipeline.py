@@ -53,9 +53,10 @@ def run_source(
         summary.inserted, summary.updated = store.upsert(source_id, list(jobs.values()))
         if result.complete and summary.fetched > 0:
             summary.expired = store.expire_unseen(source_id, run_id)
-        else:
+        if result.note or summary.fetched == 0:
+            # Something went wrong (or nothing came back): say so.
             summary.status = "partial"
-            summary.error = result.note
+            summary.error = result.note or "no jobs returned"
     except Exception as error:  # a failing source must not stop the others
         summary.status = "failed"
         summary.error = _safe_error(error)

@@ -76,15 +76,29 @@ def test_a_run_normalizes_filters_stores_and_expires() -> None:
     assert store.runs[0]["status"] == "ok"
 
 
-def test_a_partial_fetch_never_expires_jobs() -> None:
+def test_an_incomplete_fetch_never_expires_jobs() -> None:
     store = MemoryStore()
 
-    def partial(config: Mapping[str, Any], env: Mapping[str, str]) -> FetchResult:
+    def search(config: Mapping[str, Any], env: Mapping[str, str]) -> FetchResult:
         return FetchResult(postings(), complete=False)
 
-    summary = run_source("demo", store, {"demo": partial}, env={})
-    assert summary.status == "partial"
+    summary = run_source("demo", store, {"demo": search}, env={})
+    assert (summary.status, summary.error) == ("ok", None)  # e.g. a search: nothing failed
     assert store.expire_calls == 0
+
+
+def test_a_run_with_failures_is_partial_and_says_why() -> None:
+    store = MemoryStore()
+
+    def flaky(config: Mapping[str, Any], env: Mapping[str, str]) -> FetchResult:
+        return FetchResult(postings(), complete=False, note="boards that failed: acme")
+
+    summary = run_source("demo", store, {"demo": flaky}, env={})
+    assert (summary.status, summary.error) == ("partial", "boards that failed: acme")
+    assert store.expire_calls == 0
+
+    empty = run_source("demo", store, {"demo": lambda c, e: FetchResult([], complete=True)}, env={})
+    assert (empty.status, empty.error) == ("partial", "no jobs returned")
 
 
 def test_a_failing_source_is_recorded_without_secrets() -> None:

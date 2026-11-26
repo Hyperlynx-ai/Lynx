@@ -56,7 +56,7 @@ jobs:
 
       - name: Install the AI service
         working-directory: services/ai
-        run: uv sync --frozen --no-dev
+        run: uv sync --frozen --no-dev --group scrapers # JobSpy, for the scraper sources
 
       - name: Connect to the ${{ env.TARGET }} database
         env:

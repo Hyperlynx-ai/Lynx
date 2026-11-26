@@ -37,7 +37,12 @@ building a job database); Adzuna and Jooble (no keys, owner). Then public
 company boards (3.5): one source per applicant tracking system (Greenhouse,
 Lever, Ashby, SmartRecruiters, Recruitee) over an admin-managed company list
 (`ats_companies`, Admin -> Companies); Workable was dropped (no seed company
-had a public board). Then scrapers (3.6).
+had a public board). Then scrapers (3.6): LinkedIn, Indeed, Glassdoor and
+Naukri through JobSpy (MIT), one source each, off until the owner switches
+them on (KL-27); daily rotating searches over terms x places in each
+source's config. JobSpy sits in the `scrapers` dependency group, installed
+only by the workflow. A run is "partial" only when something failed (a
+board, a search) or nothing came back.
 Terms and attribution are checked before a source is switched on.
 
 **Curated sheet** (owner): synced daily from the team's Google Sheet for
