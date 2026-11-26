@@ -4,11 +4,15 @@
     python -m lynx_ai.jobs run --requested    # sources an admin asked to run now
     python -m lynx_ai.jobs run --source arbeitnow [--source remotive ...]
     python -m lynx_ai.jobs check              # database reachable? schema there?
+    python -m lynx_ai.jobs embed              # embeddings for new jobs (NVIDIA_API_KEY)
+    python -m lynx_ai.jobs match --all        # rank jobs for every onboarded candidate
+    python -m lynx_ai.jobs match --requested  # ... whose profile changed since
 
 Needs DATABASE_URL. Prints counts only (workflow logs are public).
 """
 
 import argparse
+import os
 import sys
 
 from ..db import get_engine
@@ -44,11 +48,41 @@ def main(argv: list[str] | None = None) -> int:
     which.add_argument("--requested", action="store_true", help="sources an admin asked to run")
     which.add_argument("--source", action="append", help="this source (repeatable)")
     sub.add_parser("check", help="check the database connection and schema (no fetching)")
+    emb = sub.add_parser("embed", help="embed active jobs that have no embedding yet")
+    emb.add_argument("--minutes", type=float, default=20, help="time budget (default 20)")
+    match = sub.add_parser("match", help="rank jobs for candidates")
+    who = match.add_mutually_exclusive_group(required=True)
+    who.add_argument("--all", action="store_true", help="every onboarded candidate")
+    who.add_argument("--requested", action="store_true", help="candidates whose profile changed")
+    match.add_argument("--no-ai", action="store_true", help="skip the AI re-ranking")
     args = parser.parse_args(argv)
 
+    if args.command in {"embed", "match"} and not os.environ.get("NVIDIA_API_KEY"):
+        # Not set up yet (repository secret): skip rather than fail the workflow.
+        print(f"Skipped {args.command}: NVIDIA_API_KEY is not set.")
+        return 0
     store = PostgresJobStore(get_engine())
     if args.command == "check":
         return check(store)
+    if args.command == "embed":
+        from .embed import EmbeddingError, embed_jobs
+
+        try:
+            done = embed_jobs(store.engine, budget_s=args.minutes * 60)
+        except EmbeddingError as error:
+            print(f"Embedding failed: {error}")
+            return 1
+        print(f"Embedded {done} jobs.")
+        return 0
+    if args.command == "match":
+        from .matching import Matcher
+
+        summary = Matcher(store.engine).run(requested_only=args.requested, use_ai=not args.no_ai)
+        print(
+            f"Matched {summary.matched} of {summary.candidates} candidates"
+            f" ({summary.reranked} re-ranked by the AI, {summary.failed} failed)."
+        )
+        return 1 if summary.failed and not summary.matched else 0
     if args.enabled:
         sources = store.enabled_sources()
     elif args.requested:

@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-26",
+  "configured": "compat:nvidia/minimaxai/minimax-m3.1-flash",
+  "average_overall": 1.0,
+  "pass_mark": 0.85,
+  "failed_cases": [],
+  "cases": {
+    "fresher-data-analyst": {
+      "complete": 1.0,
+      "ordered": 1.0,
+      "short_reasons": 1.0,
+      "no_invented_skills": 1.0,
+      "overall": 1.0
+    },
+    "senior-nurse": {
+      "complete": 1.0,
+      "ordered": 1.0,
+      "short_reasons": 1.0,
+      "no_invented_skills": 1.0,
+      "overall": 1.0
+    },
+    "student-internship": {
+      "complete": 1.0,
+      "ordered": 1.0,
+      "short_reasons": 1.0,
+      "no_invented_skills": 1.0,
+      "overall": 1.0
+    }
+  }
+}

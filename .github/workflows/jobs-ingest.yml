@@ -1,4 +1,5 @@
-# Ingests jobs from the enabled sources into the database (ADR 0011).
+# Ingests jobs from the enabled sources into the database, embeds new jobs
+# and ranks jobs for candidates (ADR 0011, chunks 3.1-3.7).
 # PROTECTED AREA. Logs are public: the ingestion prints counts only.
 #
 # - Daily at 01:30 UTC (07:00 IST): every enabled source, production.
@@ -10,8 +11,9 @@
 # - Pull requests touching the ingestion: a connection check against staging.
 #
 # Repository secrets: SUPABASE_ACCESS_TOKEN, SUPABASE_PROD_DB_PASSWORD,
-#   SUPABASE_STAGING_DB_PASSWORD, and the source keys used below (a missing
-#   key only disables that source). Variables: SUPABASE_PROD_PROJECT_REF,
+#   SUPABASE_STAGING_DB_PASSWORD, the source keys used below (a missing
+#   key only disables that source), NVIDIA_API_KEY (embeddings and the AI
+#   re-ranking) and GOOGLE_API_KEY (fallback models). Variables: SUPABASE_PROD_PROJECT_REF,
 #   SUPABASE_STAGING_PROJECT_REF.
 name: Jobs ingestion
 
@@ -88,3 +90,28 @@ jobs:
             set -- --enabled
           fi
           uv run python -m lynx_ai.jobs run "$@"
+
+      # Matching (3.7). Candidate data goes to the AI provider; logs print counts only.
+      - name: Embed new jobs
+        if: github.event_name != 'pull_request'
+        working-directory: services/ai
+        env:
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: uv run python -m lynx_ai.jobs embed --minutes 25
+
+      - name: Match candidates
+        if: github.event_name != 'pull_request'
+        working-directory: services/ai
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+          SOURCES: ${{ inputs.sources }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          # The daily run and full manual runs re-rank everyone; the others only
+          # candidates whose profile changed.
+          if [ "$SCHEDULE" = "30 1 * * *" ] || { [ -z "$SCHEDULE" ] && [ -z "$SOURCES" ]; }; then
+            uv run python -m lynx_ai.jobs match --all
+          else
+            uv run python -m lynx_ai.jobs match --requested
+          fi
