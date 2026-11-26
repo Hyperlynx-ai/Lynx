@@ -1,6 +1,6 @@
 -- Run with: pnpm db:test
 begin;
-select plan(9);
+select plan(12);
 
 insert into auth.users (id, email, raw_user_meta_data) values
   ('dddddddd-0000-0000-0000-000000000001', 'jobs-cand@example.test', '{}');
@@ -27,7 +27,8 @@ select throws_ok(
 -- A signed-in candidate sees active, non-duplicate jobs only, and can't write.
 set local role authenticated;
 set local request.jwt.claims = '{"sub": "dddddddd-0000-0000-0000-000000000001", "role": "authenticated"}';
-select is((select count(*)::int from public.jobs), 2, 'candidates see active, non-duplicate jobs');
+select is((select count(*)::int from public.jobs where url like 'https://example.test/%'), 2,
+  'candidates see active, non-duplicate jobs');
 select is((select count(*)::int from public.job_sources) > 5, true, 'candidates can read source names');
 select throws_ok(
   $$ insert into public.jobs (source_id, external_id, url, title, dedupe_key)
@@ -36,7 +37,15 @@ select throws_ok(
 select throws_ok(
   $$ update public.job_sources set enabled = true $$,
   '42501', null, 'candidates cannot switch sources');
+select throws_ok($$ select count(*) from public.ats_companies $$, '42501', null,
+  'candidates cannot read the company list');
 reset role;
+
+select is((select count(*)::int from public.ats_companies where enabled) > 50, true,
+  'company boards are seeded');
+select throws_ok(
+  $$ insert into public.ats_companies (ats, slug, name) values ('workday', 'acme', 'Acme') $$,
+  '23514', null, 'only supported tracking systems');
 
 set local role anon;
 select throws_ok($$ select count(*) from public.jobs $$, '42501', null, 'visitors who are not signed in see no jobs');

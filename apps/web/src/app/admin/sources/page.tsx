@@ -42,7 +42,7 @@ export default async function AdminSourcesPage() {
         lead="Job sources."
         muted={
           data
-            ? `${data.activeJobs.toLocaleString("en-GB")} active jobs. Ingestion runs daily; "Run now" is picked up within the hour.`
+            ? `${data.activeJobs.toLocaleString("en-GB")} active jobs. Every source runs daily at 01:30 UTC; "Run now" usually starts within minutes (within the hour at most).`
             : "Where opportunities come from."
         }
       />

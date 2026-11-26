@@ -5,7 +5,8 @@ An adapter is a function `fetch(config, env) -> FetchResult`:
 - `env` holds environment variables (API keys come from GitHub Actions
   secrets; never log them);
 - `complete=True` means every current posting was fetched, so jobs it
-  didn't return can be expired. Use False when paging stopped early.
+  didn't return can be expired. Use False when paging stopped early;
+- `note` says why a run is partial (shown in the admin console).
 """
 
 from collections.abc import Callable, Mapping
@@ -19,15 +20,17 @@ from ..normalize import RawJob
 class FetchResult:
     jobs: list[RawJob] = field(default_factory=list)
     complete: bool = True
+    note: str | None = None
 
 
 Fetch = Callable[[Mapping[str, Any], Mapping[str, str]], FetchResult]
 
 
 def _adapters() -> dict[str, Fetch]:
-    from . import arbeitnow, curated_sheet, himalayas, jobicy, reed, remoteok
+    from . import arbeitnow, ats, curated_sheet, himalayas, jobicy, reed, remoteok
 
     return {
+        **{name: ats.make_fetch(name) for name in ats.BOARDS},
         "curated_sheet": curated_sheet.fetch,
         "arbeitnow": arbeitnow.fetch,
         "remoteok": remoteok.fetch,

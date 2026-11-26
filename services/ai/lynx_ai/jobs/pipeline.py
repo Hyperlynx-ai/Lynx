@@ -55,6 +55,7 @@ def run_source(
             summary.expired = store.expire_unseen(source_id, run_id)
         else:
             summary.status = "partial"
+            summary.error = result.note
     except Exception as error:  # a failing source must not stop the others
         summary.status = "failed"
         summary.error = _safe_error(error)

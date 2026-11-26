@@ -17,8 +17,16 @@ const EnvSchema = z.object({
   SUPABASE_SECRET_KEY: z.string().min(1).optional(),
   /** Supabase publishable key: for queries made as the signed-in user (row-level security applies). */
   SUPABASE_PUBLISHABLE_KEY: z.string().min(1).optional(),
+  /**
+   * Optional: lets "Run now" start the jobs ingestion workflow at once. A
+   * fine-grained GitHub token for this repository only, "Actions: read and
+   * write". Without it, requests wait for the hourly run.
+   */
+  GITHUB_DISPATCH_TOKEN: z.string().min(1).optional(),
   /** Set automatically by Vercel. */
   VERCEL_GIT_COMMIT_SHA: z.string().optional(),
+  VERCEL_GIT_REPO_OWNER: z.string().optional(),
+  VERCEL_GIT_REPO_SLUG: z.string().optional(),
   VERCEL_ENV: z.enum(["development", "preview", "production"]).optional(),
 })
 
