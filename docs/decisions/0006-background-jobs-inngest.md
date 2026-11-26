@@ -1,6 +1,6 @@
 # 0006: Background jobs with Inngest
 
-- Status: proposed (confirmed in chunk 3.2)
+- Status: superseded in part by 0011 (scheduling moved to GitHub Actions, 2026-11-26)
 - Date: 2026-11-22
 - Decided by: owner approved the roadmap that includes it
 

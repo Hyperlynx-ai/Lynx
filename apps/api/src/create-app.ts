@@ -27,6 +27,8 @@ import { cvRoutes } from "./modules/cvs/routes.js"
 import { factRoutes } from "./modules/facts/routes.js"
 import { createSupabaseFactStore, type FactStore } from "./modules/facts/store.js"
 import { exportRoutes } from "./modules/me/export.js"
+import { sourceRoutes } from "./modules/sources/routes.js"
+import { createSupabaseSourceStore, type SourceStore } from "./modules/sources/store.js"
 import { createSupabaseCvStore, type CvStore } from "./modules/cvs/store.js"
 import { healthRoutes } from "./modules/health/routes.js"
 import { meRoutes } from "./modules/me/routes.js"
@@ -58,6 +60,8 @@ export type AppDeps = {
   candidateStoreFor?: (request: FastifyRequest) => CandidateStore | undefined
   /** What Lynx knows about the candidate, acting as the request's user. */
   factStoreFor?: (request: FastifyRequest) => FactStore | undefined
+  /** Job sources for the admin console (admin client). */
+  sourceStore?: SourceStore
 }
 
 function defaultDeps(env: Env): AppDeps {
@@ -73,6 +77,7 @@ function defaultDeps(env: Env): AppDeps {
   return {
     verifyToken: env.SUPABASE_URL ? createTokenVerifier(env.SUPABASE_URL) : undefined,
     supabaseAdmin,
+    sourceStore: supabaseAdmin ? createSupabaseSourceStore(supabaseAdmin) : undefined,
     aiClient: createAiClient({
       baseUrl: env.AI_SERVICE_URL,
       token: env.AI_SERVICE_TOKEN,
@@ -107,6 +112,7 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
     cvStoreFor = none,
     candidateStoreFor = none,
     factStoreFor = none,
+    sourceStore,
   } = deps ?? defaultDeps(env)
 
   app.setValidatorCompiler(validatorCompiler)
@@ -145,6 +151,7 @@ export async function configureApp(instance: FastifyInstance, env: Env, deps?: A
     cvStoreFor,
   })
   await app.register(factRoutes, { requireUser, requireCandidate, factStoreFor, aiClient })
+  await app.register(sourceRoutes, { requireUser, requireAdmin, sourceStore })
   await app.register(cvEditRoutes, {
     requireUser,
     requireCandidate,
