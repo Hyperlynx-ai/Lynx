@@ -134,3 +134,48 @@ export async function seedParsedCv(email: string) {
   if (versionError) throw versionError
   return cv.id as string
 }
+
+/**
+ * Seeds one job and ranks it as a strong match for a test user, straight into
+ * the local database (the e2e stack runs no ingestion or matcher). Returns a
+ * function that removes the job again (its match and saves go with it).
+ */
+export async function seedMatchedJob(email: string, title: string) {
+  const admin = await localAdminClient()
+  const { data: users } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  const user = users.users.find((u) => u.email === email)
+  if (!user) throw new Error(`no user ${email}`)
+  const externalId = `e2e-${Date.now()}`
+  const { data: job, error } = await admin
+    .from("jobs")
+    .insert({
+      source_id: "jobicy",
+      external_id: externalId,
+      url: `https://example.test/jobs/${externalId}`,
+      title,
+      company: "Example Analytics",
+      location: "Amsterdam, Netherlands",
+      country: "NL",
+      city: "Amsterdam",
+      employment_type: "full_time",
+      field: "data_ai",
+      posted_at: new Date().toISOString(),
+      dedupe_key: externalId,
+    })
+    .select("id")
+    .single()
+  if (error) throw error
+  const { error: matchError } = await admin.from("job_matches").insert({
+    user_id: user.id,
+    job_id: job.id,
+    rank: 1,
+    score: 0.81,
+    label: "strong",
+    reason: "Your SQL and dashboard work fits this analyst role.",
+    reranked: true,
+  })
+  if (matchError) throw matchError
+  return async () => {
+    await admin.from("jobs").delete().eq("id", job.id)
+  }
+}
