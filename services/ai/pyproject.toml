@@ -27,6 +27,9 @@ dev = [
     "ruff>=0.17.6",
     "uvicorn>=0.54.0",
 ]
+scrapers = [
+    "python-jobspy==1.4.1",
+]
 
 [tool.ruff]
 line-length = 100
