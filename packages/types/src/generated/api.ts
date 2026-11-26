@@ -2891,6 +2891,193 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/opportunities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One page of the opportunities feed (ranked matches first) */
+        get: {
+            parameters: {
+                query?: {
+                    view?: "jobs" | "internships" | "scholarships";
+                    q?: string;
+                    country?: "AE" | "SA" | "QA" | "OM" | "KW" | "BH" | "DE" | "NL" | "IE" | "GB" | "FR" | "BE" | "LU" | "AT" | "CH" | "PL" | "CZ" | "SE" | "FI" | "DK" | "NO" | "IT" | "ES" | "PT" | "EE" | "MT" | "CY" | "SG" | "MY" | "JP" | "AU" | "NZ" | "CA" | "US" | "IN";
+                    field?: "software" | "data_ai" | "cybersecurity" | "cloud_devops" | "product_project" | "design" | "marketing" | "sales" | "finance" | "hr" | "operations" | "core_engineering" | "healthcare" | "customer_support" | "hospitality" | "education" | "other";
+                    remote?: "0" | "1" | "true" | "false";
+                    saved?: "0" | "1" | "true" | "false";
+                    page?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            items: {
+                                id: string;
+                                title: string;
+                                company: string | null;
+                                location: string | null;
+                                country: string | null;
+                                city: string | null;
+                                remote: boolean;
+                                employmentType: string | null;
+                                seniority: string | null;
+                                field: string | null;
+                                postedAt: string | null;
+                                deadline: string | null;
+                                url: string;
+                                isAffiliated: boolean;
+                                source: {
+                                    id: string;
+                                    name: string;
+                                    kind: string;
+                                };
+                                match: {
+                                    rank: number;
+                                    score: number;
+                                    /** @enum {string|null} */
+                                    label: "strong" | "good" | "partial" | null;
+                                    reason: string | null;
+                                    byAi: boolean;
+                                } | null;
+                                saved: boolean;
+                            }[];
+                            total: number;
+                            page: number;
+                            pageSize: number;
+                            matching: {
+                                /** @enum {string} */
+                                status: "waiting" | "updating" | "ready";
+                                matchedAt: string | null;
+                            };
+                        };
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/opportunities/{jobId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save or hide a job (null clears it) */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    jobId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @enum {string|null} */
+                        state: "saved" | "hidden" | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            jobId: string;
+                            /** @enum {string|null} */
+                            state: "saved" | "hidden" | null;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Default Response */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {

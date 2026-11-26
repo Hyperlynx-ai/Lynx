@@ -106,6 +106,15 @@ database owner); the deployed services only read `job_matches`.
 Candidate data goes to the AI provider, so test data only until KL-05 is
 resolved.
 
+**Feed (3.8):** `public.opportunity_feed(...)` runs as the signed-in
+candidate (security invoker, so row-level security applies): visible jobs
+with the candidate's match and save state, ranked matches first, then the
+newest jobs in their countries (or remote without a country); a search or
+filter widens it to every country, and scholarships show wherever they are.
+Saves and hides live in `job_saves`. Search is a plain title/company match
+for now. Each card credits its source (company boards as "the company's
+careers page") and links to the source's own page to apply.
+
 **Secrets:** database passwords (already in GitHub Actions), source API keys,
 `CURATED_SHEET_ID` and `NVIDIA_API_KEY` live in GitHub Actions secrets and,
 where the web or API needs them, in Vercel. Never in the repository or logs.

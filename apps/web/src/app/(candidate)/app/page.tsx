@@ -9,13 +9,16 @@ import { Headline } from "@lynx/ui/components/headline"
 import { getSessionUser } from "@/lib/auth/session"
 import { getCandidate, isOnboarded } from "@/lib/candidate/api"
 import { listCvs } from "@/lib/cv/api"
+import { getOpportunities } from "@/lib/opportunities/api"
 
 export const metadata: Metadata = { title: "Home" }
 
 export default async function CandidateHome() {
   const user = await getSessionUser()
   if (user && !(await isOnboarded(user.id))) redirect("/app/onboarding")
-  const [data, cvs] = await Promise.all([getCandidate(), listCvs()])
+  const [data, cvs, feed] = await Promise.all([getCandidate(), listCvs(), getOpportunities({})])
+  const top = feed.data?.items.find((item) => item.match)
+  const strong = feed.data?.items.filter((item) => item.match?.label === "strong").length ?? 0
   const candidate = data?.candidate
   const firstName = user?.fullName?.split(" ")[0]
   const cv = cvs?.[0]
@@ -59,7 +62,15 @@ export default async function CandidateHome() {
         />
         <Tile
           title="Opportunities"
-          status="Jobs ranked for you by Lynx arrive in the next release."
+          status={
+            top
+              ? `${strong ? `${strong} strong matches on your first page. ` : ""}Top: ${top.title}${top.company ? ` at ${top.company}` : ""}.`
+              : feed.data?.matching.status === "ready"
+                ? "No ranked matches yet. Browse the newest jobs in your countries."
+                : "Lynx is ranking jobs for you. Your matches arrive in a few minutes."
+          }
+          href="/app/opportunities"
+          action="See your opportunities"
         />
       </ul>
     </div>

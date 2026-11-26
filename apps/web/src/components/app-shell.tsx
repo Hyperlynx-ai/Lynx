@@ -25,7 +25,7 @@ export function AppShell({ area, homeHref, nav, user, children }: AppShellProps)
           <BrandLink href={homeHref} tag={area} />
           <nav
             aria-label={`${area} navigation`}
-            className="order-3 flex w-full gap-gap-md md:order-none md:w-auto"
+            className="order-3 -mx-6 flex w-[calc(100%+3rem)] [scrollbar-width:none] gap-gap-md overflow-x-auto px-6 whitespace-nowrap md:order-none md:mx-0 md:w-auto md:overflow-visible md:px-0"
           >
             {nav.map((item) => (
               <AppNavLink key={item.href} href={item.href} exact={item.href === homeHref}>

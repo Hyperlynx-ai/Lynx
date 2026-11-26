@@ -3,6 +3,7 @@ import { requireRole } from "@/lib/auth/require-role"
 
 const nav = [
   { href: "/app", label: "Home" },
+  { href: "/app/opportunities", label: "Opportunities" },
   { href: "/app/profile", label: "Profile" },
   { href: "/app/cv", label: "CV" },
   { href: "/app/settings", label: "Settings" },
