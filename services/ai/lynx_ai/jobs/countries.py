@@ -17,7 +17,16 @@ COUNTRY_NAMES: dict[str, list[str]] = {
     "DE": ["germany", "deutschland"],
     "NL": ["netherlands", "the netherlands", "holland", "nederland"],
     "IE": ["ireland"],
-    "GB": ["united kingdom", "uk", "u.k.", "great britain", "england", "scotland", "wales"],
+    "GB": [
+        "united kingdom",
+        "uk",
+        "the uk",
+        "u.k.",
+        "great britain",
+        "england",
+        "scotland",
+        "wales",
+    ],
     "FR": ["france"],
     "BE": ["belgium", "belgique", "belgie"],
     "LU": ["luxembourg"],
@@ -41,7 +50,7 @@ COUNTRY_NAMES: dict[str, list[str]] = {
     "AU": ["australia"],
     "NZ": ["new zealand"],
     "CA": ["canada"],
-    "US": ["united states", "united states of america", "usa", "u.s.", "u.s.a"],
+    "US": ["united states", "united states of america", "usa", "u.s.", "u.s.a", "the us"],
     "IN": ["india", "bharat"],
 }
 
@@ -207,6 +216,8 @@ OPEN_REGIONS = [
     "worldwide",
     "anywhere",
     "global",
+    "international",
+    "multiple countries",
     "europe",
     "emea",
     "eu",
@@ -235,6 +246,8 @@ _CITY_PATTERNS = sorted(
     ),
     key=lambda item: -len(item[1]),
 )
+#: UK postcodes, e.g. "L7 8YE", "RM7 0AG", "SW1A 1AA".
+_UK_POSTCODE = re.compile(r"\b[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}\b")
 _REGION = re.compile(r"(?<![a-z])(" + "|".join(re.escape(r) for r in OPEN_REGIONS) + r")(?![a-z])")
 
 
@@ -243,12 +256,23 @@ def find_country(text: str | None) -> tuple[str | None, str | None]:
     if not text:
         return None, None
     lower = text.lower()
+    # "US, WA, Seattle", "GB, London", "JP, 13, Tokyo": a leading country code.
+    leading = re.match(r"\s*([A-Z]{2})\s*(,|$)", text)
+    if leading and leading.group(1) in COUNTRY_NAMES:
+        code = leading.group(1)
+        city = next(
+            (name for pattern, name, c in _CITY_PATTERNS if c == code and pattern.search(lower)),
+            None,
+        )
+        return code, city.title() if city else None
     city = next(
         ((name, code) for pattern, name, code in _CITY_PATTERNS if pattern.search(lower)), None
     )
     country = next((code for pattern, code in _ALIASES if pattern.search(lower)), None)
     if country is None and city:
         country = city[1]
+    if country is None and _UK_POSTCODE.search(text.upper()):
+        country = "GB"  # "Liverpool L7 8YE"
     if country is None:
         # "Austin, TX" or "Toronto, ON"
         tail = re.search(r",\s*([A-Z]{2})\s*$", text.strip())

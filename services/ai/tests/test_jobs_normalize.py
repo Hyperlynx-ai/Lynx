@@ -21,6 +21,12 @@ from lynx_ai.jobs.normalize import RawJob, clean_text, dedupe_key, detect_field,
         ("São Paulo, Brazil", None, None),
         ("Ukraine", None, None),
         ("Indiana", None, None),
+        ("US, WA, Seattle", "US", "Seattle"),
+        ("GB, London", "GB", "London"),
+        ("JP, 13, Tokyo", "JP", "Tokyo"),
+        ("BR, SP, Sao Paulo", None, None),
+        ("Liverpool L7 8YE", "GB", None),
+        ("Remote from the US", "US", None),
     ],
 )
 def test_find_country(location: str, country: str | None, city: str | None) -> None:
@@ -97,3 +103,19 @@ def test_the_same_job_from_two_sources_has_the_same_key() -> None:
     assert dedupe_key("Backend Engineer", "Acme", "DE") != dedupe_key(
         "Backend Engineer", "Acme", "AE"
     )
+
+
+def test_curated_listings_open_to_all_are_kept_without_a_country() -> None:
+    assert normalize(raw(title="Global Fellowship", location="Global")) is None
+    kept = normalize(raw(title="Global Fellowship", location="International", open_to_all=True))
+    assert kept is not None and kept.country is None and not kept.remote
+    assert normalize(raw(location="Lagos, Nigeria", open_to_all=True)) is None
+
+
+def test_the_same_title_in_two_towns_is_two_jobs() -> None:
+    seattle = normalize(raw(title="Area Manager II", company="Acme", location="US, WA, Seattle"))
+    arlington = normalize(
+        raw(title="Area Manager II", company="Acme", location="US, VA, Arlington")
+    )
+    assert seattle is not None and arlington is not None
+    assert seattle.dedupe_key != arlington.dedupe_key
