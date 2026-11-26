@@ -24,7 +24,7 @@ export default async function ProfilePage() {
         <Eyebrow>Your profile</Eyebrow>
         <Headline
           as="h1"
-          size="headline"
+          size="title"
           lead="What Lynx knows about you."
           muted="Every fact and where it came from. Correct or delete anything; Lynx only uses what's here."
         />

@@ -51,7 +51,7 @@ export default async function CvPage() {
         <Eyebrow>Your CV</Eyebrow>
         <Headline
           as="h1"
-          size="headline"
+          size="title"
           lead={current && name ? `${name}.` : "Your CV."}
           muted={
             current

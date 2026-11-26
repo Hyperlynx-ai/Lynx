@@ -15,7 +15,7 @@ export default function ErrorPage({
       <p className="font-mono text-mono text-text-secondary">$ something went wrong</p>
       <Headline
         as="h1"
-        size="headline"
+        size="title"
         className="mt-gap-md max-w-3xl"
         lead="Sorry, this page failed to load."
         muted="Try again. If it keeps happening, tell the Hyperlynx team."

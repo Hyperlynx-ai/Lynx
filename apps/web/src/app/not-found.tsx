@@ -14,7 +14,7 @@ export default function NotFound() {
         <p className="font-mono text-mono text-text-secondary">$ 404 · page not found</p>
         <Headline
           as="h1"
-          size="headline"
+          size="title"
           className="mt-gap-md max-w-3xl"
           lead="This page doesn't exist."
           muted="It may have moved, or the link may be wrong."
