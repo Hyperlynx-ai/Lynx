@@ -33,6 +33,8 @@ lynx_ai/
   settings.py         settings from the environment (+ .env.local locally)
   security.py         service-token check for every non-health route
   prompts.py          loads prompts from prompts/
+  jobs/               jobs engine (ADR 0011): normalize, pipeline, store, sources/,
+                      CLI `python -m lynx_ai.jobs run|check` (GitHub Actions runs it)
 config/models.yaml    which model runs each task (PROTECTED AREA)
 prompts/              versioned prompts, one Markdown file per task
 evals/                synthetic eval cases, rendered fixtures, scorers, results

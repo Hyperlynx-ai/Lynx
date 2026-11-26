@@ -295,7 +295,7 @@ internships and scholarships from many sources.
 | Chunk | Branch | What | Status |
 |---|---|---|---|
 | 3.1 | `feat/p3-jobs-schema` | Jobs, sources and run tables. Normalization (title, company, country, type, remote, seniority, field of work), de-duplication across sources, expiry. Admin page listing sources with on/off switches, "run now" and health. | In review |
-| 3.2 | `feat/p3-scheduler` | GitHub Actions workflows (ADR 0011, replacing Inngest): daily ingestion of enabled sources, hourly "run now" requests, run logs. | |
+| 3.2 | `feat/p3-scheduler` | GitHub Actions workflows (ADR 0011, replacing Inngest): daily ingestion of enabled sources, hourly "run now" requests, run logs. | In review |
 | 3.3 | `feat/p3-source-curated` | Import the team's Google Sheet (Opportunities and Jobs tabs). Admin screens to manage curated listings, replacing the sheet. | |
 | 3.4 | `feat/p3-sources-free-apis` | Free public APIs and feeds, each checked for terms and attribution before it is switched on. Candidates: Arbeitnow, Remotive, RemoteOK, Himalayas, Jobicy, The Muse, Adzuna, Jooble, Careerjet, Reed. | |
 | 3.5 | `feat/p3-sources-ats` | Public company job boards on Greenhouse, Lever, Ashby, Workable, SmartRecruiters and Recruitee, from an admin-managed company list seeded with employers hiring in the UAE, Europe and India. | |

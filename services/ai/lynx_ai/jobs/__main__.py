@@ -3,6 +3,7 @@
     python -m lynx_ai.jobs run --enabled      # every enabled source (daily)
     python -m lynx_ai.jobs run --requested    # sources an admin asked to run now
     python -m lynx_ai.jobs run --source arbeitnow [--source remotive ...]
+    python -m lynx_ai.jobs check              # database reachable? schema there?
 
 Needs DATABASE_URL. Prints counts only (workflow logs are public).
 """
@@ -15,6 +16,25 @@ from .pipeline import run_source
 from .store import PostgresJobStore
 
 
+def check(store: PostgresJobStore) -> int:
+    """Connects and reports the schema state: for pull requests and setup."""
+    from sqlalchemy import text
+
+    with store.engine.connect() as conn:
+        exists = conn.execute(text("select to_regclass('public.job_sources') is not null")).scalar()
+        if not exists:
+            print("Database reachable; the jobs tables aren't there yet (migration not applied).")
+            return 0
+        sources = conn.execute(
+            text("select count(*), count(*) filter (where enabled) from public.job_sources")
+        ).one()
+        jobs = conn.execute(
+            text("select count(*) from public.jobs where status = 'active'")
+        ).scalar()
+    print(f"Database reachable: {sources[0]} sources ({sources[1]} enabled), {jobs} active jobs.")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m lynx_ai.jobs")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -23,9 +43,12 @@ def main(argv: list[str] | None = None) -> int:
     which.add_argument("--enabled", action="store_true", help="every enabled source")
     which.add_argument("--requested", action="store_true", help="sources an admin asked to run")
     which.add_argument("--source", action="append", help="this source (repeatable)")
+    sub.add_parser("check", help="check the database connection and schema (no fetching)")
     args = parser.parse_args(argv)
 
     store = PostgresJobStore(get_engine())
+    if args.command == "check":
+        return check(store)
     if args.enabled:
         sources = store.enabled_sources()
     elif args.requested:

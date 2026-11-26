@@ -1,0 +1,92 @@
+# Ingests jobs from the enabled sources into the database (ADR 0011).
+# PROTECTED AREA. Logs are public: the ingestion prints counts only.
+#
+# - Daily at 01:30 UTC (07:00 IST): every enabled source, production.
+# - Hourly: sources an admin asked to "Run now" in the admin console.
+# - Manually (Actions -> Jobs ingestion -> Run workflow): choose the
+#   database and, optionally, some sources.
+# - Pull requests touching the ingestion: a connection check against staging.
+#
+# Repository secrets: SUPABASE_ACCESS_TOKEN, SUPABASE_PROD_DB_PASSWORD,
+#   SUPABASE_STAGING_DB_PASSWORD, and the source keys used below (a missing
+#   key only disables that source). Variables: SUPABASE_PROD_PROJECT_REF,
+#   SUPABASE_STAGING_PROJECT_REF.
+name: Jobs ingestion
+
+on:
+  schedule:
+    - cron: "30 1 * * *"
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Database
+        type: choice
+        options: [production, staging]
+        default: production
+      sources:
+        description: Source ids, comma separated (empty = every enabled source)
+        type: string
+        default: ""
+  pull_request:
+    paths:
+      - "services/ai/lynx_ai/jobs/**"
+      - "scripts/ci/supabase-db-url.py"
+      - ".github/workflows/jobs-ingest.yml"
+
+concurrency:
+  group: jobs-ingest-${{ github.event_name == 'pull_request' && 'check' || inputs.target || 'production' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  ingest:
+    name: ${{ github.event_name == 'pull_request' && 'Check (staging)' || 'Ingest' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      TARGET: ${{ github.event_name == 'pull_request' && 'staging' || inputs.target || 'production' }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.4.0 # this action publishes no floating major tag
+
+      - name: Install the AI service
+        working-directory: services/ai
+        run: uv sync --frozen --no-dev
+
+      - name: Connect to the ${{ env.TARGET }} database
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          DB_PASSWORD: ${{ env.TARGET == 'production' && secrets.SUPABASE_PROD_DB_PASSWORD || secrets.SUPABASE_STAGING_DB_PASSWORD }}
+          REF: ${{ env.TARGET == 'production' && vars.SUPABASE_PROD_PROJECT_REF || vars.SUPABASE_STAGING_PROJECT_REF }}
+        run: python3 scripts/ci/supabase-db-url.py "$REF"
+
+      - name: Check the connection and schema
+        if: github.event_name == 'pull_request'
+        working-directory: services/ai
+        run: uv run python -m lynx_ai.jobs check
+
+      - name: Ingest
+        if: github.event_name != 'pull_request'
+        working-directory: services/ai
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+          SOURCES: ${{ inputs.sources }}
+          CURATED_SHEET_ID: ${{ secrets.CURATED_SHEET_ID }}
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          JOOBLE_API_KEY: ${{ secrets.JOOBLE_API_KEY }}
+          CAREERJET_AFFID: ${{ secrets.CAREERJET_AFFID }}
+          REED_API_KEY: ${{ secrets.REED_API_KEY }}
+        run: |
+          if [ "$SCHEDULE" = "17 * * * *" ]; then
+            set -- --requested
+          elif [ -n "$SOURCES" ]; then
+            set --
+            for id in $(echo "$SOURCES" | tr ',' ' '); do set -- "$@" --source "$id"; done
+          else
+            set -- --enabled
+          fi
+          uv run python -m lynx_ai.jobs run "$@"
