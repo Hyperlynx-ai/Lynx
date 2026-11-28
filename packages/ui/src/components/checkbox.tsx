@@ -1,3 +1,4 @@
+import { Check } from "lucide-react"
 import * as React from "react"
 
 import { cn } from "@lynx/ui/lib/utils"
@@ -33,9 +34,9 @@ function Checkbox({ label, description, className, id, ...props }: CheckboxProps
       />
       <span
         aria-hidden="true"
-        className="mt-1 flex size-4 shrink-0 items-center justify-center border border-border font-mono text-mono leading-none text-transparent transition-colors duration-200 ease-standard peer-checked:border-accent peer-checked:text-accent peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent"
+        className="mt-1 flex size-4 shrink-0 items-center justify-center border border-border text-transparent transition-colors duration-200 ease-standard peer-checked:border-accent peer-checked:text-accent peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent"
       >
-        ✓
+        <Check className="size-3" strokeWidth={3} />
       </span>
       <span className="flex flex-col gap-1">
         <span className="text-label text-text-primary">{label}</span>

@@ -166,7 +166,7 @@ export function ProfileForm({
         <legend className="mb-2 text-label text-text-primary">Countries you want to work in</legend>
         {REGIONS.map((region) => (
           <div key={region.name} className="flex flex-col gap-2 border-t border-border pt-3">
-            <p className="font-mono text-mono text-text-secondary">{region.name}</p>
+            <p className="text-small text-text-secondary">{region.name}</p>
             <div className="grid grid-cols-1 gap-x-gap-md gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
               {region.codes.map((code) => (
                 <Checkbox
@@ -300,8 +300,10 @@ export function ProfileForm({
 
 function FieldError({ id, children }: { id: string; children: React.ReactNode }) {
   return (
-    <p id={id} className="font-mono text-mono text-error">
-      <span aria-hidden="true">! </span>
+    <p id={id} className="text-small text-error">
+      <span aria-hidden="true" className="font-mono">
+        !{" "}
+      </span>
       {children}
     </p>
   )

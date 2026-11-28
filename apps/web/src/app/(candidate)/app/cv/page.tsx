@@ -3,7 +3,6 @@ import Link from "next/link"
 
 import { AI_TEST_DATA_ONLY } from "@lynx/shared/policy"
 import { Button } from "@lynx/ui/components/button"
-import { Eyebrow } from "@lynx/ui/components/eyebrow"
 import { Headline } from "@lynx/ui/components/headline"
 import { Notice } from "@lynx/ui/components/notice"
 
@@ -48,12 +47,11 @@ export default async function CvPage() {
   return (
     <div className="flex flex-col gap-gap-lg">
       <div className="flex flex-col gap-gap-md">
-        <Eyebrow>Your CV</Eyebrow>
         <Headline
           as="h1"
           size="title"
-          lead={current && name ? `${name}.` : "Your CV."}
-          muted={
+          title={current && name ? `Your CV: ${name}` : "Your CV"}
+          lede={
             current
               ? "This is your CV as Lynx reads it. Edit it yourself or with Lynx, and download it."
               : "Upload it once: Lynx reads it in about 20 seconds and builds your profile from it."
@@ -108,7 +106,7 @@ export default async function CvPage() {
 
 function SourceLine(props: { file: CvFile; version: number; label: string | null }) {
   return (
-    <p className="font-mono text-mono text-text-secondary">
+    <p className="text-small text-text-secondary">
       {props.file.fileName} · uploaded {dateFormat.format(new Date(props.file.createdAt))} · version{" "}
       {props.version}
       {props.label ? ` (${props.label})` : ""}
@@ -129,7 +127,7 @@ function EarlierUploads({ files }: { files: CvFile[] }) {
             key={file.id}
             className="flex flex-col gap-gap-sm border-b border-border py-4 md:flex-row md:items-center md:justify-between"
           >
-            <p className="font-mono text-mono text-text-primary">
+            <p className="text-body text-text-primary">
               {file.fileName}
               <span className="text-text-secondary">
                 {" "}

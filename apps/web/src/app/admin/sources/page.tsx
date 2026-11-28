@@ -1,9 +1,10 @@
+import { cn } from "@lynx/ui/lib/utils"
+import { Badge } from "@lynx/ui/components/badge"
 import type { Metadata } from "next"
 
 import type { paths } from "@lynx/types/api"
 import { Headline } from "@lynx/ui/components/headline"
 import { Notice } from "@lynx/ui/components/notice"
-import { StatusDot } from "@lynx/ui/components/status-dot"
 
 import { SourceControls } from "@/components/admin/source-controls"
 import { apiFetchAsUser } from "@/lib/api/server"
@@ -39,8 +40,8 @@ export default async function AdminSourcesPage() {
       <Headline
         as="h1"
         size="title"
-        lead="Job sources."
-        muted={
+        title="Job sources"
+        lede={
           data
             ? `${data.activeJobs.toLocaleString("en-GB")} active jobs. Every source runs daily at 01:30 UTC; "Run now" usually starts within minutes (within the hour at most).`
             : "Where opportunities come from."
@@ -79,21 +80,28 @@ export default async function AdminSourcesPage() {
                       {KIND[s.kind] ?? s.kind}
                     </td>
                     <td className="px-4 py-3">
-                      <span className="flex items-center gap-2 font-mono text-mono text-text-primary">
-                        <StatusDot
-                          state={
-                            s.lastStatus === "ok"
-                              ? "ok"
-                              : s.lastStatus === "failed"
-                                ? "down"
-                                : "unknown"
-                          }
-                        />
+                      <Badge
+                        dot
+                        tone={
+                          s.lastStatus === "ok"
+                            ? "accent"
+                            : s.lastStatus === "failed"
+                              ? "error"
+                              : s.lastStatus === "partial"
+                                ? "warning"
+                                : "neutral"
+                        }
+                      >
                         {s.lastStatus ?? "no runs yet"}
-                      </span>
+                      </Badge>
                       {s.lastError ? (
-                        <p className="mt-1 max-w-xs font-mono text-mono text-error">
-                          ! {s.lastError}
+                        <p
+                          className={cn(
+                            "mt-1 max-w-xs text-small [overflow-wrap:anywhere]",
+                            s.lastStatus === "failed" ? "text-error" : "text-text-secondary"
+                          )}
+                        >
+                          {s.lastError}
                         </p>
                       ) : null}
                     </td>

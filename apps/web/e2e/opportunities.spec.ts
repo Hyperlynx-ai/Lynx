@@ -9,7 +9,7 @@ test("candidates see ranked opportunities, save one and hide one", async ({ page
   try {
     await page.getByRole("link", { name: "See your opportunities" }).click()
     await expect(page).toHaveURL(/\/app\/opportunities$/)
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Opportunities.")
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Opportunities")
 
     const card = page.getByRole("listitem").filter({ hasText: title })
     await expect(card).toContainText("Strong match")
@@ -21,7 +21,10 @@ test("candidates see ranked opportunities, save one and hide one", async ({ page
     )
 
     await card.getByRole("button", { name: `Save ${title}` }).click()
-    await expect(card.getByRole("button", { name: `Unsave ${title}` })).toHaveText("Saved")
+    await expect(card.getByRole("button", { name: `Unsave ${title}` })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    )
     await page.getByLabel("Saved").check()
     await page.getByRole("button", { name: "Show" }).click()
     await expect(page).toHaveURL(/saved=1/)
@@ -37,7 +40,7 @@ test("candidates see ranked opportunities, save one and hide one", async ({ page
 
     await page.getByRole("link", { name: "Internships" }).click()
     await expect(page).toHaveURL(/view=internships/)
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Internships")
+    await expect(page.getByText("Internships for students and new graduates")).toBeVisible()
   } finally {
     await cleanup()
   }

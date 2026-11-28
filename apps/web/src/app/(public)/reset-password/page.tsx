@@ -13,7 +13,7 @@ export default async function ResetPasswordPage() {
   if (!user) redirect("/login?error=expired")
 
   return (
-    <AuthLayout eyebrow="Account" lead="Choose a new password." muted={`For ${user.email}.`}>
+    <AuthLayout eyebrow="Account" title="Choose a new password" lede={`For ${user.email}.`}>
       <NewPasswordForm mode="reset" />
     </AuthLayout>
   )

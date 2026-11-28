@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react"
 import * as React from "react"
 
 import { cn } from "@lynx/ui/lib/utils"
@@ -22,12 +23,10 @@ function Select({ className, children, ...props }: React.ComponentProps<"select"
       >
         {children}
       </select>
-      <span
+      <ChevronDown
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 font-mono text-mono text-text-secondary"
-      >
-        v
-      </span>
+        className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-text-secondary"
+      />
     </div>
   )
 }

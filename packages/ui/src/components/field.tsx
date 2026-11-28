@@ -27,8 +27,10 @@ function Field({ htmlFor, label, hint, error, children, className }: FieldProps)
       </label>
       {children}
       {error ? (
-        <p id={`${htmlFor}-error`} className="font-mono text-mono text-error">
-          <span aria-hidden="true">! </span>
+        <p id={`${htmlFor}-error`} className="text-small text-error">
+          <span aria-hidden="true" className="font-mono">
+            !{" "}
+          </span>
           {error}
         </p>
       ) : hint ? (

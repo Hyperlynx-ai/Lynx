@@ -24,8 +24,8 @@ export default async function AdminCompaniesPage() {
       <Headline
         as="h1"
         size="title"
-        lead="Company boards."
-        muted={
+        title="Company boards"
+        lede={
           data
             ? `${on} of ${data.companies.length} on. Jobs come from each company's own careers page; a new board is read on the next run of its system's source.`
             : "Companies whose careers pages we read."

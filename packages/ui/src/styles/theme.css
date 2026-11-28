@@ -18,6 +18,7 @@
   --color-text-primary: #ffffff;
   --color-text-secondary: #94979e;
   --color-border: #303236;
+  --color-border-strong: #4a4d53; /* hover border on linked cards and controls */
   --color-border-subtle: #18191b;
   --color-ink-on-mint: #131415;
   --color-accent: #34d59a; /* RATIONED: CTA pill, icon glyphs, code tokens, chart strokes, status dot */
@@ -29,6 +30,13 @@
   /* Signals (skill rule 7): red for errors only, amber for chart warnings only. */
   --color-error: #ff5f57;
   --color-warning: #f5a524;
+
+  /* Tints for badges, selected states and the Lynx reason box: the signal
+     colours at low alpha. Never a large fill or a section ground. */
+  --color-accent-tint: rgb(52 213 154 / 0.12);
+  --color-warning-tint: rgb(245 165 36 / 0.14);
+  --color-error-tint: rgb(255 95 87 / 0.14);
+  --color-neutral-tint: rgb(255 255 255 / 0.06);
 
   /* ---------- shadcn/ui semantic names, pointing at the tokens ---------- */
   /* Note: in this project `accent` means MINT (the skill's name). shadcn
@@ -67,17 +75,26 @@
   --text-title: clamp(1.5rem, 0.8vw + 1.1rem, 2rem);
   --text-title--line-height: 1.2;
   --text-title--letter-spacing: -0.028em;
+  --text-lede: 1.25rem; /* 20px: the paragraph under a page or section headline */
+  --text-lede--line-height: 1.5;
+  --text-lede--letter-spacing: -0.01em;
+  --text-heading: 1.25rem; /* 20px, 500: card titles, panel and form-section headings */
+  --text-heading--line-height: 1.35;
+  --text-heading--letter-spacing: -0.015em;
+  --text-heading--font-weight: 500;
   --text-body: 1rem;
   --text-body--line-height: 1.5;
   --text-label: 1rem;
   --text-label--line-height: 1.5;
   --text-label--letter-spacing: -0.025em; /* -0.4px at 16px */
   --text-label--font-weight: 500;
-  --text-mono: 0.8125rem; /* 13px */
+  --text-small: 0.875rem; /* 14px: metadata, chips, badges, helper text */
+  --text-small--line-height: 1.45;
+  --text-mono: 0.8125rem; /* 13px: code, numbers, timestamps, IDs only */
   --text-mono--line-height: 1.5;
   /* Aliases so third-party components land on system sizes */
   --text-base: 1rem;
-  --text-sm: 0.8125rem;
+  --text-sm: 0.875rem;
   --text-xs: 0.8125rem;
 
   /* ---------- Radius: cards, panels, grids, navbar are ALWAYS 0 ---------- */
@@ -100,7 +117,8 @@
   --container-content: 1600px;
 
   /* ---------- Motion ---------- */
-  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1); /* colour and border changes */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* things entering, moving, pressing */
   --animate-infinity-scroll: infinityScroll 40s linear infinite;
   --animate-slide-up-fade: slideUpAndFade 0.2s var(--ease-standard);
 

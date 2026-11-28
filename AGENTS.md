@@ -37,7 +37,8 @@ site (paid programmes).
    docs, ci, test).
 3. Read the `AGENTS.md` in every folder you are about to change.
 4. For **any** UI work (pages, components, styles, emails), first read
-   `.agents/skills/void-terminal-glass/SKILL.md` and follow it.
+   `.agents/skills/void-terminal-glass/SKILL.md` (and its references) and
+   follow it; `pnpm design:lint` checks the tokens.
 5. Make sure the machine is ready: `pnpm install`, then `pnpm setup:check`.
    Run everything with `pnpm dev`; check everything with `pnpm check`
    (lint, type check, tests, build) before opening a PR.

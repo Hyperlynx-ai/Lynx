@@ -3,7 +3,6 @@ import Link from "next/link"
 
 import { AI_TEST_DATA_ONLY } from "@lynx/shared/policy"
 import { Button } from "@lynx/ui/components/button"
-import { Eyebrow } from "@lynx/ui/components/eyebrow"
 import { Headline } from "@lynx/ui/components/headline"
 import { Notice } from "@lynx/ui/components/notice"
 
@@ -18,14 +17,14 @@ import { getCv, listCvs } from "@/lib/cv/api"
 export const metadata: Metadata = { title: "Set up your profile" }
 
 const HEADLINES = {
-  1: { lead: "Start with your CV.", muted: "Lynx reads it and fills in most of your profile." },
+  1: { title: "Start with your CV", lede: "Lynx reads it and fills in most of your profile." },
   2: {
-    lead: "Tell Lynx what you're looking for.",
-    muted: "We filled in what we could from your CV. Check it and add the rest.",
+    title: "Tell Lynx what you're looking for",
+    lede: "We filled in what we could from your CV. Check it and add the rest.",
   },
   3: {
-    lead: "Choose who sees your profile.",
-    muted: "Everything here is off until you turn it on, and you can change it any time.",
+    title: "Choose who sees your profile",
+    lede: "Everything here is off until you turn it on, and you can change it any time.",
   },
 } as const
 
@@ -47,8 +46,7 @@ export default async function OnboardingPage({
   return (
     <div className="flex flex-col gap-gap-lg">
       <div className="flex flex-col gap-gap-md">
-        <Eyebrow>Set up your profile</Eyebrow>
-        <Headline as="h1" size="title" lead={headline.lead} muted={headline.muted} />
+        <Headline as="h1" size="title" title={headline.title} lede={headline.lede} />
         <OnboardingSteps current={step} />
       </div>
 

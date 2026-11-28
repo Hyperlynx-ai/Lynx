@@ -1,13 +1,15 @@
 "use client"
 
+import { Bookmark, EyeOff } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
 
 import { Button } from "@lynx/ui/components/button"
+import { cn } from "@lynx/ui/lib/utils"
 
 import { setOpportunityState } from "@/app/(candidate)/app/opportunities/actions"
 
-/** Save / Unsave and Hide for one opportunity card. */
+/** Save (a toggle) and Hide, as icon buttons in the top corner of a job card. */
 export function SaveControls(props: { jobId: string; title: string; saved: boolean }) {
   const router = useRouter()
   const [saved, setSaved] = useState(props.saved)
@@ -27,28 +29,34 @@ export function SaveControls(props: { jobId: string; title: string; saved: boole
     })
 
   return (
-    <div className="flex items-center gap-gap-md">
+    <div className="flex shrink-0 items-center">
+      {error ? (
+        <span role="alert" className="mr-2 text-small text-error">
+          Didn&apos;t work
+        </span>
+      ) : null}
       <Button
         type="button"
-        variant="link"
+        variant="ghostIcon"
         disabled={pending}
         aria-pressed={saved}
         aria-label={`${saved ? "Unsave" : "Save"} ${props.title}`}
+        title={saved ? "Saved" : "Save"}
         onClick={() => act(saved ? null : "saved")}
+        className={cn(saved && "text-accent hover:text-accent")}
       >
-        {saved ? "Saved" : "Save"}
+        <Bookmark aria-hidden="true" className={cn("size-[18px]", saved && "fill-current")} />
       </Button>
       <Button
         type="button"
-        variant="link"
+        variant="ghostIcon"
         disabled={pending}
         aria-label={`Hide ${props.title}`}
+        title="Hide"
         onClick={() => act("hidden")}
-        className="text-text-secondary hover:text-text-primary"
       >
-        Hide
+        <EyeOff aria-hidden="true" className="size-[18px]" />
       </Button>
-      {error ? <span className="font-mono text-mono text-error">! Didn&apos;t work</span> : null}
     </div>
   )
 }

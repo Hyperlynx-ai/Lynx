@@ -1,7 +1,10 @@
 import { COUNTRIES } from "@lynx/shared/candidate"
 import { JOB_TYPES, MATCH_LABELS } from "@lynx/shared/jobs"
+import { ArrowUpRight } from "lucide-react"
+
+import { Badge } from "@lynx/ui/components/badge"
 import { Button } from "@lynx/ui/components/button"
-import { StatusDot } from "@lynx/ui/components/status-dot"
+import { Card } from "@lynx/ui/components/card"
 
 import { SaveControls } from "@/components/opportunities/save-controls"
 import type { Opportunity } from "@/lib/opportunities/api"
@@ -41,61 +44,83 @@ export function sourceCredit(source: Opportunity["source"]) {
   return source.name
 }
 
-/** One opportunity in the feed: match, facts, Lynx's reason, source and actions. */
+const MATCH_TONE = { strong: "accent", good: "neutral", partial: "neutral" } as const
+
+/**
+ * One opportunity in the feed, as a card (skill v2: Cards, job card anatomy):
+ * match and save on top, title, company and place, facts as chips, Lynx's
+ * reason in a tinted box, then the source and Apply at the bottom.
+ */
 export function OpportunityCard({ item }: { item: Opportunity }) {
-  const facts = [
-    item.company,
-    place(item),
+  const posted = postedAgo(item.postedAt)
+  const chips = [
     item.employmentType ? JOB_TYPES[item.employmentType as keyof typeof JOB_TYPES] : null,
-    postedAgo(item.postedAt) ? `Posted ${postedAgo(item.postedAt)}` : null,
+    posted ? `Posted ${posted}` : null,
     item.deadline ? `Apply by ${deadlineFormat.format(new Date(item.deadline))}` : null,
-  ].filter(Boolean)
+  ].filter((chip): chip is string => Boolean(chip))
   const label = item.match?.label
+  const where = place(item)
 
   return (
-    <li className="flex flex-col gap-gap-sm border-b border-border px-0 py-6">
-      {label || item.isAffiliated ? (
-        <div className="flex flex-wrap items-center gap-gap-sm font-mono text-mono">
-          {label ? (
-            <span className="flex items-center gap-2 text-text-primary">
-              <StatusDot
-                state={label === "strong" ? "ok" : "unknown"}
-                className={label === "partial" ? "hidden" : undefined}
-              />
-              {MATCH_LABELS[label]}
-            </span>
-          ) : null}
-          {item.isAffiliated ? (
-            <span className="border border-border px-2 text-text-primary">Affiliated</span>
+    <li className="flex">
+      <Card className="w-full gap-4">
+        <div className="flex items-start justify-between gap-gap-sm">
+          <div className="flex min-h-9 flex-wrap items-center gap-2">
+            {label ? (
+              <Badge tone={MATCH_TONE[label]} dot>
+                {MATCH_LABELS[label]}
+              </Badge>
+            ) : null}
+            {item.isAffiliated ? <Badge tone="accent">Affiliated</Badge> : null}
+          </div>
+          <SaveControls jobId={item.id} title={item.title} saved={item.saved} />
+        </div>
+
+        <div className="flex min-w-0 flex-col gap-1">
+          <h3 className="line-clamp-2 text-heading [overflow-wrap:anywhere] text-text-primary">
+            {item.title}
+          </h3>
+          {item.company || where ? (
+            <p className="text-body [overflow-wrap:anywhere] text-text-secondary">
+              {item.company ? <span className="text-text-primary">{item.company}</span> : null}
+              {item.company && where ? " · " : null}
+              {where}
+            </p>
           ) : null}
         </div>
-      ) : null}
-      <h3 className="text-label text-text-primary">{item.title}</h3>
-      {facts.length ? (
-        <p className="font-mono text-mono text-text-secondary">{facts.join(" · ")}</p>
-      ) : null}
-      {item.match?.reason ? (
-        <p className="max-w-3xl text-body text-text-secondary">
-          <span className="text-text-primary">Lynx: </span>
-          {item.match.reason}
-        </p>
-      ) : null}
-      <div className="mt-1 flex flex-wrap items-center justify-between gap-gap-sm">
-        <p className="font-mono text-mono text-text-secondary">via {sourceCredit(item.source)}</p>
-        <div className="flex flex-wrap items-center gap-gap-md">
-          <SaveControls jobId={item.id} title={item.title} saved={item.saved} />
-          <Button asChild variant="heroSecondary">
+
+        {chips.length ? (
+          <ul className="flex flex-wrap gap-2" aria-label="Details">
+            {chips.map((chip) => (
+              <li key={chip}>
+                <Badge>{chip}</Badge>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        {item.match?.reason ? (
+          <p className="bg-neutral-tint p-3 text-body text-text-secondary">
+            <span className="font-medium text-text-primary">Lynx: </span>
+            {item.match.reason}
+          </p>
+        ) : null}
+
+        <div className="mt-auto flex items-center justify-between gap-gap-sm pt-1">
+          <p className="min-w-0 text-small text-text-secondary">via {sourceCredit(item.source)}</p>
+          <Button asChild variant="heroSecondary" className="shrink-0">
             <a
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Apply for ${item.title} on ${sourceCredit(item.source)} (opens in a new tab)`}
             >
-              Apply on source ↗
+              Apply on source
+              <ArrowUpRight aria-hidden="true" className="size-4" />
             </a>
           </Button>
         </div>
-      </div>
+      </Card>
     </li>
   )
 }

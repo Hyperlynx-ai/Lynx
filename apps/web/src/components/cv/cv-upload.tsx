@@ -129,9 +129,7 @@ export function CvUpload({ userId, compact = false }: { userId: string; compact?
               >
                 Choose a file
               </Button>
-              <span className="font-mono text-mono text-text-secondary">
-                PDF or DOCX, up to 10 MB
-              </span>
+              <span className="text-small text-text-secondary">PDF or DOCX, up to 10 MB</span>
             </div>
           </>
         )}

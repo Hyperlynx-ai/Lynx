@@ -1,9 +1,9 @@
+import { Card } from "@lynx/ui/components/card"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { COUNTRIES } from "@lynx/shared/candidate"
-import { Eyebrow } from "@lynx/ui/components/eyebrow"
 import { Headline } from "@lynx/ui/components/headline"
 
 import { getSessionUser } from "@/lib/auth/session"
@@ -29,15 +29,14 @@ export default async function CandidateHome() {
   return (
     <div className="flex flex-col gap-gap-lg">
       <div className="flex flex-col gap-gap-md">
-        <Eyebrow>Your Hyperlynx home</Eyebrow>
         <Headline
           as="h1"
           size="title"
-          lead={firstName ? `Welcome, ${firstName}.` : "Welcome."}
-          muted="Lynx is getting to know you. Here's where things stand."
+          title={firstName ? `Welcome, ${firstName}` : "Welcome"}
+          lede="Lynx is getting to know you. Here's where things stand."
         />
       </div>
-      <ul className="grid border-t border-l border-border md:grid-cols-3">
+      <ul className="grid gap-4 md:grid-cols-3">
         <Tile
           title="Your CV"
           status={
@@ -79,17 +78,19 @@ export default async function CandidateHome() {
 
 function Tile(props: { title: string; status: string; href?: string; action?: string }) {
   return (
-    <li className="flex flex-col gap-gap-sm border-r border-b border-border p-6">
-      <h2 className="text-label text-text-primary">{props.title}</h2>
-      <p className="flex-1 text-body text-text-secondary">{props.status}</p>
-      {props.href && props.action ? (
-        <Link
-          href={props.href}
-          className="self-start border-b border-border py-1 text-label text-text-primary transition-colors duration-200 ease-standard hover:border-accent"
-        >
-          {props.action}
-        </Link>
-      ) : null}
+    <li className="flex">
+      <Card className="w-full gap-gap-sm">
+        <h2 className="text-heading text-text-primary">{props.title}</h2>
+        <p className="flex-1 text-body text-text-secondary">{props.status}</p>
+        {props.href && props.action ? (
+          <Link
+            href={props.href}
+            className="self-start border-b border-border py-1 text-label text-text-primary transition-colors duration-200 ease-standard hover:border-accent"
+          >
+            {props.action}
+          </Link>
+        ) : null}
+      </Card>
     </li>
   )
 }

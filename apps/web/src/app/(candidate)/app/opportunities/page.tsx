@@ -77,7 +77,7 @@ export default async function OpportunitiesPage({
 
   return (
     <div className="flex flex-col gap-gap-md">
-      <Headline as="h1" size="title" lead="Opportunities." muted={HEADLINES[view]} />
+      <Headline as="h1" size="title" title="Opportunities" lede={HEADLINES[view]} />
 
       <nav aria-label="Kinds of opportunity" className="flex gap-gap-md border-b border-border">
         {Object.entries(FEED_VIEWS).map(([key, label]) => (
@@ -164,7 +164,7 @@ export default async function OpportunitiesPage({
       ) : (
         <>
           <div className="flex flex-wrap items-baseline justify-between gap-gap-sm">
-            <p className="font-mono text-mono text-text-secondary">
+            <p className="text-small text-text-secondary tabular">
               {data.total.toLocaleString("en-GB")}{" "}
               {data.total === 1 ? "opportunity" : "opportunities"}
               {filtered ? (data.total === 1 ? " matches your filters" : " match your filters") : ""}
@@ -200,7 +200,7 @@ export default async function OpportunitiesPage({
               }
             />
           ) : (
-            <ul className="border-t border-border" aria-label="Opportunities">
+            <ul className="grid gap-4 md:grid-cols-2" aria-label="Opportunities">
               {data.items.map((item) => (
                 <OpportunityCard key={item.id} item={item} />
               ))}

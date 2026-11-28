@@ -1,5 +1,7 @@
 "use client"
 
+import { ArrowRight } from "lucide-react"
+import { Badge } from "@lynx/ui/components/badge"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState, type FormEvent } from "react"
@@ -285,11 +287,17 @@ function SectionCard(props: {
           <button
             type="button"
             onClick={() => setAsking((a) => !a)}
-            className="cursor-pointer font-mono text-mono text-text-secondary transition-colors duration-200 ease-standard hover:text-text-primary"
+            className="flex cursor-pointer items-center gap-1 text-small text-text-secondary transition-colors duration-200 ease-standard hover:text-text-primary"
             aria-expanded={asking}
             aria-controls={inputId}
           >
-            {asking ? "close" : "ask lynx →"}
+            {asking ? (
+              "Close"
+            ) : (
+              <>
+                Ask Lynx <ArrowRight aria-hidden="true" className="size-4" />
+              </>
+            )}
           </button>
         ) : null}
       </div>
@@ -346,7 +354,7 @@ function SaveBar(props: {
   if (!props.dirty) return null
   return (
     <div className="sticky bottom-0 z-10 flex flex-col gap-gap-sm border-t border-border bg-background py-4 sm:flex-row sm:items-center">
-      <p className="font-mono text-mono text-text-secondary">unsaved changes</p>
+      <p className="text-small text-text-secondary">Unsaved changes</p>
       <label htmlFor="version-label" className="sr-only">
         Name this version (optional)
       </label>
@@ -415,10 +423,9 @@ function Versions(props: {
             </p>
             <div className="flex flex-wrap items-center gap-gap-md">
               {v.id === matching ? (
-                <span className="flex items-center gap-2 font-mono text-mono text-text-primary">
-                  <span aria-hidden="true" className="size-2 rounded-pill bg-accent" />
-                  used for matching
-                </span>
+                <Badge tone="accent" dot>
+                  Used for matching
+                </Badge>
               ) : (
                 <Button
                   type="button"
@@ -430,7 +437,7 @@ function Versions(props: {
                 </Button>
               )}
               {v.version === props.current ? (
-                <span className="font-mono text-mono text-text-secondary">open</span>
+                <span className="text-small text-text-secondary">Viewing</span>
               ) : (
                 <Link
                   href={`/app/cv/${props.cvId}/edit?version=${v.version}`}

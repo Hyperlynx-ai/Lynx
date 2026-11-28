@@ -32,6 +32,29 @@
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
+
+  /* Browser surfaces carry the design too (skill: Browser details). */
+  html {
+    caret-color: var(--color-accent);
+    accent-color: var(--color-accent);
+    scrollbar-color: var(--color-border) transparent;
+    text-underline-offset: 0.2em;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+  p,
+  li {
+    text-wrap: pretty;
+  }
+}
+
+/* Numbers that line up and don't jitter: counts, scores, dates in tables. */
+@utility tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Dot-matrix grain for the utility banner and code panels (skill: Graphics and effects) */

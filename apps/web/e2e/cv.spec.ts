@@ -15,7 +15,7 @@ test.describe("candidate CV", () => {
     await expect(page).toHaveURL(/\/app\/onboarding$/)
 
     await page.goto("/app/cv")
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Your CV.")
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Your CV")
     await expect(page.getByText("Demo: please use the sample CV")).toBeVisible()
 
     const sample = await page.request.get("/samples/hyperlynx-sample-cv.pdf")
@@ -38,7 +38,7 @@ test.describe("candidate CV", () => {
 
     await page.getByRole("button", { name: "Delete this CV" }).click()
     await page.getByRole("button", { name: "Delete CV" }).click()
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Your CV.")
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Your CV")
     await expect(page.getByText("hyperlynx-sample-cv.pdf")).toBeHidden()
   })
 

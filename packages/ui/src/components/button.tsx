@@ -14,9 +14,12 @@ import { cn } from "@lynx/ui/lib/utils"
  * - terminal: the mint, monospace "shell command" CTA. Rationed.
  * - mintFill / outlineSquare: square buttons for the pale-mint band and ruled layouts.
  * - link: plain text link style (e.g. "Log in").
+ * - ghostIcon: a square icon-only button (save, close, more); needs an aria-label.
  */
 const buttonVariants = cva(
-  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-sans text-label whitespace-nowrap transition-[background-color,border-color,color] duration-300 ease-standard disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  // Colours ease over 300ms; the press (scale 0.97) is quick so the button
+  // feels like it heard the click (skill v2: Motion).
+  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-sans text-label whitespace-nowrap [transition:background-color_300ms_var(--ease-standard),border-color_300ms_var(--ease-standard),color_300ms_var(--ease-standard),transform_150ms_var(--ease-out)] active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 motion-reduce:active:scale-100 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -31,6 +34,8 @@ const buttonVariants = cva(
         outlineSquare:
           "h-11 rounded-none border border-border-subtle bg-white px-4 py-3 text-border-subtle",
         link: "h-auto bg-transparent p-0 text-text-primary hover:text-text-secondary",
+        ghostIcon:
+          "size-9 rounded-none bg-transparent text-text-secondary hover:bg-neutral-tint hover:text-text-primary",
       },
     },
     defaultVariants: {

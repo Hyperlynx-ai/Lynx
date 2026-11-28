@@ -1,8 +1,8 @@
 /*
   Void terminal glass - design tokens
-  Source of truth for the website's visual design language.
-  Copy into the web app's global stylesheet (or map into the Tailwind/theme config).
-  Do not hardcode values that exist here.
+  Reference copy of the design language's tokens (skill v2, 2026-11-29).
+  The live source is packages/ui/src/styles/theme.css (Tailwind v4 theme);
+  change both together. Do not hardcode values that exist here.
 */
 
 :root {
@@ -14,6 +14,7 @@
   --color-text-primary: #ffffff;
   --color-text-secondary: #94979e;
   --color-border: #303236;
+  --color-border-strong: #4a4d53;     /* hover border on interactive cards and controls */
   --color-border-subtle: #18191b;
   --color-ink-on-mint: #131415;       /* text on the pale-mint surface */
   --color-accent: #34d59a;            /* RATIONED: CTA pill, icon glyphs, code tokens, chart strokes, status dot */
@@ -22,10 +23,17 @@
   --color-mint-fill-hover: #f6fdfa;
 
   /* Signals (rule 7). Red: errors only (messages, invalid field borders, error
-     notices, chart errors). Amber: chart warnings only. Never fills or washes.
-     Owner decision 2026-11-23. Contrast on #000: red 7.0:1, amber 10.3:1. */
+     notices and badges, failed states). Amber: needs attention (partial,
+     pending review, chart warnings). Never fills or washes. Owner decisions
+     2026-11-23 and 2026-11-29. Contrast on #000: red 7.0:1, amber 10.3:1. */
   --color-error: #ff5f57;
   --color-warning: #f5a524;
+
+  /* Tints: badges, selected states, the Lynx reason box (skill v2) */
+  --color-accent-tint: rgb(52 213 154 / 0.12);
+  --color-warning-tint: rgb(245 165 36 / 0.14);
+  --color-error-tint: rgb(255 95 87 / 0.14);
+  --color-neutral-tint: rgb(255 255 255 / 0.06);
 
   /* Typography */
   --font-sans: "Inter", system-ui, sans-serif;
@@ -48,6 +56,18 @@
   --text-title-line: 1.2;
   --text-title-tracking: -0.9px;
 
+  /* Lede: the paragraph under a headline (replaces the v1 fused headline) */
+  --text-lede-size: 20px;
+  --text-lede-weight: 400;
+  --text-lede-line: 1.5;
+  --text-lede-tracking: -0.2px;
+
+  /* Heading: card titles, panel and form-section headings */
+  --text-heading-size: 20px;
+  --text-heading-weight: 500;
+  --text-heading-line: 1.35;
+  --text-heading-tracking: -0.3px;
+
   --text-body-size: 16px;
   --text-body-weight: 400;
   --text-body-line: 1.5;
@@ -57,7 +77,10 @@
   --text-label-line: 1.5;
   --text-label-tracking: -0.4px;
 
-  --text-mono-size: 13px;
+  --text-small-size: 14px;            /* metadata, chips, badges, helper text */
+  --text-small-line: 1.45;
+
+  --text-mono-size: 13px;             /* data only: code, numbers, dates, IDs */
   --text-mono-weight: 400;
   --text-mono-line: 1.5;
 
@@ -88,8 +111,11 @@
   /* Graphics */
   --gradient-scrim: linear-gradient(rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 100%);
 
-  /* Motion */
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Motion (references/motion.md) */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);      /* colour, border, opacity */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* entering, moving, pressing */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --duration-press: 0.15s;
   --duration-color: 0.2s;
   --duration-fade: 0.15s;             /* opacity fades run 0.15s-0.2s */
   --duration-compound: 0.3s;
@@ -106,21 +132,28 @@ html {
   line-height: var(--text-body-line);
 }
 
-/* Fused headline: lead clause in white, muted clause inline in gray */
+/* Headline + lede: one white headline, a grey 20px paragraph under it */
 .headline {
   font-family: var(--font-sans);
   font-size: var(--text-headline-size);
   font-weight: var(--text-headline-weight);
   line-height: var(--text-headline-line);
   letter-spacing: var(--text-headline-tracking);
+  color: var(--color-text-primary);
+  text-wrap: balance;
 }
 .headline--hero {
   font-size: var(--text-display-size);
   line-height: var(--text-display-line);
   letter-spacing: var(--text-display-tracking);
 }
-.headline__lead  { color: var(--color-text-primary); }
-.headline__muted { color: var(--color-text-secondary); }
+.lede {
+  font-size: var(--text-lede-size);
+  line-height: var(--text-lede-line);
+  letter-spacing: var(--text-lede-tracking);
+  color: var(--color-text-secondary);
+  max-width: 62ch;
+}
 
 .mono {
   font-family: var(--font-mono);
@@ -139,8 +172,9 @@ html {
   font-weight: var(--text-label-weight);
   letter-spacing: var(--text-label-tracking);
   cursor: pointer;
-  transition: background var(--transition-compound), border-color var(--transition-compound), color var(--transition-color);
+  transition: background var(--transition-compound), border-color var(--transition-compound), color var(--transition-color), transform var(--duration-press) var(--ease-out);
 }
+.btn:active { transform: scale(0.97); }
 .btn--hero-primary   { background: #ffffff; color: #000000; border-radius: var(--radius-pill); padding: 0 24px; }
 .btn--hero-secondary { background: transparent; color: #ffffff; border: 1px solid var(--color-border); border-radius: var(--radius-pill); padding: 0 24px; }
 .btn--navbar-cta     { height: var(--height-navbar-cta); background: #ffffff; color: #000000; border-radius: var(--radius-pill); padding: 0 16px; }
@@ -151,13 +185,30 @@ html {
 .btn--terminal       { background: var(--color-accent); color: #000000; font-family: var(--font-mono); font-size: var(--text-mono-size); border-radius: var(--radius-pill); padding: 0 28px; }
 .btn--terminal:hover { background: var(--color-accent-hover); }
 
-/* Cards / panels: transparent, square, ruled */
+/* Card: one object you act on - raised surface, hairline, square (skill v2) */
 .card {
-  background: transparent;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-none);
-  padding: 0;
+  padding: 24px;
 }
-.card--bordered { border: 1px solid var(--color-border); }
+.card--interactive { transition: border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out); }
+.card--interactive:hover { border-color: var(--color-border-strong); transform: translateY(-2px); }
+
+/* Panel: forms and settings groups - transparent, square, ruled */
+.panel {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-none);
+  padding: 32px;
+}
+
+/* Badge: square status label with a tint */
+.badge { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; font-size: var(--text-small-size); font-weight: 500; border-radius: var(--radius-none); white-space: nowrap; }
+.badge--accent  { background: var(--color-accent-tint); color: var(--color-accent); }
+.badge--neutral { background: var(--color-neutral-tint); color: var(--color-text-secondary); }
+.badge--warning { background: var(--color-warning-tint); color: var(--color-warning); }
+.badge--error   { background: var(--color-error-tint); color: var(--color-error); }
 
 /* Layout helpers */
 .container { max-width: var(--layout-max-width); margin-inline: auto; }

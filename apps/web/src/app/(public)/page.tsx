@@ -15,13 +15,9 @@ export default function HomePage() {
           as="h1"
           size="display"
           className="mt-gap-md max-w-6xl"
-          lead="Where ambitious people meet global opportunities."
-          muted="Lynx does the heavy lifting."
+          title="Jobs, internships and scholarships abroad, ranked for you"
+          lede="Lynx, our AI career agent, finds roles that fit you, sharpens your CV and interviews you on camera, so recruiters can hire with confidence."
         />
-        <p className="mt-gap-md max-w-2xl text-body text-text-secondary">
-          Lynx, our AI agent, ranks the roles that fit you, sharpens your CV and interviews you on
-          camera, so recruiters can hire with confidence.
-        </p>
         <div className="mt-10 flex flex-wrap items-center gap-gap-sm">
           <Button variant="heroPrimary" asChild>
             <Link href="/signup">Find opportunities</Link>
@@ -30,8 +26,8 @@ export default function HomePage() {
             <Link href="/recruiters">Hire on Hyperlynx</Link>
           </Button>
         </div>
-        <p className="mt-gap-sm font-mono text-mono text-text-secondary">
-          $ free for candidates · every recruiter is verified
+        <p className="mt-gap-sm text-small text-text-secondary">
+          Free for candidates. Every recruiter is verified.
         </p>
       </section>
       <CapabilityStrip />
