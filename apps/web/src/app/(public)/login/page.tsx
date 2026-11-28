@@ -18,8 +18,8 @@ export default async function LoginPage({ searchParams }: Props) {
   return (
     <AuthLayout
       eyebrow="Candidates"
-      lead="Welcome back."
-      muted="Log in to see the opportunities Lynx has ranked for you."
+      title="Welcome back"
+      lede="Log in to see the opportunities Lynx has ranked for you."
     >
       <div className="flex flex-col gap-gap-md">
         <h2 className="text-label text-text-primary">Log in to Hyperlynx</h2>

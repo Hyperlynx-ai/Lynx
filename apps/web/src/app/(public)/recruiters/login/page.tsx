@@ -18,8 +18,8 @@ export default async function RecruiterLoginPage({ searchParams }: Props) {
   return (
     <AuthLayout
       eyebrow="Recruiters"
-      lead="Recruiter login."
-      muted="Find verified candidates and manage your roles."
+      title="Recruiter login"
+      lede="Find verified candidates and manage your roles."
     >
       <div className="flex flex-col gap-gap-md">
         <h2 className="text-label text-text-primary">Log in as a recruiter</h2>

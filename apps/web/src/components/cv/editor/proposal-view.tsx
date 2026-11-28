@@ -1,5 +1,6 @@
 "use client"
 
+import { Badge } from "@lynx/ui/components/badge"
 import { diffWords } from "diff"
 
 import type { CvData } from "@lynx/shared/cv"
@@ -87,7 +88,9 @@ export function ProposalView(props: {
       className="flex flex-col gap-gap-sm border border-border p-4"
       aria-label="Lynx's suggestion"
     >
-      <p className="font-mono text-mono text-accent">lynx suggests</p>
+      <Badge tone="accent" className="self-start">
+        Lynx suggests
+      </Badge>
       <p className="text-body text-text-secondary">{props.explanation}</p>
       {changed ? (
         <p className="text-body whitespace-pre-wrap text-text-primary">

@@ -7,9 +7,9 @@ test("CV editor: edit by hand, save a version, use it for matching", async ({ pa
   await seedParsedCv(email)
 
   await page.goto("/app/cv")
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Aarav Sharma.")
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Aarav Sharma")
   await page.getByRole("link", { name: "Edit with Lynx" }).click()
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Edit your CV.")
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Edit your CV")
 
   // Hand edits: nothing is saved until "Save as version 2".
   await page.getByLabel("Headline").fill("Senior Backend Engineer")
@@ -26,7 +26,7 @@ test("CV editor: edit by hand, save a version, use it for matching", async ({ pa
   // A newly read CV is used for matching; switch to version 2.
   await expect(versions.locator("li").filter({ hasText: "used for matching" })).toHaveCount(1)
   await versions.getByRole("button", { name: "Use for matching" }).click()
-  await expect(versions.locator("li").filter({ hasText: "v2" })).toContainText("used for matching")
+  await expect(versions.locator("li").filter({ hasText: "v2" })).toContainText("Used for matching")
 
   // The CV page shows the latest version.
   await page.goto("/app/cv")
@@ -35,7 +35,7 @@ test("CV editor: edit by hand, save a version, use it for matching", async ({ pa
 
   // Asking Lynx shows a suggestion (AI running) or a clear message (CI).
   await page.getByRole("link", { name: "Edit with Lynx" }).click()
-  await page.getByRole("button", { name: "ask lynx →" }).first().click()
+  await page.getByRole("button", { name: "Ask Lynx" }).first().click()
   await page.getByPlaceholder("e.g. Make the bullet points more specific").fill("Make it shorter")
   await page.getByRole("button", { name: "Ask", exact: true }).click()
   const suggestion = page.getByLabel("Lynx's suggestion")

@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 import { Button } from "@lynx/ui/components/button"
-import { Eyebrow } from "@lynx/ui/components/eyebrow"
 import { Headline } from "@lynx/ui/components/headline"
 import { Notice } from "@lynx/ui/components/notice"
 import { Panel } from "@lynx/ui/components/panel"
@@ -21,12 +20,11 @@ export default async function ProfilePage() {
   return (
     <div className="flex flex-col gap-gap-lg">
       <div className="flex flex-col gap-gap-md">
-        <Eyebrow>Your profile</Eyebrow>
         <Headline
           as="h1"
           size="title"
-          lead="What Lynx knows about you."
-          muted="Every fact and where it came from. Correct or delete anything; Lynx only uses what's here."
+          title="What Lynx knows about you"
+          lede="Every fact and where it came from. Correct or delete anything; Lynx only uses what's here."
         />
       </div>
 

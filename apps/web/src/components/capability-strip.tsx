@@ -74,10 +74,10 @@ export function CapabilityStrip() {
     >
       {capabilities.map((c) => (
         <article key={c.label} className="flex min-w-0 flex-col gap-gap-sm">
-          <p className="text-label">
-            <span className="text-text-primary">{c.label}.</span>{" "}
-            <span className="text-text-secondary">{c.clause}</span>
-          </p>
+          <div className="flex flex-col gap-1">
+            <h2 className="text-label text-text-primary">{c.label}</h2>
+            <p className="text-body text-text-secondary">{c.clause}</p>
+          </div>
           <div className="flex min-h-32 items-end">{c.media}</div>
         </article>
       ))}

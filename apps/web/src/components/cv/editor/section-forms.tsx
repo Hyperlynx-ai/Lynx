@@ -200,7 +200,7 @@ function LabeledInput(props: {
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={props.id} className="font-mono text-mono text-text-secondary">
+      <label htmlFor={props.id} className="text-small text-text-secondary">
         {props.label}
       </label>
       <Input id={props.id} value={props.value} onChange={(e) => props.onChange(e.target.value)} />
@@ -244,7 +244,7 @@ function EntryList(props: {
                   key={field.key}
                   className={cn("flex flex-col gap-1", field.wide && "md:col-span-2")}
                 >
-                  <label htmlFor={inputId} className="font-mono text-mono text-text-secondary">
+                  <label htmlFor={inputId} className="text-small text-text-secondary">
                     {field.label}
                   </label>
                   {kind === "lines" ? (

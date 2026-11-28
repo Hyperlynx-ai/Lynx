@@ -9,8 +9,8 @@ export default function ForgotPasswordPage() {
   return (
     <AuthLayout
       eyebrow="Account"
-      lead="Forgot your password?"
-      muted="Enter your email and we'll send you a link to choose a new one."
+      title="Forgot your password?"
+      lede="Enter your email and we'll send you a link to choose a new one."
     >
       <ForgotPasswordForm />
     </AuthLayout>

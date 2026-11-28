@@ -35,7 +35,7 @@ export function AppShell({ area, homeHref, nav, user, children }: AppShellProps)
           </nav>
           <div className="flex items-center gap-gap-md">
             <span
-              className="hidden font-mono text-mono text-text-secondary sm:inline"
+              className="hidden max-w-60 truncate text-small text-text-secondary sm:inline"
               title={user.email}
             >
               {user.name || user.email}

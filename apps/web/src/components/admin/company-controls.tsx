@@ -58,7 +58,14 @@ export function CompanyControls(props: { id: string; name: string; enabled: bool
           Remove
         </Button>
       )}
-      {error ? <span className="font-mono text-mono text-error">! {error}</span> : null}
+      {error ? (
+        <span role="alert" className="text-small text-error">
+          <span aria-hidden="true" className="font-mono">
+            !{" "}
+          </span>
+          {error}
+        </span>
+      ) : null}
     </div>
   )
 }

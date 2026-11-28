@@ -193,7 +193,7 @@ function FactRow({ fact }: { fact: Fact }) {
     <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-gap-md">
       <p className="text-body text-text-primary">{fact.text}</p>
       <div className="flex shrink-0 items-baseline gap-gap-sm">
-        <span className="font-mono text-mono text-text-secondary">{FACT_SOURCES[fact.source]}</span>
+        <span className="text-small text-text-secondary">{FACT_SOURCES[fact.source]}</span>
         <button
           type="button"
           onClick={() => setEditing(true)}

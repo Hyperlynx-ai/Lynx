@@ -47,12 +47,9 @@ export default function RecruitersPage() {
           as="h1"
           size="display"
           className="mt-gap-md max-w-6xl"
-          lead="Hire people who have already been interviewed."
-          muted="Start from evidence, not just a CV."
+          title="Hire people who have already been interviewed"
+          lede="Start from evidence, not just a CV: Hyperlynx candidates practise and verify their skills with Lynx, our AI interviewer."
         />
-        <p className="mt-gap-md max-w-2xl text-body text-text-secondary">
-          Hyperlynx candidates practise and verify their skills with Lynx, our AI interviewer.
-        </p>
         <div className="mt-10 flex flex-wrap items-center gap-gap-sm">
           <Button variant="heroPrimary" asChild>
             <Link href="/recruiters/signup">Create a recruiter account</Link>
@@ -61,16 +58,16 @@ export default function RecruitersPage() {
             <Link href="/recruiters/login">Recruiter login</Link>
           </Button>
         </div>
-        <p className="mt-gap-sm font-mono text-mono text-text-secondary">
-          $ work email required · every account is reviewed by our team
+        <p className="mt-gap-sm text-small text-text-secondary">
+          Work email required. Our team reviews every account.
         </p>
       </section>
       <section className="mx-auto max-w-content px-6 py-gap-lg md:px-10">
         <Headline
           size="headline"
           className="mb-gap-lg max-w-4xl"
-          lead="Everything you need to hire well."
-          muted="Some of it is still being built; your account will be ready when it ships."
+          title="Everything you need to hire well"
+          lede="Some of it is still being built; your account will be ready when it ships."
         />
         <FeatureGrid features={features} />
       </section>

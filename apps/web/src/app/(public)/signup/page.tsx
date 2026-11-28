@@ -10,8 +10,8 @@ export default function SignupPage() {
   return (
     <AuthLayout
       eyebrow="Candidates · free"
-      lead="Create your account."
-      muted="Jobs, internships and scholarships in the UAE, Europe and 25+ countries, ranked for you by Lynx."
+      title="Create your account"
+      lede="Jobs, internships and scholarships in the UAE, Europe and 25+ countries, ranked for you by Lynx."
       points={[
         "Upload your CV once; Lynx builds your profile from it.",
         "Get opportunities ranked by how well they fit you.",

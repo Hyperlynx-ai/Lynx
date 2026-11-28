@@ -4,15 +4,10 @@ import { Button } from "@lynx/ui/components/button"
 
 import { BrandLink } from "@/components/brand-link"
 
-/** Utility banner + edge-to-edge sticky navbar (skill: "First screen stack"). */
+/** Edge-to-edge sticky navbar for public pages (skill: Navbar). */
 export function SiteHeader() {
   return (
     <>
-      <div className="border-b border-border-subtle bg-dot-matrix">
-        <p className="mx-auto max-w-content px-6 py-2 font-mono text-mono text-text-secondary md:px-10">
-          Hyperlynx Academy is becoming Hyperlynx. Lynx, our AI career agent, is on its way.
-        </p>
-      </div>
       <header className="sticky top-0 z-50 h-16 border-b border-border-subtle bg-background">
         <nav
           aria-label="Main"

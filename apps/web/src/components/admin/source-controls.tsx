@@ -43,7 +43,14 @@ export function SourceControls(props: {
       >
         {props.runRequested ? "Run requested" : "Run now"}
       </Button>
-      {error ? <span className="font-mono text-mono text-error">! {error}</span> : null}
+      {error ? (
+        <span role="alert" className="text-small text-error">
+          <span aria-hidden="true" className="font-mono">
+            !{" "}
+          </span>
+          {error}
+        </span>
+      ) : null}
     </div>
   )
 }

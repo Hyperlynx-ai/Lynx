@@ -1,3 +1,4 @@
+import { Badge } from "@lynx/ui/components/badge"
 import type { Metadata } from "next"
 
 import type { paths } from "@lynx/types/api"
@@ -28,8 +29,8 @@ export default async function AdminUsersPage() {
       <Headline
         as="h1"
         size="title"
-        lead="Users."
-        muted="Every account on Hyperlynx, newest first."
+        title="Users"
+        lede="Every account on Hyperlynx, newest first."
       />
       {!data ? (
         <Notice tone="error" title="Couldn't load users">
@@ -63,9 +64,7 @@ export default async function AdminUsersPage() {
                     {user.email ?? "-"}
                   </td>
                   <td className="px-4 py-3">
-                    <span className="border border-border px-2 font-mono text-mono text-text-primary">
-                      {user.role}
-                    </span>
+                    <Badge tone={user.role === "admin" ? "accent" : "neutral"}>{user.role}</Badge>
                   </td>
                   <td className="px-4 py-3 font-mono text-mono text-text-secondary">
                     {user.provider ?? "-"}

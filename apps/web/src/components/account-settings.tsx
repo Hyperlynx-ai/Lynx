@@ -17,10 +17,10 @@ export function AccountSettings({
 }) {
   return (
     <div className="flex max-w-3xl flex-col gap-gap-md">
-      <Headline as="h1" size="title" lead="Settings." muted="Your login and your account." />
+      <Headline as="h1" size="title" title="Settings" lede="Your login and your account." />
       <Panel>
         <h2 className="text-label text-text-primary">Email</h2>
-        <p className="mt-2 font-mono text-mono text-text-secondary">{email}</p>
+        <p className="mt-2 text-body [overflow-wrap:anywhere] text-text-secondary">{email}</p>
       </Panel>
       <Panel className="flex flex-col gap-gap-md">
         <div>

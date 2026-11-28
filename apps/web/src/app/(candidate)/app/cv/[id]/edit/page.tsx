@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { Eyebrow } from "@lynx/ui/components/eyebrow"
 import { Headline } from "@lynx/ui/components/headline"
 
 import { CvEditor } from "@/components/cv/editor/cv-editor"
@@ -26,20 +25,20 @@ export default async function EditCvPage({
   return (
     <div className="flex flex-col gap-gap-lg">
       <div className="flex flex-col gap-gap-md">
-        <Eyebrow>
+        <nav aria-label="Breadcrumb" className="text-small text-text-secondary">
           <Link
             href="/app/cv"
-            className="transition-colors duration-200 ease-standard hover:text-text-primary"
+            className="underline-offset-4 transition-colors duration-200 ease-standard hover:text-text-primary hover:underline"
           >
             Your CV
           </Link>{" "}
           / Edit
-        </Eyebrow>
+        </nav>
         <Headline
           as="h1"
           size="title"
-          lead="Edit your CV."
-          muted="Change anything yourself, or ask Lynx. Lynx only rewrites what's already there; you accept or reject every change."
+          title="Edit your CV"
+          lede="Change anything yourself, or ask Lynx. Lynx only rewrites what's already there; you accept or reject every change."
         />
       </div>
       <CvEditor

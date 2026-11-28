@@ -10,7 +10,7 @@ test("admins switch job sources on and ask for a run", async ({ page }) => {
   await logIn(page, "/login", email, PASSWORD)
 
   await page.goto("/admin/sources")
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Job sources.")
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Job sources")
   const row = page.getByRole("row").filter({ hasText: "Jobicy" })
   const toggle = row.getByRole("switch")
   const wasOn = (await toggle.getAttribute("aria-checked")) === "true"
@@ -35,7 +35,7 @@ test("admins add, switch off and remove a company board", async ({ page }) => {
   await logIn(page, "/login", email, PASSWORD)
 
   await page.goto("/admin/companies")
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Company boards.")
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Company boards")
   const slug = `e2e-${Date.now()}`
   await page.getByLabel("System").selectOption("lever")
   await page.getByLabel("Board name").fill(slug)

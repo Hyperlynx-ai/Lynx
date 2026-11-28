@@ -1,8 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import { ApiStatus } from "@/components/api-status"
-
 const columns = [
   {
     title: "Candidates",
@@ -50,7 +48,6 @@ export function SiteFooter() {
               © {new Date().getFullYear()} Hyperlynx
             </span>
           </div>
-          <ApiStatus />
         </div>
       </div>
     </footer>

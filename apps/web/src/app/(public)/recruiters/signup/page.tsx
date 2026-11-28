@@ -19,8 +19,8 @@ export default async function RecruiterSignupPage({ searchParams }: Props) {
   return (
     <AuthLayout
       eyebrow="Recruiters"
-      lead="Create a recruiter account."
-      muted="Use your work email. Our team reviews every recruiter account before it can search candidates."
+      title="Create a recruiter account"
+      lede="Use your work email. Our team reviews every recruiter account before it can search candidates."
       points={[
         "Sign up with your company email or Google Workspace account.",
         "We check that your email matches your company, then approve your account.",

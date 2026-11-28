@@ -67,7 +67,7 @@ export function OrDivider() {
   return (
     <div className="flex items-center gap-gap-sm" aria-hidden="true">
       <span className="h-px flex-1 bg-border" />
-      <span className="font-mono text-mono text-text-secondary">or</span>
+      <span className="text-small text-text-secondary">or</span>
       <span className="h-px flex-1 bg-border" />
     </div>
   )

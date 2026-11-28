@@ -9,7 +9,7 @@ test.describe("candidate accounts", () => {
     await signUp(page, "/signup", { name: "Ada Candidate", email })
     // New candidates start with onboarding (chunk 2.3).
     await expect(page).toHaveURL(/\/app\/onboarding$/)
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Start with your CV.")
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Start with your CV")
 
     await logOut(page)
 
