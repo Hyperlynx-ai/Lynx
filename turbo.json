@@ -16,7 +16,8 @@
       "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**", "dist/**"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/scripts/design-lint.mjs"]
     },
     "typecheck": {
       "dependsOn": ["^typecheck"]
